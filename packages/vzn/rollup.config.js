@@ -58,7 +58,7 @@ export default [
         format: "es"
       }
     ],
-    external: ["../index.js"],
+    external: ["../index"],
     plugins: [
       copy({
         targets: [
