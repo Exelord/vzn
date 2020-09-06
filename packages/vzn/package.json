@@ -1,0 +1,53 @@
+{
+  "name": "vzn",
+  "version": "0.0.0",
+  "author": "Maciej Kwaśniak <kmaciek17@gmail.com>",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "module": "dist/index.js",
+  "types": "types/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "dom",
+    "lib",
+    "types"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./lib/index.js"
+    },
+    "./dom": {
+      "import": "./dist/dom/index.js",
+      "require": "./lib/dom/index.js"
+    }
+  },
+  "scripts": {
+    "prebuild": "rimraf dist/* lib/* types/*",
+    "build": "npm-run-all -cnl build:*",
+    "build:js": "rollup -c",
+    "build:types": "tsc"
+  },
+  "peerDependencies": {
+    "mobx": "*"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/preset-typescript": "^7.10.4",
+    "@rollup/plugin-babel": "^5.2.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "babel-plugin-jsx-dom-expressions": "^0.20.0",
+    "babel-plugin-transform-rename-import": "^2.3.0",
+    "dom-expressions": "^0.20.1",
+    "mobx": "^5.15.6",
+    "ncp": "^2.0.0",
+    "rollup": "^2.26.10",
+    "typescript": "^4.0.2",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2",
+    "rollup-plugin-cleanup": "^3.1.1",
+    "rollup-plugin-copy": "^3.3.0"
+  }
+}
