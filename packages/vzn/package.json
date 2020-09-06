@@ -1,6 +1,6 @@
 {
   "name": "vzn",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Maciej Kwaśniak <kmaciek17@gmail.com>",
   "license": "MIT",
   "main": "lib/index.js",

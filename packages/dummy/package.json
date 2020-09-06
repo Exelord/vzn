@@ -1,6 +1,6 @@
 {
   "name": "dummy",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "index.js",
   "author": "Maciej Kwaśniak",
   "license": "MIT",
@@ -24,6 +24,6 @@
   },
   "dependencies": {
     "mobx": "^5.15.6",
-    "vzn": "^0.1.0"
+    "vzn": "^0.1.1"
   }
 }
