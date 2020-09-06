@@ -40,6 +40,7 @@ export default [
         format: "es"
       }
     ],
+    external: ["mobx"],
     plugins: [
       copy({
         targets: [{ src: "../../node_modules/dom-expressions/src/jsx.ts", dest: "./src/rendering" }]
@@ -58,7 +59,7 @@ export default [
         format: "es"
       }
     ],
-    external: ["../index"],
+    external: ["../index", "mobx"],
     plugins: [
       copy({
         targets: [
