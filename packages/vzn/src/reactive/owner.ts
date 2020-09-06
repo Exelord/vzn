@@ -1,22 +1,19 @@
+import { Disposer } from "../utils/disposer";
+
 let OWNER: Owner | undefined;
 
 export type Disposable = () => void;
 
 export class Owner {
-  disposables: Disposable[] = [];
-  owner?: Owner;
+  readonly disposer = new Disposer();
+  
+  owner = OWNER;
+  
   context?: any;
 
-  constructor(owner?: Owner) {
-    this.owner = owner;
-  }
-
-  dispose() {
-    const disposables = this.disposables;
-    
-    this.disposables = [];
-    
-    disposables.forEach((disposable) => disposable());
+  destroy() {
+    this.disposer.dispose();
+    OWNER = this.owner;
   }
 }
 
@@ -26,23 +23,17 @@ export function onCleanup(disposable: Disposable) {
     return;
   }
 
-  if (OWNER.disposables) {
-    OWNER.disposables.push(disposable);
-  } else {
-    OWNER.disposables = [disposable];
-  }
-
-  return disposable;
+  return OWNER.disposer.schedule(disposable);
 }
 
 export function getOwner() {
   return OWNER;  
 }
 
-export function setOwner(owner?: Owner) {
-  OWNER = owner;
-}
-
 export function createOwner(): Owner {
-  return new Owner(getOwner());
+  const owner = new Owner();
+  
+  OWNER = owner;
+  
+  return owner;
 }
