@@ -25,6 +25,7 @@
   },
   "scripts": {
     "prebuild": "rimraf dist/* lib/* types/*",
+    "prepublishOnly": "yarn build",
     "build": "npm-run-all -cnl build:*",
     "build:js": "rollup -c",
     "build:types": "tsc"
