@@ -10,9 +10,9 @@
     "dev": "webpack-dev-server --mode=development"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/preset-modules": "^0.1.4",
     "@babel/preset-typescript": "^7.10.4",
+    "babel-preset-vzn": "^0.0.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-jsx-dom-expressions": "^0.20.0",
     "clean-webpack-plugin": "^3.0.0",
