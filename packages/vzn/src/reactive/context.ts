@@ -34,7 +34,7 @@ function createProvider(id: symbol) {
 }
 
 function lookup(key: symbol | string, owner?: Owner,): any {
-  return owner && ((owner.context && owner.context[key]) || (owner.owner && lookup(key, owner.owner)))
+  return owner && ((owner.context && owner.context[key]) || (owner.parentOwner && lookup(key, owner.parentOwner)))
 }
 
 function resolveChildren(children: any): any {

@@ -6,34 +6,54 @@ export type Disposable = () => void;
 
 export class Owner {
   readonly disposer = new Disposer();
-  
-  owner = OWNER;
+  owners = new Set<Owner>()
+
+  parentOwner?: Owner;
   
   context?: any;
 
-  destroy() {
+  constructor(owner = OWNER) {
+    this.parentOwner = owner;
+    if (owner) owner.owners.add(this)
+  }
+
+  dispose() {
+    for (const owner of this.owners) {
+      owner.dispose()
+    }
+
     this.disposer.dispose();
-    OWNER = this.owner;
+  }
+
+  destroy() {
+    for (const owner of this.owners) {
+      owner.destroy();
+    }
+
+    this.dispose();
+    this.owners = new Set<Owner>();
+
+    if (this.parentOwner) this.parentOwner.owners.delete(this);
   }
 }
 
 export function onCleanup(disposable: Disposable) {
   if (!OWNER) {
-    console.warn("disposables created outside a `createRoot` or `render` will never be run");
+    console.warn("onCleanup called outside a `createRoot` or `render` will never be run");
     return;
   }
 
   return OWNER.disposer.schedule(disposable);
 }
 
-export function getOwner() {
-  return OWNER;  
+export function getOwner(): Owner {
+  return OWNER!;
+}
+
+export function setOwner(owner?: Owner) {
+  OWNER = owner; 
 }
 
 export function createOwner(): Owner {
-  const owner = new Owner();
-  
-  OWNER = owner;
-  
-  return owner;
+  return new Owner();
 }

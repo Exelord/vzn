@@ -1,36 +1,44 @@
 import { observable, untracked, action, autorun } from 'mobx';
-import { createOwner, onCleanup, Disposable, getOwner } from './owner';
-import { Disposer } from '../utils/disposer';
+import { createOwner, onCleanup, Disposable, setOwner } from './owner';
 
 export function createRoot<T>(fn: (dispose: Disposable) => T) {
   const owner = createOwner();
-  return untracked(() => fn(() => owner.destroy()));
+  setOwner(owner);
+
+  return untracked(() => fn(() => {
+    setOwner(owner.parentOwner);
+    owner.destroy()
+  }));
 }
 
 export function createEffect<T>(fn: (prev?: T) => T, value?: T) {
-  const disposer = new Disposer();
-
-  const dispose = autorun(() => {
-    disposer.dispose();
-    value = fn(value);
+  const owner = createOwner();
+  
+  onCleanup(() => {
+    disposeAutoRun();
+    owner.destroy();
   });
 
-  onCleanup(() => {
-    dispose();
-    disposer.dispose();
+  const disposeAutoRun = autorun(() => {
+    owner.dispose();
+    setOwner(owner);
+    value = fn(value);
+    setOwner(owner.parentOwner);
   });
 }
 
 export function createMemo<T>(fn: () => T, equal?: boolean) {
-  const o = observable.box(untracked(fn));
+  const value = observable.box(untracked(fn));
 
-  const update = action((r: T) => o.set(r));
+  const update = action((result: T) => value.set(result));
   
   createEffect(prev => {
-    const res = fn();
-    (!equal || prev !== res) && update(res);
-    return res;
+    const result = fn();
+    
+    if (!equal || prev !== result) update(result);
+    
+    return result;
   });
 
-  return () => o.get();
+  return () => value.get();
 }
