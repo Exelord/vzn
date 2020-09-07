@@ -1,12 +1,4 @@
-export { createContext, useContext } from "./reactive/context";
-export { onCleanup, getOwner } from "./reactive/owner";
-
-export {
-  createRoot,
-  createEffect,
-  createMemo
-} from "./reactive/core";
-
+export * from "./reactive";
 export * from "./rendering";
 
 // handle multiple instance check

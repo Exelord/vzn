@@ -9,11 +9,13 @@
     "build": "webpack --mode=production",
     "dev": "webpack-dev-server --mode=development"
   },
+  "dependencies": {
+    "vzn": "^0.3.0"
+  },
   "devDependencies": {
     "@babel/preset-modules": "^0.1.4",
     "@babel/preset-typescript": "^7.10.4",
     "babel-loader": "^8.1.0",
-    "babel-plugin-jsx-dom-expressions": "^0.20.0",
     "babel-preset-vzn": "^0.3.0",
     "clean-webpack-plugin": "^3.0.0",
     "html-webpack-plugin": "^4.4.1",
@@ -21,9 +23,5 @@
     "webpack": "^5.0.0-beta.29",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0"
-  },
-  "dependencies": {
-    "mobx": "^5.15.6",
-    "vzn": "^0.3.0"
   }
 }

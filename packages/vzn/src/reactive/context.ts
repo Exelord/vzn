@@ -1,6 +1,6 @@
 import { Owner, getOwner } from "./owner";
 import { observable, action } from 'mobx';
-import { createEffect } from "./core";
+import { createEffect } from "./effect";
 
 export interface Context {
   id: symbol;
