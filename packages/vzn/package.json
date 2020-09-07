@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "author": "Maciej Kwaśniak <kmaciek17@gmail.com>",
   "license": "MIT",
+  "repository": "https://github.com/exelord/vzn",
   "main": "lib/index.js",
   "module": "dist/index.js",
   "types": "types/index.d.ts",
