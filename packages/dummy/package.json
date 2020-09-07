@@ -1,6 +1,6 @@
 {
   "name": "dummy",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "main": "index.js",
   "author": "Maciej Kwaśniak",
   "license": "MIT",
@@ -10,13 +10,13 @@
     "dev": "webpack-dev-server --mode=development"
   },
   "dependencies": {
-    "vzn": "^0.3.0"
+    "vzn": "^0.4.0"
   },
   "devDependencies": {
     "@babel/preset-modules": "^0.1.4",
     "@babel/preset-typescript": "^7.10.4",
     "babel-loader": "^8.1.0",
-    "babel-preset-vzn": "^0.3.0",
+    "babel-preset-vzn": "^0.4.0",
     "clean-webpack-plugin": "^3.0.0",
     "html-webpack-plugin": "^4.4.1",
     "typescript": "^4.0.2",
