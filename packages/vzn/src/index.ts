@@ -10,6 +10,6 @@ if (!globalThis.VZN$$) {
   globalThis.VZN$$ = true;
 } else {
   console.warn(
-    "You appear to have multiple instances of Solid. This can lead to unexpected behavior."
+    "You appear to have multiple instances of VZN. This can lead to unexpected behavior."
   );
 }
