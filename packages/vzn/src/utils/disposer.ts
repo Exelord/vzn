@@ -1,16 +1,16 @@
 export type Disposable = () => void;
 
 export class Disposer {
-  disposables: Disposable[] = [];
+  private disposables = new Set<Disposable>();
 
   schedule(disposable: Disposable) {
-    return this.disposables.push(disposable);
+    return this.disposables.add(disposable);
   }
 
   dispose() {
-    const disposables = this.disposables;
+    const disposables = [...this.disposables].reverse();
     
-    this.disposables = [];
+    this.disposables = new Set<Disposable>();
     
     disposables.forEach((disposable) => disposable());
   }
