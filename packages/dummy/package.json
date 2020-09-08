@@ -13,6 +13,7 @@
     "vzn": "^0.4.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.6",
     "@babel/preset-modules": "^0.1.4",
     "@babel/preset-typescript": "^7.10.4",
     "babel-loader": "^8.1.0",
