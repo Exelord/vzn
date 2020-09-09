@@ -1,6 +1,8 @@
 {
   "packages": [
-    "packages/*"
+    "packages/@vzn/*",
+    "packages/babel-preset-vzn",
+    "packages/vzn"
   ],
   "version": "0.4.0"
 }
