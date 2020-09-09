@@ -16,25 +16,25 @@ export type ComponentProps<
   ? JSX.IntrinsicElements[T]
   : {};
 
-export class Component<P extends PropsWithChildren> {
+export class Component<P extends PropsWithChildren = {}> {
   props: P;
 
   constructor(props: P) {
     this.props = props;
   }
-  
-  render(props: P) {
+
+  template(props: P) {
     return props.children;
   }
 }
 
 export function createComponent<T>(Comp: Component<T> | FunctionComponent<T>, props: T): JSX.Element {
-  if (Comp instanceof Component) {
+  if ((Comp as any).prototype instanceof Component) {
     return untracked(() => {
       const comp: Component<T> = new (Comp as any)(props as T);
-      return comp.render(props as T);
+      return comp.template(props as T);
     });
   }
-
-  return untracked(() => Comp(props as T));
+  
+  return untracked(() => (Comp as any)(props as T));
 }

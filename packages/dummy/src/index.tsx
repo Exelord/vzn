@@ -32,3 +32,8 @@ function App() {
 }
 
 render(App, document.getElementById("app"));
+
+{/* <input
+on={[["input", state.onChange, "firstName"]]}
+value={state.firstName}
+/> */}
