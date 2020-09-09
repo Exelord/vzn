@@ -1,9 +1,8 @@
 {
   "name": "vzn",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "author": "Maciej Kwaśniak <kmaciek17@gmail.com>",
   "license": "MIT",
   "repository": "https://github.com/exelord/vzn",
-  "scripts": {
-  }
+  "scripts": {}
 }
