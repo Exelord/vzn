@@ -8,7 +8,7 @@ module.exports = function (context, options = {}) {
       jsxTransform,
       Object.assign(
         {
-          moduleName: "vzn/dom"
+          moduleName: "@vzn/dom"
         },
         options
       )
