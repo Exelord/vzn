@@ -1,4 +1,5 @@
 import { Disposer } from "../utils/disposer";
+import { Provider } from "./context";
 
 let OWNER: Owner | undefined;
 
@@ -6,11 +7,12 @@ export type Disposable = () => void;
 
 export class Owner {
   readonly disposer = new Disposer();
-  owners = new Set<Owner>()
 
-  parentOwner?: Owner;
+  owners = new Set<Owner>()
   
-  context?: any;
+  contexts = new Map();
+  
+  parentOwner?: Owner;
 
   constructor(owner = OWNER) {
     this.parentOwner = owner;
