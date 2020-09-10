@@ -9,7 +9,8 @@
   "workspaces": [
     "packages/@vzn/*",
     "packages/babel-preset-vzn",
-    "packages/vzn"
+    "packages/vzn",
+    "packages/dummy"
   ],
   "browserslist": [
     "last 2 Chrome major versions",
