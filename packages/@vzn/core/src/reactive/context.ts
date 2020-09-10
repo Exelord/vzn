@@ -1,40 +1,46 @@
 import { Owner, getOwner } from "./owner";
 import { observable, action } from 'mobx';
 import { createEffect } from "./effect";
+import { FunctionComponent } from "../rendering";
 
-export interface Context {
-  id: symbol;
-  Provider: (props: any) => any;
-  defaultValue: unknown;
+interface ProviderProps<T> {
+  value: T;
 }
 
-export function createContext(defaultValue?: unknown): Context {
-  const id = Symbol("context");
-  return { id, Provider: createProvider(id), defaultValue };
+export type Provider<T> = FunctionComponent<ProviderProps<T>>
+
+export interface Context<T> {
+  Provider: Provider<T>;
+  displayName?: string;
+  defaultValue: T
 }
 
-export function useContext(context: Context) {
-  return lookup(context.id, getOwner()) || context.defaultValue;
-}
-
-function createProvider(id: symbol) {
-  return function provider(props: { value: unknown; children: any }) {
+export function createContext<T>(defaultValue: T): Context<T> {
+  const provider: Provider<T> = (props) => {
     const rendered = observable.box();
-
+    
     const update = action(() => rendered.set(resolveChildren(props.children)));
     
     createEffect(() => {
       const owner = getOwner();
-      if (owner) owner.context = { [id]: props.value };
+      owner.contexts.set(provider, props.value || defaultValue);
       update();
     });
 
     return () => rendered.get();
-  };
+  }
+
+  return { Provider: provider, defaultValue };
 }
 
-function lookup(key: symbol | string, owner?: Owner,): any {
-  return owner && ((owner.context && owner.context[key]) || (owner.parentOwner && lookup(key, owner.parentOwner)))
+export function useContext<T>(context: Context<T>): T {
+  return lookup(context.Provider, getOwner()) || context.defaultValue;
+}
+
+function lookup<T>(key: Provider<T>, owner: Owner,): T | undefined {
+  if (owner.contexts.has(key)) return owner.contexts.get(key);
+  
+  return owner.parentOwner && lookup(key, owner.parentOwner);
 }
 
 function resolveChildren(children: any): any {
