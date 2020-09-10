@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "@vzn/core",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "author": "Maciej Kwaśniak <kmaciek17@gmail.com>",
   "license": "MIT",
   "repository": "https://github.com/exelord/vzn",
