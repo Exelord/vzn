@@ -26,7 +26,7 @@ export default [
             src: ["../../node_modules/dom-expressions/src/runtime.d.ts"],
             dest: "./src"
           },
-          { src: "../../node_modules/dom-expressions/src/runtime.d.ts", dest: "./types/" }
+          { src: "../../node_modules/dom-expressions/src/runtime.d.ts", dest: "./dist/" }
         ]
       }),
 

@@ -7,15 +7,14 @@
   "repository": "https://github.com/exelord/vzn",
   "main": "lib/index.js",
   "module": "dist/index.js",
-  "types": "types/index.d.ts",
+  "types": "dist/index.d.ts",
   "sideEffects": false,
   "files": [
     "dist",
-    "lib",
-    "types"
+    "lib"
   ],
   "scripts": {
-    "prebuild": "rimraf dist/* lib/* types/*",
+    "prebuild": "rimraf dist/* lib/*",
     "prepublishOnly": "yarn build",
     "build": "npm-run-all -cnl build:*",
     "build:js": "rollup -c",
