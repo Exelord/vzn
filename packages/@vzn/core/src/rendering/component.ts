@@ -29,12 +29,14 @@ export class Component<P extends PropsWithChildren = {}> {
 }
 
 export function createComponent<T>(Comp: Component<T> | FunctionComponent<T>, props: T): JSX.Element {
+  const staticProps = Object.freeze(props);
+
   if ((Comp as any).prototype instanceof Component) {
     return untracked(() => {
-      const comp: Component<T> = new (Comp as any)(props as T);
-      return comp.template(props as T);
+      const comp: Component<T> = new (Comp as any)(staticProps);
+      return comp.template(staticProps);
     });
   }
   
-  return untracked(() => (Comp as any)(props as T));
+  return untracked(() => (Comp as FunctionComponent<T>)(staticProps));
 }
