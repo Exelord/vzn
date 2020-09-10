@@ -7,15 +7,14 @@
   "repository": "https://github.com/exelord/vzn",
   "main": "lib/index.js",
   "module": "dist/index.js",
-  "types": "types/index.d.ts",
+  "types": "dist/index.d.ts",
   "sideEffects": false,
   "files": [
     "dist",
-    "lib",
-    "types"
+    "lib"
   ],
   "scripts": {
-    "prebuild": "rimraf dist/* lib/* types/*",
+    "prebuild": "rimraf dist/* lib/*",
     "prepublishOnly": "yarn build",
     "build": "npm-run-all -cnl build:*",
     "build:js": "rollup -c",
@@ -26,6 +25,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
     "@babel/preset-typescript": "^7.10.4",
     "@rollup/plugin-babel": "^5.2.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
