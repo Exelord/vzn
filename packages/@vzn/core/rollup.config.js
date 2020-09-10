@@ -19,7 +19,7 @@ export default [
     external: ["mobx"],
     plugins: [
       copy({
-        targets: [{ src: "../../node_modules/dom-expressions/src/jsx.ts", dest: "./src/rendering" }]
+        targets: [{ src: "../../../node_modules/dom-expressions/src/jsx.ts", dest: "./src/rendering" }]
       }),
 
       nodeResolve({

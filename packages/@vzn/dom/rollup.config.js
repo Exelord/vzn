@@ -23,10 +23,10 @@ export default [
       copy({
         targets: [
           {
-            src: ["../../node_modules/dom-expressions/src/runtime.d.ts"],
+            src: ["../../../node_modules/dom-expressions/src/runtime.d.ts"],
             dest: "./src"
           },
-          { src: "../../node_modules/dom-expressions/src/runtime.d.ts", dest: "./dist/" }
+          { src: "../../../node_modules/dom-expressions/src/runtime.d.ts", dest: "./dist" }
         ]
       }),
 
