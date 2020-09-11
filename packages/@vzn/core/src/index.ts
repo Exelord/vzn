@@ -1,3 +1,11 @@
+import { configure } from "mobx"
+
+configure({
+  computedRequiresReaction: true,
+  observableRequiresReaction: true,
+  enforceActions: "observed"
+})
+
 export * from "./reactive";
 export * from "./rendering";
 
