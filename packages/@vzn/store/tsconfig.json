@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "target": "ES2019",
+    "moduleResolution": "node",
+    "strict": true,
+    "outDir": "./dist"
+  },
+
+  "include": ["./src"]
+}
