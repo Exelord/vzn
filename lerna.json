@@ -2,7 +2,8 @@
   "packages": [
     "packages/@vzn/*",
     "packages/babel-preset-vzn",
-    "packages/vzn"
+    "packages/vzn",
+    "packages/dummy"
   ],
   "version": "independent"
 }
