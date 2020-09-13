@@ -3,7 +3,7 @@
   "routes": [
     { "handle": "filesystem" },
     { "src": "/([^.\\s]+)", "dest": "/index.html" },
-    { "src": "/_vzn/static/.*",
+    { "src": "/_vzn/static/(.*)",
       "headers": {
         "Cache-Control" : "public,max-age=31536000,immutable"
       }
