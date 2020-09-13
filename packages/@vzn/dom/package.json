@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "@vzn/dom",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "author": "Maciej Kwaśniak <kmaciek17@gmail.com>",
   "license": "MIT",
   "repository": "https://github.com/exelord/vzn",
@@ -21,7 +21,7 @@
     "build:types": "tsc"
   },
   "dependencies": {
-    "@vzn/core": "^0.6.0"
+    "@vzn/core": "^0.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
