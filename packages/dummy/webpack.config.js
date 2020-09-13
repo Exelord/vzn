@@ -1,8 +1,9 @@
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = {
+const config = {
   entry: './src/index.tsx',
 
   mode: 'production',
@@ -34,6 +35,10 @@ module.exports = {
 
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.json'],
+    alias: {
+      '@': path.resolve('./src'),
+      '@/': path.resolve('./src/')
+    }
   },
 
   devServer: {
@@ -52,3 +57,11 @@ module.exports = {
     }),
   ],
 };
+
+if (process.env.ANALYZE) {
+  config.plugins.push(
+    new BundleAnalyzerPlugin()
+  )
+}
+
+module.exports = config;
