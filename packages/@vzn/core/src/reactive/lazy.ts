@@ -1,5 +1,5 @@
-import { untracked } from "mobx";
-import { ComponentType, FunctionComponent } from "../rendering";
+import { ComponentType, createComponent, FunctionComponent } from "../rendering";
+import { withCurrentOwner } from "./owner";
 import { createState } from "./state";
 
 export function lazy<T extends ComponentType<any>>(factory: () => Promise<{ default: T }>) {
@@ -8,9 +8,7 @@ export function lazy<T extends ComponentType<any>>(factory: () => Promise<{ defa
       componentDefault: null as null | T,
 
       get component() {
-        if (this.componentDefault) {
-          return untracked(() => this.componentDefault(props));
-        }
+        return this.componentDefault ? this.componentDefault : () => {};
       },
 
       *fetch() {
@@ -21,7 +19,7 @@ export function lazy<T extends ComponentType<any>>(factory: () => Promise<{ defa
 
     state.fetch();
 
-    return () => state.component;
+    return withCurrentOwner(() => createComponent(state.component, props));
   };
 
   return lazyComponent;

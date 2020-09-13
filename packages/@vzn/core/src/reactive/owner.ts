@@ -59,3 +59,17 @@ export function setOwner(owner?: Owner) {
 export function createOwner(): Owner {
   return new Owner();
 }
+
+export function withCurrentOwner<T>(fn: () => T): () => T {
+  const owner = getOwner();
+
+  return () => {
+    const currentOwner = getOwner();
+    
+    setOwner(owner)
+    const result = fn()
+    setOwner(currentOwner);
+
+    return result;
+  }
+}
