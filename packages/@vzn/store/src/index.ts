@@ -1,4 +1,4 @@
-import { createState, createContext, useContext } from "@vzn/core";
+import { createContext, useContext } from "@vzn/core";
 
 export type StoreConstructor<T> = () => T;
 
@@ -24,5 +24,5 @@ export function useStoreRegistry() {
 export function useStore<T>(storeConstructor: StoreConstructor<T>): T {
   const registry = useStoreRegistry();
   const registration = registry.lookup<T>(storeConstructor);
-  return registration || registry.register(storeConstructor, createState(storeConstructor()));
+  return registration || registry.register(storeConstructor, storeConstructor());
 }

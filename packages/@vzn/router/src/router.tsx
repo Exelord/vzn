@@ -1,4 +1,4 @@
-import { createState, FunctionComponent, withCurrentOwner } from "@vzn/core";
+import { createState, FunctionComponent } from "@vzn/core";
 import { createComponent } from "@vzn/dom";
 import { useRouter } from "./store";
 
@@ -30,5 +30,5 @@ export const Router: FunctionComponent<RouterProps> = (props) => {
     }
   })
 
-  return withCurrentOwner(() => createComponent(state.route.component, {}));
+  return () => createComponent(state.route.component, {});
 }
