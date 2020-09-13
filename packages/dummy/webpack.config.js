@@ -10,7 +10,7 @@ const config = {
 
   output: {
     filename: '[name]-[contenthash].js',
-    path: path.resolve(__dirname, 'dist/build'),
+    path: path.resolve(__dirname, 'dist/_vzn/static/chunks'),
   },
 
   optimization: {
