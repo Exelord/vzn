@@ -10,7 +10,7 @@ const config = {
 
   output: {
     filename: '[name]-[contenthash].js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'dist/build'),
   },
 
   optimization: {
@@ -53,7 +53,7 @@ const config = {
 
     new HtmlWebpackPlugin({
       template: './src/index.html',
-      excludeChunks: ['tests'],
+      filename: path.resolve(__dirname, 'dist/index.html'),
     }),
   ],
 };
