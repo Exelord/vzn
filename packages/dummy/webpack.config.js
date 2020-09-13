@@ -9,6 +9,7 @@ const config = {
   mode: 'production',
 
   output: {
+    publicPath: '/_vzn/static/chunks/',
     filename: '[name]-[contenthash].js',
     path: path.resolve(__dirname, 'dist/_vzn/static/chunks'),
   },
