@@ -15,17 +15,17 @@ export default [
         format: "es"
       }
     ],
-    external: ["@vzn/core"],
+    external: ["@vzn/core", "@vzn/dom", "@vzn/store", "path-to-regexp"],
     plugins: [
       nodeResolve({
-        extensions: [".js", ".ts"]
+        extensions: [".js", ".ts", ".tsx"]
       }),
 
       babel({
-        extensions: [".js", ".ts"],
+        extensions: [".js", ".ts", ".tsx"],
         exclude: "node_modules/**",
         babelrc: false,
-        presets: ["@babel/preset-typescript", [
+        presets: ["@babel/preset-typescript", "vzn", [
           "@babel/preset-env",
           {
             bugfixes: true,
@@ -37,7 +37,7 @@ export default [
       }),
       
       cleanup({
-        extensions: [".js", ".ts"]
+        extensions: [".js", ".ts", ".tsx"]
       })
     ]
   }

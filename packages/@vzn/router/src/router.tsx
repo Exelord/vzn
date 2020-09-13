@@ -1,8 +1,10 @@
-import { lazy } from "../../core/dist/reactive/lazy";
+import { createState, FunctionComponent, withCurrentOwner } from "@vzn/core";
+import { createComponent } from "@vzn/dom";
+import { useRouter } from "./store";
 
 export type RouteDefinition = {
   name: string;
-  component: string;
+  component: FunctionComponent;
   routes?: {
     [key: string]: RouteDefinition
   }
@@ -10,7 +12,7 @@ export type RouteDefinition = {
 
 export interface RouterConfig {
   routes: {
-    'index': RouteDefinition,
+    '/': RouteDefinition,
     [key: string]: RouteDefinition
   }
 }
@@ -19,11 +21,14 @@ type RouterProps = {
   config: RouterConfig
 }
 
-const Router = (props: RouterProps) => {
-  const route = props.config.routes[window.location.pathname];
-  const LazyPage = lazy(() => import(route.component));
+export const Router: FunctionComponent<RouterProps> = (props) => {
+  const state = createState({
+    router: useRouter(),
+    
+    get route() {
+      return props.config.routes[this.router.pathname];
+    }
+  })
 
-  return <LazyPage />
+  return withCurrentOwner(() => createComponent(state.route.component, {}));
 }
-
-export default Router;
