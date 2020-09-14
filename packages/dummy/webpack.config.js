@@ -9,9 +9,8 @@ const config = {
   mode: 'production',
 
   output: {
-    publicPath: '/_vzn/static/chunks/',
-    filename: '[name]-[contenthash].js',
-    path: path.resolve(__dirname, 'dist/_vzn/static/chunks'),
+    filename: '_vzn/static/chunks/[name]-[contenthash].js',
+    path: path.resolve(__dirname, 'dist'),
   },
 
   optimization: {
@@ -44,6 +43,7 @@ const config = {
 
   devServer: {
     historyApiFallback: true,
+    compress: true,
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
@@ -53,8 +53,7 @@ const config = {
     new CleanWebpackPlugin(),
 
     new HtmlWebpackPlugin({
-      template: './src/index.html',
-      filename: path.resolve(__dirname, 'dist/index.html'),
+      template: './src/index.html'
     }),
   ],
 };
