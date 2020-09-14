@@ -53,8 +53,9 @@ const config = {
     new CleanWebpackPlugin(),
 
     new HtmlWebpackPlugin({
-      template: './src/index.html'
-    }),
+      template: './src/index.html',
+      scriptLoading: 'defer'
+    })
   ],
 };
 
