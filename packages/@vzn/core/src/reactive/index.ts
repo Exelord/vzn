@@ -1,4 +1,4 @@
-export { onCleanup, getOwner, withCurrentOwner } from "./owner";
+export { onCleanup, getOwner } from "./owner";
 export { createContext, useContext } from "./context";
 export * from './effect';
 export * from './memo';

@@ -1,40 +1,38 @@
-import { observable, action } from "mobx";
-import { createEffect } from "./effect";
+import { computed } from "mobx";
+import { createOwner, setOwner, getOwner, onCleanup } from "./owner";
 
 export function createMemo<T>(fn: () => T, equal?: boolean) {
-  const value = observable.box();
+  const owner = createOwner();
+  onCleanup(() => owner.destroy());
 
-  const update = action((result: T) => value.set(result));
-  
-  createEffect(prev => {
+  const computedFn = computed(() => {
+    owner.dispose();
+
+    const currentOwner = getOwner()
+    
+    setOwner(owner);
     const result = fn();
-    
-    if (!equal || prev !== result) update(result);
-    
+    setOwner(currentOwner);
+
     return result;
   });
 
-  return () => value.get();
+  return () => computedFn.get();
 }
 
-// ? Consider new approach?
+// old fn
 // export function createMemo<T>(fn: () => T, equal?: boolean) {
-//   const owner = createOwner();
+//   const value = observable.box();
 
-//   const computedFn = computed(() => {
-//     owner.dispose();
-
-//     let result;
-//     const currentOwner = getOwner()
+//   const update = action((result: T) => value.set(result));
+  
+//   createEffect(prev => {
+//     const result = fn();
     
-//     setOwner(owner);
-//     result = fn();
-//     setOwner(currentOwner);
-
+//     if (!equal || prev !== result) update(result);
+    
 //     return result;
-//   })
+//   });
 
-//   onCleanup(() => owner.destroy());
-
-//   return () => computedFn.get();
+//   return () => value.get();
 // }

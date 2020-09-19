@@ -1,5 +1,5 @@
 import { ComponentType, createComponent, FunctionComponent } from "../rendering";
-import { withCurrentOwner } from "./owner";
+import { createMemo } from "./memo";
 import { createState } from "./state";
 
 export function lazy<T extends ComponentType<any>>(factory: () => Promise<{ default: T }>) {
@@ -19,7 +19,7 @@ export function lazy<T extends ComponentType<any>>(factory: () => Promise<{ defa
 
     state.fetch();
 
-    return withCurrentOwner(() => createComponent(state.component, props));
+    return createMemo(() => createComponent(state.component, props));
   };
 
   return lazyComponent;
