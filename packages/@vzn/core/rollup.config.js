@@ -30,15 +30,7 @@ export default [
         extensions: [".js", ".ts"],
         exclude: "node_modules/**",
         babelrc: false,
-        presets: ["@babel/preset-typescript", [
-          "@babel/preset-env",
-          {
-            bugfixes: true,
-            targets: {
-              esmodules: true
-            }
-          }
-        ]],
+        presets: ["@babel/preset-typescript"],
       }),
       
       cleanup({
