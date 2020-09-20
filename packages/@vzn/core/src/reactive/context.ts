@@ -1,13 +1,13 @@
 import { Owner, getOwner } from "./owner";
 import { observable, action } from 'mobx';
 import { createEffect } from "./effect";
-import { FunctionComponent } from "../rendering";
+import { Component } from "../rendering";
 
 interface ProviderProps<T> {
   value: T;
 }
 
-export type Provider<T> = FunctionComponent<ProviderProps<T>>
+export type Provider<T> = Component<ProviderProps<T>>
 
 export interface Context<T> {
   Provider: Provider<T>;

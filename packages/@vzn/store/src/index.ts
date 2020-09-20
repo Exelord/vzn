@@ -1,20 +1,24 @@
-import { createContext, useContext } from "@vzn/core";
+import { createContext, createState, useContext } from "@vzn/core";
 
-export interface StoreConstructor<T = {}> { new(): T; }
-
-export type FunctionStore<T = {}> = () => T;
-
-export type StoreType<T> = FunctionStore<T> | StoreConstructor<T>;
-
-function isClass(func: any) {
-  return typeof func === 'function' && /^class\s/.test(Function.prototype.toString.call(func));
+export interface StoreFunction<T> {
+  (...args: any): T;
 }
+
+export interface StoreConstructor<T> {
+  new(...args: any): T
+}
+
+export type StoreType<T> = StoreFunction<T> | StoreConstructor<T>;
 
 export class StoreRegistry {
   private registry = new Map();
 
   lookup<T>(key: StoreType<T>): T | undefined {
     return this.registry.get(key);
+  }
+
+  has<T>(key: StoreType<T>): boolean {
+    return this.registry.has(key);
   }
 
   register<T>(key: StoreType<T>, value: T): T {
@@ -29,13 +33,12 @@ export function useStoreRegistry() {
   return useContext(StoreRegistryContext);
 }
 
-export function useStore<T>(storeCreator: StoreType<T>): T {
+export function useStore<T>(storeCreator: StoreType<T>, args: any[] = []): T {
   const registry = useStoreRegistry();
-  const registration = registry.lookup<T>(storeCreator);
   
-  if (registration) return registration;
+  if (registry.has(storeCreator)) {
+    return registry.lookup<T>(storeCreator)!;
+  }
 
-  const store = isClass(storeCreator) ? new (storeCreator as StoreConstructor<T>)() : (storeCreator as FunctionStore<T>)();
-
-  return registry.register(storeCreator, store);
+  return registry.register(storeCreator, createState(storeCreator, ...args));
 }
