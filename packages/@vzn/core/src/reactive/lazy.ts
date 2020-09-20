@@ -25,7 +25,7 @@ class LazyState<T> {
 
 export function lazy<T extends Component<any>>(loader: RouteLoader<T>) {
   const lazyComponent: Component<any> = (props) => {
-    const state = createState<LazyState<T>>(LazyState, [loader])
+    const state = createState(() => new LazyState(loader))
     state.load();
     return createMemo(() => createComponent(state.component, props));
   };
