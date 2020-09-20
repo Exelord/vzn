@@ -1,5 +1,4 @@
 import { Disposer } from "../utils/disposer";
-import { Provider } from "./context";
 
 let OWNER: Owner | undefined;
 
