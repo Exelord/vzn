@@ -1,12 +1,12 @@
-import { createState, FunctionComponent } from "@vzn/core"
+import { createState, Component } from "@vzn/core"
 import { useRouter } from "./store";
 
 type LinkProps = {
   to: string;
 }
 
-export const Link: FunctionComponent<LinkProps> = (props) => {
-  const state = createState({
+export const Link: Component<LinkProps> = (props) => {
+  const state = createState(() => ({
     router: useRouter(),
 
     handleClick(event: Event) {
@@ -16,7 +16,7 @@ export const Link: FunctionComponent<LinkProps> = (props) => {
         this.router.push(props.to)
       }
     }
-  })
+  }))
 
   return (
     <a href={props.to} onClick={state.handleClick}>
