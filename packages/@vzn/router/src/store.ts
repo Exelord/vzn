@@ -1,4 +1,4 @@
-import { createAction, createState, onCleanup } from "@vzn/core";
+import { createState, onCleanup } from "@vzn/core";
 import { useStore } from "@vzn/store";
 
 class RouterState {
@@ -14,12 +14,14 @@ class RouterState {
 function RouterStore() {
   const store = createState(() => new RouterState());
 
-  const onPopState = createAction(() => {
-    store.pathname = window.document.location.pathname;
-  });
+  const state = createState(() => ({
+    onPopState() {
+      store.pathname = window.document.location.pathname;
+    }
+  }))
 
-  window.addEventListener('popstate', onPopState)
-  onCleanup(() => window.removeEventListener('popstate', onPopState))
+  window.addEventListener('popstate', state.onPopState)
+  onCleanup(() => window.removeEventListener('popstate', state.onPopState))
 
   return store;
 }
