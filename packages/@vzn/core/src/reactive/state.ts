@@ -1,9 +1,5 @@
-import { makeAutoObservable } from "mobx";
+import { observable } from "mobx";
 
-export interface State<T> {
-  (...args: any): T;
-}
-
-export function createState<T extends Object>(stateCreator: State<T>): T {
-  return makeAutoObservable(stateCreator(), {}, { autoBind: true })
+export function createState<T>(initializer: () => T): T {
+  return observable(initializer(), {}, { autoBind: true })
 }
