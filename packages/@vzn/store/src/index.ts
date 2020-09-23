@@ -2,7 +2,7 @@ import { createContext, useContext } from "@vzn/core";
 
 export type Store<T> = () => T;
 
-export function createRegistry(){
+export function createRegistry() {
   return new Map<Store<any>, any>()
 }
 

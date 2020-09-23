@@ -1,6 +1,6 @@
 import { createComponent, Component } from "../rendering";
 import { createMemo } from "./memo";
-import { createState } from "./state";
+import { makeState } from "./state";
 
 export type RouteLoader<T> = () => Promise<{ default: T }>;
 
@@ -11,6 +11,10 @@ class LazyState<T> {
 
   constructor(loader: RouteLoader<T>) {
     this.loader = loader;
+    
+    makeState(this);
+    
+    this.load();
   }
 
   get component() {
@@ -25,8 +29,8 @@ class LazyState<T> {
 
 export function lazy<T extends Component<any>>(loader: RouteLoader<T>) {
   const lazyComponent: Component<any> = (props) => {
-    const state = createState(() => new LazyState(loader))
-    state.load();
+    const state = new LazyState(loader);
+
     return createMemo(() => createComponent(state.component, props));
   };
 

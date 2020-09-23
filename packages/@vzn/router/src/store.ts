@@ -1,29 +1,32 @@
-import { createState, onCleanup } from "@vzn/core";
+import { onCleanup, makeState } from "@vzn/core";
 import { useStore } from "@vzn/store";
+import { createBrowserHistory, BrowserHistory, Location, State, Update } from 'history';
 
 class RouterState {
-  pathname = window.document.location.pathname;
+  private history: BrowserHistory;
+
+  location: Location;
+
+  constructor() {
+    this.history = createBrowserHistory();
+    this.location = this.history.location
+
+    makeState(this)
+    
+    onCleanup(this.history.listen(this.onLocationChange))
+  }
 
   push(value: string) {
-    if (value === this.pathname) return;
-    setTimeout(() => window.history.pushState(null, '', value), 0);
-    this.pathname = value;
+    this.history.push(value);
+  }
+
+  private onLocationChange({ location }: Update<State>) {
+    this.location = location;
   }
 }
 
-function RouterStore() {
-  const store = createState(() => new RouterState());
-
-  const state = createState(() => ({
-    onPopState() {
-      store.pathname = window.document.location.pathname;
-    }
-  }))
-
-  window.addEventListener('popstate', state.onPopState)
-  onCleanup(() => window.removeEventListener('popstate', state.onPopState))
-
-  return store;
+export function RouterStore() {
+  return new RouterState();
 }
 
 export function useRouter() {
