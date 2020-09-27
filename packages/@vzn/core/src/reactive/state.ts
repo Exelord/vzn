@@ -1,6 +1,6 @@
 import { AnnotationsMap, makeAutoObservable, observable } from "mobx";
 
-export function createState<T extends Record<string, any>>(initializer: () => T, annotations?: AnnotationsMap<T, never>) {
+export function createState<T extends Object>(initializer: () => T, annotations?: AnnotationsMap<T, never>) {
   return observable(initializer(), annotations, { autoBind: true });
 }
 

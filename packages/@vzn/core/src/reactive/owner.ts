@@ -13,6 +13,8 @@ export class Owner {
   
   parentOwner?: Owner;
 
+  isDestroyed = false;
+
   constructor(owner = OWNER) {
     this.parentOwner = owner;
     if (owner) owner.owners.add(this)
@@ -35,6 +37,8 @@ export class Owner {
     this.owners = new Set<Owner>();
 
     if (this.parentOwner) this.parentOwner.owners.delete(this);
+
+    this.isDestroyed = true;
   }
 }
 
