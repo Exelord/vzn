@@ -15,7 +15,7 @@ export default [
         format: "es"
       }
     ],
-    external: ["@vzn/core", "@vzn/dom", "@vzn/store", "path-to-regexp"],
+    external: ["@vzn/core", "@vzn/dom", "@vzn/store", "path-to-regexp", "history"],
     plugins: [
       nodeResolve({
         extensions: [".js", ".ts", ".tsx"]

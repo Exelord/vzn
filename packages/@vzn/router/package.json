@@ -24,6 +24,7 @@
     "@vzn/core": "^0.7.0",
     "@vzn/dom": "^0.7.0",
     "@vzn/store": "^0.7.0",
+    "history": "^5.0.0",
     "path-to-regexp": "^6.1.0"
   },
   "devDependencies": {
