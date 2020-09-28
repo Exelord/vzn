@@ -22,7 +22,7 @@ export function createContext<T>(defaultValue: T): Context<T> {
     const update = action(() => rendered.set(resolveChildren(props.children)));
     
     createEffect(() => {
-      const owner = getOwner();
+      const owner = getOwner()!;
       owner.contexts.set(provider, props.value || defaultValue);
       update();
     });
@@ -34,13 +34,14 @@ export function createContext<T>(defaultValue: T): Context<T> {
 }
 
 export function useContext<T>(context: Context<T>): T {
-  return lookup(context.Provider, getOwner()) || context.defaultValue;
+  const owner = getOwner();
+  return (owner && lookup(context.Provider, owner)) || context.defaultValue;
 }
 
 function lookup<T>(key: Provider<T>, owner: Owner,): T | undefined {
   if (owner.contexts.has(key)) return owner.contexts.get(key);
   
-  return owner.parentOwner && lookup(key, owner.parentOwner);
+  return owner.parent && lookup(key, owner.parent);
 }
 
 function resolveChildren(children: any): any {

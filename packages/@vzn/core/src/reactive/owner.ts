@@ -7,21 +7,21 @@ export type Disposable = () => void;
 export class Owner {
   readonly disposer = new Disposer();
 
-  owners = new Set<Owner>()
+  children = new Set<Owner>()
   
   contexts = new Map();
   
-  parentOwner?: Owner;
+  parent?: Owner;
 
   isDestroyed = false;
 
   constructor(owner = OWNER) {
-    this.parentOwner = owner;
-    if (owner) owner.owners.add(this)
+    this.parent = owner;
+    if (owner) owner.children.add(this)
   }
 
   dispose() {
-    for (const owner of this.owners) {
+    for (const owner of this.children) {
       owner.dispose()
     }
 
@@ -29,14 +29,14 @@ export class Owner {
   }
 
   destroy() {
-    for (const owner of this.owners) {
+    for (const owner of this.children) {
       owner.destroy();
     }
 
     this.dispose();
-    this.owners = new Set<Owner>();
+    this.children = new Set<Owner>();
 
-    if (this.parentOwner) this.parentOwner.owners.delete(this);
+    if (this.parent) this.parent.children.delete(this);
 
     this.isDestroyed = true;
   }
@@ -51,8 +51,8 @@ export function onCleanup(disposable: Disposable) {
   return OWNER.disposer.schedule(disposable);
 }
 
-export function getOwner(): Owner {
-  return OWNER!;
+export function getOwner(): Owner | undefined {
+  return OWNER;
 }
 
 export function setOwner(owner?: Owner) {

@@ -4,10 +4,15 @@ import { untracked } from "mobx";
 
 export function createRoot<T>(fn: (dispose: Disposable) => T) {
   const owner = createOwner();
+  
   setOwner(owner);
 
-  return untracked(() => fn(() => {
-    setOwner(owner.parentOwner);
-    owner.destroy()
+  const result = untracked(() => fn(() => {
+    owner.destroy();
+    setOwner(undefined);
   }));
+
+  setOwner(owner.parent)
+
+  return result;
 }
