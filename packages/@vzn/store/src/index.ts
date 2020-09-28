@@ -5,7 +5,7 @@ export type Store<T> = () => T;
 
 class StoreRegistry {
   private registry = new Map<Store<any>, any>();
-  private owner: Owner;
+  private owner?: Owner;
 
   constructor() {
     this.owner = getOwner();
