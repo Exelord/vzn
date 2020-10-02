@@ -1,6 +1,6 @@
 import { createComponent, Component } from "../rendering";
 import { createMemo } from "./memo";
-import { makeState } from "./state";
+import { makeState } from "./reactivity";
 
 export type RouteLoader<T> = () => Promise<{ default: T }>;
 
