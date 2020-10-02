@@ -2,9 +2,9 @@ import { configure } from "mobx"
 import { getOwner } from "./reactive";
 
 configure({
+  enforceActions: "observed",
   computedRequiresReaction: true,
-  observableRequiresReaction: true,
-  enforceActions: "observed"
+  observableRequiresReaction: true
 })
 
 export * from "./reactive";
