@@ -23,6 +23,7 @@ export default [
 
       babel({
         extensions: [".js", ".ts", ".tsx"],
+        babelHelpers: "bundled",
         exclude: "node_modules/**",
         babelrc: false,
         presets: ["@babel/preset-typescript", "vzn", [

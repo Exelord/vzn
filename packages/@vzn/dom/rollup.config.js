@@ -36,6 +36,7 @@ export default [
 
       babel({
         extensions: [".js", ".ts"],
+        babelHelpers: "bundled",
         exclude: "node_modules/**",
         babelrc: false,
         presets: ["@babel/preset-typescript"],
