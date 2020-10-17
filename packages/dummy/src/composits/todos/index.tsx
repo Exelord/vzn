@@ -36,13 +36,13 @@ export const Todos: Component = () => {
   const state = new State();
 
   return (
-    <div>
+    <>
       <button onClick={state.addMany}>Add 500</button>
       <button onClick={state.clear}>Clear</button>
       <h4>Count: {state.todoItems.length}</h4>
       <CreateForm onCreate={state.addTodo} />
       <List todoItems={state.todoItems} onRemove={state.removeTodo} />
-    </div>
+    </>
   );
 }
 
