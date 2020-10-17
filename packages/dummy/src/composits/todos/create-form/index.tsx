@@ -48,14 +48,17 @@ export const CreateForm: Component<CreateFormProps> = (props) => {
 
   return (
     <form onSubmit={state.addTodo}>
-      <label>Title</label>
-      <input
-        required
-        type="text"
-        name="title"
-        placeholder="Todo title"
-        value={state.formObject.title} 
-        onChange={state.onChange} />
+      <label>
+        Title
+        
+        <input
+          required
+          type="text"
+          name="title"
+          placeholder="Todo title"
+          value={state.formObject.title} 
+          onChange={state.onChange} />
+      </label>
     </form>
   );
 }
