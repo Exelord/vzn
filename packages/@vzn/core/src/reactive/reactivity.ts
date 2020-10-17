@@ -9,5 +9,5 @@ export function makeState<T extends Object>(target: T, annotations?: Annotations
 }
 
 export {
-  action as createAction
+  action
 }
