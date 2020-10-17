@@ -1,6 +1,6 @@
 {
   "name": "babel-preset-vzn",
-  "version": "0.6.0",
+  "version": "0.8.0",
   "description": "Babel preset to transform JSX for VZN",
   "author": "Maciej Kwaśniak <kmaciek17@gmail.com>",
   "license": "MIT",
