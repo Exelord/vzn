@@ -14,7 +14,6 @@
   "dependencies": {
     "@vzn/core": "^0.7.0",
     "@vzn/dom": "^0.7.0",
-    "@vzn/router": "^0.7.0",
     "@vzn/store": "^0.7.0"
   },
   "devDependencies": {

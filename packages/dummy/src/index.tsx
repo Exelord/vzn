@@ -1,15 +1,13 @@
 import { render } from "@vzn/dom";
-import { StoreRegistry, StoreRegistryContext } from "@vzn/store";
-import { Router } from '@vzn/router';
-
-import routerConfig from './routes';
+import { createRegistry, StoreRegistryContext } from "@vzn/store";
+import IndexPage from "./pages/index";
 
 function App() {
-  const registry = new StoreRegistry()
+  const registry = createRegistry();
 
   return (
     <StoreRegistryContext.Provider value={registry}>
-      <Router config={routerConfig} />
+      <IndexPage />
     </StoreRegistryContext.Provider>
   );
 }
