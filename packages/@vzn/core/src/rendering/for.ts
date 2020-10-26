@@ -1,4 +1,4 @@
-import { createMemo } from "../reactive"
+import { memo } from "../reactive/memo";
 
 type ForProps<T, U> = {
   each: T[] | undefined | null | false;
@@ -7,7 +7,7 @@ type ForProps<T, U> = {
 }
 
 export function For<T, U extends JSX.Element>(props: ForProps<T, U>) {
-  return createMemo(() => {
+  return memo(() => {
     if (!props.each) return props.fallback;
 
     return props.each.map((item, index) => typeof props.do === 'function' ? props.do(item, index) : props.do)    

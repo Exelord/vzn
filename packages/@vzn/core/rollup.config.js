@@ -16,7 +16,6 @@ export default [
         format: "es"
       }
     ],
-    external: ["mobx"],
     plugins: [
       copy({
         targets: [{ src: "../../../node_modules/dom-expressions/src/jsx.ts", dest: "./src/rendering" }]
@@ -31,7 +30,7 @@ export default [
         babelHelpers: "bundled",
         exclude: "node_modules/**",
         babelrc: false,
-        presets: ["@babel/preset-typescript"],
+        presets: ["@babel/preset-typescript", 'vzn'],
       }),
       
       cleanup({

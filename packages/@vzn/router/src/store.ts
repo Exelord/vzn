@@ -1,13 +1,10 @@
-import { makeState } from "@vzn/core";
-import { useStore } from "@vzn/store";
+import { getStore } from "@vzn/store";
 import { createBrowserHistory, State, Update } from 'history';
 
 class RouterState {
   history = createBrowserHistory();
 
   constructor() {
-    makeState(this)
-    
     // onCleanup(this.history.listen(this.onLocationChange))
   }
 
@@ -25,5 +22,5 @@ export function RouterStore() {
 }
 
 export function useRouter() {
-  return useStore(RouterStore)
+  return getStore(RouterStore)
 }

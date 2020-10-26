@@ -1,5 +1,6 @@
 const jsxTransform = require("babel-plugin-jsx-dom-expressions");
 const classProperties = require("@babel/plugin-proposal-class-properties");
+const decorators = require("@babel/plugin-proposal-decorators");
 
 module.exports = function (context, options = {}) {
   const plugins = [
@@ -16,7 +17,8 @@ module.exports = function (context, options = {}) {
         options
       )
     ],
-    [classProperties]
+    [decorators, { legacy: true }],
+    [classProperties, { loose: true }]
   ];
 
   return {

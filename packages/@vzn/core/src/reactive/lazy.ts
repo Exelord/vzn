@@ -1,19 +1,17 @@
 import { createComponent, Component } from "../rendering";
-import { createMemo } from "./memo";
-import { makeState } from "./reactivity";
+import { action, tracked } from "../tracking";
+import { memo } from "./memo";
 
 export type RouteLoader<T> = () => Promise<{ default: T }>;
 
 class LazyState<T> {
-  routeComponent?: T = undefined;
+  @tracked routeComponent?: T = undefined;
 
   loader: RouteLoader<T>;
 
   constructor(loader: RouteLoader<T>) {
     this.loader = loader;
-    
-    makeState(this);
-    
+
     this.load();
   }
 
@@ -21,8 +19,9 @@ class LazyState<T> {
     return this.routeComponent ? this.routeComponent : () => undefined;
   }
 
-  *load() {
-    const module = (yield this.loader()) as { default: T };
+  @action
+  async load() {
+    const module = (await this.loader()) as { default: T };
     this.routeComponent = module.default;
   }
 }
@@ -31,7 +30,7 @@ export function lazy<T extends Component<any>>(loader: RouteLoader<T>) {
   const lazyComponent: Component<any> = (props) => {
     const state = new LazyState(loader);
 
-    return createMemo(() => createComponent(state.component, props));
+    return memo(() => createComponent(state.component, props));
   };
 
   return lazyComponent;

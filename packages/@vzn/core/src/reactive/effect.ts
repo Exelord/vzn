@@ -1,21 +1,5 @@
-import { createOwner, setOwner, getOwner, onCleanup } from "./owner";
-import { autorun } from "mobx";
+import { subscribe, cleanup } from "../tracking";
 
-export function createEffect<T>(fn: (prev?: T) => T, value?: T) {
-  const owner = createOwner();
-
-  const disposeAutoRun = autorun(() => {
-    owner.dispose();
-    
-    const currentOwner = getOwner()
-    
-    setOwner(owner);
-    value = fn(value);
-    setOwner(currentOwner);
-  });
-
-  onCleanup(() => {
-    disposeAutoRun();
-    owner.destroy();
-  });
+export function effect<T>(fn: (prev?: T) => T, value?: T) {
+  cleanup(subscribe(() => value = fn(value)))
 }

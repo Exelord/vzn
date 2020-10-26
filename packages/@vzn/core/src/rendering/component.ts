@@ -1,4 +1,4 @@
-import { untracked } from "mobx";
+import { untracked } from "../tracking";
 
 export type PropsWithChildren<P> = P & { children?: JSX.Element };
 
@@ -17,4 +17,12 @@ export type ComponentProps<T extends keyof JSX.IntrinsicElements | Component<any
 export function createComponent<P>(componentCreator: Component<P>, props: P): JSX.Element {
   const staticProps = Object.freeze(props);
   return untracked(() => componentCreator(staticProps));
+}
+
+export class ComponentState<P = {}> {
+  protected props: P;
+
+  constructor(props: P) {
+    this.props = props
+  }
 }

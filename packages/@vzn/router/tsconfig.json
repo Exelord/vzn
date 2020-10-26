@@ -7,7 +7,9 @@
     "moduleResolution": "node",
     "strict": true,
     "outDir": "./dist",
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "experimentalDecorators": true,
+    "useDefineForClassFields": true
   },
 
   "include": ["./src"]

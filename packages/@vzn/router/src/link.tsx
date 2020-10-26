@@ -1,22 +1,25 @@
-import { createState, Component } from "@vzn/core"
+import { action, Component, ComponentState } from "@vzn/core"
 import { useRouter } from "./store";
 
 type LinkProps = {
   to: string;
 }
 
-export const Link: Component<LinkProps> = (props) => {
-  const state = createState(() => ({
-    router: useRouter(),
+class State extends ComponentState<LinkProps> {
+  router = useRouter();
 
-    handleClick(event: Event) {
-      event.preventDefault();
-  
-      if (props.to) {
-        this.router.push(props.to)
-      }
+  @action
+  handleClick(event: Event) {
+    event.preventDefault();
+
+    if (this.props.to) {
+      this.router.push(this.props.to)
     }
-  }))
+  }
+}
+
+export const Link: Component<LinkProps> = (props) => {
+  const state = new State(props);
 
   return (
     <a href={props.to} onClick={state.handleClick}>

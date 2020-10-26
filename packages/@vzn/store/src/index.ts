@@ -1,14 +1,13 @@
-import { createContext, getOwner, setOwner, useContext } from "@vzn/core";
-import { Owner } from "@vzn/core";
+import { createContext, getTrackingContext, TrackingContext, getContext } from "@vzn/core";
 
 export type Store<T> = () => T;
 
 class StoreRegistry {
   private registry = new Map<Store<any>, any>();
-  private owner?: Owner;
+  private tracking?: TrackingContext;
 
   constructor() {
-    this.owner = getOwner();
+    this.tracking = getTrackingContext();
   }
 
   has<T>(initializer: Store<T>) {
@@ -20,11 +19,11 @@ class StoreRegistry {
   }
 
   register<T>(initializer: Store<T>) {
-    const currentOwner = getOwner();
-    
-    setOwner(this.owner);
+    const currentTracking = getTrackingContext();
+
+    getTrackingContext(this.tracking);
     const store = initializer();
-    setOwner(currentOwner);
+    getTrackingContext(currentTracking);
     
     this.registry.set(initializer, store);
 
@@ -38,12 +37,12 @@ export function createRegistry() {
 
 export const StoreRegistryContext = createContext(createRegistry());
 
-export function useStoreRegistry() {
-  return useContext(StoreRegistryContext);
+export function getStoreRegistry() {
+  return getContext(StoreRegistryContext);
 }
 
-export function useStore<T>(initializer: Store<T>): T {
-  const registry = useStoreRegistry();
+export function getStore<T>(initializer: Store<T>): T {
+  const registry = getStoreRegistry();
   
   if (registry.has(initializer)) return registry.lookup(initializer);
   
