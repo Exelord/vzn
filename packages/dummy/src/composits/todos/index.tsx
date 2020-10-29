@@ -1,32 +1,40 @@
-import { Component, makeState } from "@vzn/core";
+import { action, Component, ComponentState, tracked } from "@vzn/core";
 import CreateForm from './create-form'
 import List from './list';
 
-export type TodoItem = {
-  title: string;
-  done: boolean;
+export class Todo {
+  @tracked title: string;
+  @tracked done: boolean;
+
+  constructor({ title, done }: { title: string, done: boolean }) {
+    this.title = title;
+    this.done = done;
+  }
 }
 
-class State {
-  todoItems: TodoItem[] = [];
+class State extends ComponentState {
+  @tracked todoItems: Todo[] = [];
 
-  constructor() {
-    makeState(this);
+  @action
+  addTodo(todo: Todo) {
+    this.todoItems.push(todo);
+    this.todoItems = this.todoItems;
   }
 
-  addTodo(todoItem: TodoItem) {
-    this.todoItems.push(todoItem);
+  @action
+  removeTodo(todo: Todo) {
+    this.todoItems = this.todoItems.filter(item => item !== todo);
   }
 
-  removeTodo(todoItem: TodoItem) {
-    this.todoItems = this.todoItems.filter(todo => todo !== todoItem);
-  }
-
+  @action
   addMany() {
-    const todos = [ ...Array(500)].map((v,i) => ({ title: `${i}`, done: false } as TodoItem));
-    this.todoItems.push(...todos)
+    const todos = [ ...Array(500)].map((v,i) => new Todo({ title: `${i}`, done: false }));
+    
+    this.todoItems.push(...todos);
+    this.todoItems = this.todoItems;
   }
 
+  @action
   clear() {
     this.todoItems = []
   }

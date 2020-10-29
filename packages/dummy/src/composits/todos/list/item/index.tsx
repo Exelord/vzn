@@ -1,28 +1,23 @@
-import { Component, makeState } from "@vzn/core";
-import { TodoItem } from "../../index";
+import { action, Component, ComponentState } from "@vzn/core";
+import { Todo } from "../../index";
 
 type TodoListItemProps = {
-  todoItem: TodoItem
-  onRemove: (todoItem: TodoItem) => void;
+  todo: Todo
+  onRemove: (todo: Todo) => void;
 }
 
-class State {
-  props: TodoListItemProps;
-
-  constructor(props: TodoListItemProps) {
-    this.props = props;
-    makeState(this);
-  }
-
+class State extends ComponentState<TodoListItemProps> {
+  @action
   toggle() {
-    this.props.todoItem.done = !this.props.todoItem.done;
+    this.props.todo.done = !this.props.todo.done;
   }
 
+  @action
   removeTodo() {
-    const confirmed = confirm(`Do you want to remove: ${this.props.todoItem.title}`);
+    const confirmed = confirm(`Do you want to remove: ${this.props.todo.title}`);
     if (!confirmed) return;
 
-    this.props.onRemove(this.props.todoItem);
+    this.props.onRemove(this.props.todo);
   }
 }
 
@@ -31,10 +26,10 @@ export const ListItem: Component<TodoListItemProps> = (props) => {
 
   return (
     <div>
-      <input type="checkbox" checked={props.todoItem.done} onChange={state.toggle} />
+      <input type="checkbox" checked={props.todo.done} onChange={state.toggle} />
 
-      <span style={{ 'text-decoration': props.todoItem.done ? 'line-through' : '' }}>
-        {props.todoItem.title}
+      <span style={{ 'text-decoration': props.todo.done ? 'line-through' : '' }}>
+        {props.todo.title}
       </span>
 
       <button type="button" onClick={state.removeTodo}>🗑</button>

@@ -1,41 +1,33 @@
-import { Component, makeState } from "@vzn/core";
-import { TodoItem } from "../index";
+import { action, Component, ComponentState, tracked } from "@vzn/core";
+import { Todo } from "../index";
 
 type FormObject = {
   [key: string]: any;
 }
 
 export type CreateFormProps = {
-  onCreate: (todo: TodoItem) => void
+  onCreate: (todo: Todo) => void
 }
 
-class State {
-  props: CreateFormProps;
-
-  formObject: FormObject = {
+class State extends ComponentState<CreateFormProps> {
+  @tracked formObject: FormObject = {
     title: ''
   }
 
-  constructor(props: CreateFormProps) {
-    makeState(this);
-    this.props = props;
-  }
-
+  @action
   addTodo(event: Event) {
     event.preventDefault();
 
     const { title } = this.formObject;
-
-    const todo = {
-      title,
-      done: false
-    } as TodoItem
-
+    
+    const todo = new Todo({ title, done: false });
+    
     this.props.onCreate(todo);
 
     this.formObject = { title: '' };
   }
 
+  @action
   onChange(event: Event) {
     const { name, value } = event.target as HTMLInputElement;
 

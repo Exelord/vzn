@@ -1,18 +1,18 @@
-import { action, Component, For } from "@vzn/core";
-import { TodoItem } from "../index";
+import { Component, For } from "@vzn/core";
+import { Todo } from "../index";
 import ListItem from './item';
 
 type TodoListProps = {
-  todoItems: TodoItem[];
-  onRemove: (todoItem: TodoItem) => void
+  todoItems: Todo[];
+  onRemove: (todo: Todo) => void
 }
 
 export const List: Component<TodoListProps> = (props) => {
   return (
     <ul>
-      <For each={props.todoItems} do={(todoItem) =>
+      <For each={props.todoItems} do={(todo) =>
         <li>
-          <ListItem todoItem={todoItem} onRemove={action(() => props.onRemove(todoItem))} />
+          <ListItem todo={todo} onRemove={() => props.onRemove(todo)} />
         </li>
       } />
     </ul>
