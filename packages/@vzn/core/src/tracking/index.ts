@@ -26,6 +26,7 @@ export type Observer<T = any> = {
 }
 
 const EMPTY_SYMBOL = Symbol('EMPTY');
+const trackedRegistry = new WeakMap();
 
 let tracking: TrackingContext | undefined;
 let queue: any;
@@ -79,30 +80,47 @@ export function tracked<T = any>(...args: any[]): Tracked<T> | PropertyDescripto
     const [target, key, descriptor] = args;
   
     if (descriptor && (descriptor.value || descriptor.get || descriptor.set)) throwTrackedDecoratorError();
-  
-    const trackedValue = trackable<T>(descriptor && descriptor.initializer());
+
+    function getter(context: any) {
+      if (!trackedRegistry.has(context)) trackedRegistry.set(context, new Map());
+      const registry = trackedRegistry.get(context);
+      
+      if (registry.has(key)) return registry.get(key)();
+
+      const trackedValue = trackable<T>(descriptor?.initializer?.());
+      registry.set(key, trackedValue);
+      return trackedValue();
+    }
+
+    function setter(context: any, value: T) {
+      if (!trackedRegistry.has(context)) trackedRegistry.set(context, new Map());
+      const registry = trackedRegistry.get(context);
+
+      if (registry.has(key)) return registry.get(key)(value);
+      
+      const trackedValue = trackable<T>(value);
+      registry.set(key, trackedValue);
+      return trackedValue();
+    }
   
     const trackedDescriptor = {
       enumerable: true,
       configurable: true,
   
-      get(): any {
-        return trackedValue();
+      get(): T {
+        return getter(this);
       },
   
-      set(newValue: any): void {
-        trackedValue(newValue);
+      set(newValue: T): void {
+        setter(this, newValue);
       },
     };
   
-    if (descriptor) {
-      return trackedDescriptor;
-    } else {
-      // In TypeScript's implementation, decorators on simple class fields do not
-      // receive a descriptor, so we define the property on the target directly.
-      Object.defineProperty(target, key, trackedDescriptor);
-      return; 
-    }
+    if (descriptor) return trackedDescriptor;
+    
+    // In TypeScript's implementation, decorators on simple class fields do not
+    // receive a descriptor, so we define the property on the target directly.
+    Object.defineProperty(target, key, trackedDescriptor);
   } else {
     const value = args[0] as T;
     return trackable(value)
@@ -239,7 +257,7 @@ function _unsubscribe<T>(update: TrackingContext<T>) {
   resetUpdate(update);
 }
 
-function trackable<T = any>(value?: T): Tracked<T> {
+function trackable<T = any>(value?: T): Tracked<T> {  
   const data: Tracked<T> = function (...args: [T | undefined]): T {
     if (args.length as number === 0) {
       if (tracking && !data._observers.has(tracking)) {
@@ -251,6 +269,8 @@ function trackable<T = any>(value?: T): Tracked<T> {
     }
 
     const nextValue = args[0] as T;
+    
+    value = nextValue;
 
     if (queue) {
       if (data._pendingValue === EMPTY_SYMBOL) queue.push(data);
@@ -259,8 +279,6 @@ function trackable<T = any>(value?: T): Tracked<T> {
       
       return nextValue;
     }
-
-    value = nextValue;
 
     // Clear `tracking` otherwise a computed triggered by a set
     // in another computed is seen as a child of that other computed.

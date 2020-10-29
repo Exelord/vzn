@@ -22,7 +22,7 @@ export function createComponent<P>(componentCreator: Component<P>, props: P): JS
 export class ComponentState<P = {}> {
   protected props: P;
 
-  constructor(props: P) {
+  constructor(props: P = {} as P) {
     this.props = props
   }
 }
