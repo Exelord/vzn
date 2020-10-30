@@ -26,7 +26,7 @@ export type Observer<T = any> = {
 }
 
 const EMPTY_SYMBOL = Symbol('EMPTY');
-const trackedRegistry = new WeakMap();
+const TRACKED_OBJECTS = new WeakMap();
 
 let tracking: TrackingContext | undefined;
 let queue: any;
@@ -81,28 +81,8 @@ export function tracked<T = any>(...args: any[]): Tracked<T> | PropertyDescripto
   
     if (descriptor && (descriptor.value || descriptor.get || descriptor.set)) throwTrackedDecoratorError();
 
-    function getter(context: any) {
-      if (!trackedRegistry.has(context)) trackedRegistry.set(context, new Map());
-      const registry = trackedRegistry.get(context);
-      
-      if (registry.has(key)) return registry.get(key)();
+    const { getter, setter } = trackedValueFor(key, descriptor?.initializer)
 
-      const trackedValue = trackable<T>(descriptor?.initializer?.());
-      registry.set(key, trackedValue);
-      return trackedValue();
-    }
-
-    function setter(context: any, value: T) {
-      if (!trackedRegistry.has(context)) trackedRegistry.set(context, new Map());
-      const registry = trackedRegistry.get(context);
-
-      if (registry.has(key)) return registry.get(key)(value);
-      
-      const trackedValue = trackable<T>(value);
-      registry.set(key, trackedValue);
-      return trackedValue();
-    }
-  
     const trackedDescriptor = {
       enumerable: true,
       configurable: true,
@@ -373,4 +353,32 @@ function resetUpdate<T>(update: TrackingContext<T>) {
   update._dependencies = [];
   update._cleanups = [];
   update._contexts = new Map();
+}
+
+function trackedValueFor<T = any>(key: string | symbol, initializer?: () => T) {
+  function getter(context: any) {
+    if (!TRACKED_OBJECTS.has(context)) TRACKED_OBJECTS.set(context, new Map());
+    const trackedKeys = TRACKED_OBJECTS.get(context);
+    
+    let trackedValue = trackedKeys.get(key)
+    if (trackedValue) return trackedValue();
+
+    trackedValue = trackable<T>(initializer?.call(context));
+    trackedKeys.set(key, trackedValue);
+
+    return trackedValue();
+  }
+
+  function setter(context: any, value: T) {
+    if (!TRACKED_OBJECTS.has(context)) TRACKED_OBJECTS.set(context, new Map());
+    const trackedKeys = TRACKED_OBJECTS.get(context);
+
+    let trackedValue = trackedKeys.get(key)
+    if (trackedValue) return trackedValue(value);
+    
+    trackedValue = trackable<T>(value);
+    trackedKeys.set(key, trackedValue);
+  }
+
+  return { getter, setter };
 }
