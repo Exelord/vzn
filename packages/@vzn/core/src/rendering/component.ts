@@ -20,9 +20,9 @@ export function createComponent<P>(componentCreator: Component<P>, props: P): JS
 }
 
 export class ComponentState<P = {}> {
-  protected props: P;
+  protected props: PropsWithChildren<P>;
 
-  constructor(props: P = {} as P) {
+  constructor(props: PropsWithChildren<P>) {
     this.props = props
   }
 }

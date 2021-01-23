@@ -1,4 +1,4 @@
-import { action, Component, ComponentState, tracked } from "@vzn/core";
+import { action, Component, tracked } from "@vzn/core";
 import CreateForm from './create-form'
 import List from './list';
 
@@ -12,7 +12,7 @@ export class Todo {
   }
 }
 
-class State extends ComponentState {
+class State {
   @tracked todoItems: Todo[] = [];
 
   @action

@@ -1,5 +1,6 @@
+import WelcomeComponent from "@/components/welcome";
 import Todos from "@/composits/todos";
-import { Component } from "@vzn/core";
+import { tracked, If, action, Component } from "@vzn/core";
 
 export const IndexPage: Component = () => {
   return <Todos />
