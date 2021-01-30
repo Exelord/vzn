@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@vzn/core": "^0.11.0",
-    "@vzn/dom": "^0.9.0",
+    "@vzn/dom": "^0.11.0",
     "@vzn/store": "^0.11.0",
     "history": "^5.0.0",
     "path-to-regexp": "^6.2.0"
@@ -31,12 +31,12 @@
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-typescript": "^7.12.7",
-    "@rollup/plugin-babel": "^5.2.2",
-    "@rollup/plugin-node-resolve": "^11.1.0",
+    "@rollup/plugin-babel": "^5.2.3",
+    "@rollup/plugin-node-resolve": "^11.1.1",
     "babel-preset-vzn": "^0.10.0",
     "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.2",
-    "rollup": "^2.38.0",
+    "rollup": "^2.38.1",
     "rollup-plugin-cleanup": "^3.2.1",
     "typescript": "^4.1.3"
   }
