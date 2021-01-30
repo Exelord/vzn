@@ -3,7 +3,7 @@
   "rewrites": [{ "source": "/([^.\\s]+)", "destination": "/index.html" }],
   "headers": [
     {
-      "source": "/_vzn/static/(.*)",
+      "source": "/dist/static/(.*)",
       "headers": [
         {
           "key": "Cache-Control",

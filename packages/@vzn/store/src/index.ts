@@ -1,13 +1,12 @@
-import { createContext, getTrackingContext, TrackingContext, getContext } from "@vzn/core";
+import { createContext, useContext, onCleanup } from 'solid-js';
 
 export type Store<T> = () => T;
 
 class StoreRegistry {
-  private registry = new Map<Store<any>, any>();
-  private tracking?: TrackingContext;
+  private readonly registry = new Map<Store<any>, any>();
 
   constructor() {
-    this.tracking = getTrackingContext();
+    onCleanup(() => this.registry.clear());
   }
 
   has<T>(initializer: Store<T>) {
@@ -19,11 +18,7 @@ class StoreRegistry {
   }
 
   register<T>(initializer: Store<T>) {
-    const currentTracking = getTrackingContext();
-
-    getTrackingContext(this.tracking);
     const store = initializer();
-    getTrackingContext(currentTracking);
     
     this.registry.set(initializer, store);
 
@@ -37,12 +32,12 @@ export function createRegistry() {
 
 export const StoreRegistryContext = createContext(createRegistry());
 
-export function getStoreRegistry() {
-  return getContext(StoreRegistryContext);
+export function useStoreRegistry() {
+  return useContext(StoreRegistryContext);
 }
 
-export function getStore<T>(initializer: Store<T>): T {
-  const registry = getStoreRegistry();
+export function useStore<T>(initializer: Store<T>): T {
+  const registry = useStoreRegistry();
   
   if (registry.has(initializer)) return registry.lookup(initializer);
   

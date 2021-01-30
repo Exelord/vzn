@@ -21,12 +21,13 @@
     "build:types": "tsc"
   },
   "dependencies": {
-    "@vzn/core": "^0.9.0"
+    "solid-js": "^0.23.11"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-typescript": "^7.12.7",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
     "@rollup/plugin-babel": "^5.2.2",
     "@rollup/plugin-node-resolve": "^11.1.0",
     "npm-run-all": "^4.1.5",

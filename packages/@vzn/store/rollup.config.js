@@ -15,7 +15,7 @@ export default [
         format: "es"
       }
     ],
-    external: ["@vzn/core"],
+    external: ["solid-js"],
     plugins: [
       nodeResolve({
         extensions: [".js", ".ts"]
@@ -35,6 +35,7 @@ export default [
             }
           }
         ]],
+        plugins: ['@babel/plugin-proposal-class-properties'],
       }),
       
       cleanup({
