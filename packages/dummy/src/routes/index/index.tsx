@@ -1,7 +1,7 @@
-import { tracked, action } from '@vzn/core';
+import { signal, action } from '@vzn/core';
 
 class State {
-  @tracked count = 0
+  @signal count = 0
 
   @action
   doSth() {
