@@ -1,6 +1,6 @@
 {
   "name": "@vzn/cli",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "CLI for VZN",
   "author": "Maciej Kwaśniak <kmaciek17@gmail.com>",
   "homepage": "https://github.com/Exelord/vzn#readme",
@@ -21,8 +21,8 @@
   "types": "./types/solid-app.d.ts",
   "dependencies": {
     "@babel/core": "^7.12.10",
-    "@babel/plugin-proposal-decorators": "^7.12.12",
     "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-proposal-decorators": "^7.12.12",
     "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/preset-modules": "^0.1.4",
