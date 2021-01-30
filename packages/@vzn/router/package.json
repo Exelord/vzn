@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "@vzn/router",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "author": "Maciej Kwaśniak <kmaciek17@gmail.com>",
   "license": "MIT",
   "repository": "https://github.com/exelord/vzn",
@@ -21,9 +21,9 @@
     "build:types": "tsc"
   },
   "dependencies": {
-    "@vzn/core": "^0.10.0",
+    "@vzn/core": "^0.11.0",
     "@vzn/dom": "^0.9.0",
-    "@vzn/store": "^0.10.0",
+    "@vzn/store": "^0.11.0",
     "history": "^5.0.0",
     "path-to-regexp": "^6.2.0"
   },
