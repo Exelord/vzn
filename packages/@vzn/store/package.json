@@ -5,35 +5,21 @@
   "author": "Maciej Kwaśniak <kmaciek17@gmail.com>",
   "license": "MIT",
   "repository": "https://github.com/exelord/vzn",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "sideEffects": false,
   "files": [
-    "dist",
-    "lib"
+    "dist"
   ],
   "scripts": {
-    "prebuild": "rimraf dist/* lib/*",
     "prepublishOnly": "yarn build",
-    "build": "npm-run-all -cnl build:*",
-    "build:js": "rollup -c",
-    "build:types": "tsc"
+    "build": "tsc"
   },
   "dependencies": {
     "solid-js": "^0.23.11"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/plugin-proposal-class-properties": "^7.12.1",
-    "@babel/preset-env": "^7.12.11",
-    "@babel/preset-typescript": "^7.12.7",
-    "@rollup/plugin-babel": "^5.2.2",
-    "@rollup/plugin-node-resolve": "^11.1.0",
-    "npm-run-all": "^4.1.5",
-    "rimraf": "^3.0.2",
-    "rollup": "^2.38.0",
-    "rollup-plugin-cleanup": "^3.2.1",
     "typescript": "^4.1.3"
   }
 }

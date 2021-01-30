@@ -1,9 +1,10 @@
-import { createContext, useContext, onCleanup } from 'solid-js';
+import { createContext, useContext, onCleanup, getContextOwner } from 'solid-js';
 
 export type Store<T> = () => T;
 
 class StoreRegistry {
   private readonly registry = new Map<Store<any>, any>();
+  private owner = getContextOwner();
 
   constructor() {
     onCleanup(() => this.registry.clear());
@@ -18,7 +19,11 @@ class StoreRegistry {
   }
 
   register<T>(initializer: Store<T>) {
+    const owner = getContextOwner();
+
+    // setContextOwner(this.owner)
     const store = initializer();
+    // setContextOwner(owner)
     
     this.registry.set(initializer, store);
 

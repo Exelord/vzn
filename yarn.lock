@@ -2159,6 +2159,11 @@
   dependencies:
     "@types/yargs-parser" "*"
 
+"@vzn/core@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@vzn/core/-/core-0.9.0.tgz#df61ac16c2ed89420878176ebe37c5c19303bc5e"
+  integrity sha512-nsU57xbRv/kG47n+arJ3cgvoZT+2F7vN2vI+LoymiDBc7CZ+FWZh8zmqtQkgWk3W1cuhW4Xl3wIut7tEXG/8UQ==
+
 "@vzn/dom@^0.9.0":
   version "0.9.0"
   resolved "https://registry.yarnpkg.com/@vzn/dom/-/dom-0.9.0.tgz#d94cdfc1c049a9d0656a572be42e24b0202f5551"
