@@ -1,4 +1,4 @@
-import { onCleanup, getContextOwner, createContext, createComponent, Component, useContext } from 'solid-js';
+import { onCleanup, getContextOwner, createContext, createComponent, Component, useContext, createMemo } from 'solid-js';
 
 // REGISTRY
 
@@ -39,8 +39,17 @@ export type RegistryProviderProps = {
 const RegistryContext = createContext(new Registry());
 
 export const RegistryProvider: Component<RegistryProviderProps> = (props) => {
-  const registry = props.registry || new Registry();
-  return createComponent(RegistryContext.Provider, { value: registry, children: props.children })
+  const registry = createMemo(() => props.registry || new Registry());
+
+  return createComponent(RegistryContext.Provider, {
+    get value() {
+      return registry();
+    },
+
+    get children() {
+      return props.children
+    }
+  })
 }
 
 export function useRegistry() {
