@@ -1,13 +1,11 @@
-import { createRegistry, StoreRegistryContext } from "@vzn/store";
-import IndexRoute from '../routes/index';
+import { RegistryProvider } from "@vzn/store";
+import IndexRoute from '../routes/index/index';
 
 const App = () => {
-  const registry = createRegistry();
-
   return (
-    <StoreRegistryContext.Provider value={registry}>
+    <RegistryProvider>
       <IndexRoute />
-    </StoreRegistryContext.Provider>
+    </RegistryProvider>
   )
 }
 
