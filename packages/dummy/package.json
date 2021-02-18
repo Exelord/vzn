@@ -5,9 +5,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "vzn dev",
-    "build": "vzn build",
-    "test": "vzn test"
+    "dev": "snowpack dev",
+    "build": "snowpack build"
   },
   "browserslist": [
     "Chrome 74",
@@ -16,12 +15,16 @@
     "Edge 17",
     "Node 10"
   ],
-  "devDependencies": {
-    "@types/node": "14.14.22",
-    "@vzn/cli": "^0.11.0",
+  "dependencies": {
     "@vzn/core": "^0.11.0",
     "@vzn/dom": "^0.11.1",
-    "@vzn/store": "^0.11.0",
-    "typescript": "^4.1.3"
+    "@vzn/store": "^0.11.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.12.13",
+    "@babel/plugin-proposal-decorators": "^7.12.13",
+    "@snowpack/plugin-babel": "^2.1.6",
+    "babel-preset-solid": "^0.24.2",
+    "snowpack": "^3.0.1"
   }
 }
