@@ -1,6 +1,6 @@
 {
   "name": "@vzn/cli",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "CLI for VZN",
   "author": "Maciej Kwaśniak <kmaciek17@gmail.com>",
   "homepage": "https://github.com/Exelord/vzn#readme",
