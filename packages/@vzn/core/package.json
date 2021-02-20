@@ -17,7 +17,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "solid-js": "^0.23.11"
+    "solid-js": "^0.24.7"
   },
   "devDependencies": {
     "typescript": "^4.1.3"

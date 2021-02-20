@@ -1,4 +1,4 @@
-import { onCleanup, getContextOwner, createContext, createComponent, Component, useContext, createMemo } from 'solid-js';
+import { onCleanup, getOwner, runWithOwner, createContext, createComponent, Component, useContext, createMemo } from 'solid-js';
 
 // REGISTRY
 
@@ -6,7 +6,7 @@ export type Registration<T> = () => T;
 
 export class Registry {
   private readonly registry = new Map<Registration<any>, any>();
-  private owner = getContextOwner();
+  private owner = getOwner();
 
   constructor() {
     onCleanup(() => this.registry.clear());
@@ -21,8 +21,7 @@ export class Registry {
   }
 
   register<T>(initializer: Registration<T>) {
-    // const registration = runWithOwner(this.owner, () => initializer())
-    const registration = initializer();
+    const registration = runWithOwner(this.owner!, () => initializer())
     
     this.registry.set(initializer, registration);
 
