@@ -9,10 +9,8 @@ module.exports = function (context, options = {}) {
       Object.assign(
         {
           moduleName: "@vzn/dom",
-          builtIns: [
-            'If',
-            'For'
-          ]
+          wrapConditionals: true,
+          generate: "dom"
         },
         options
       )
