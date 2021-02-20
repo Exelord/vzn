@@ -1,4 +1,4 @@
-import { render } from '@vzn/dom';
+import { render } from 'solid-js/web';
 import App from './app';
 
-render(App, document.body);
+render(App, document.querySelector('#app')!);

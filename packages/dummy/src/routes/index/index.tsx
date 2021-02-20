@@ -1,7 +1,9 @@
 import { signal, action } from '@vzn/core';
+// @ts-ignore
+import styles from './styles.module.css';
 
 class State {
-  @signal count = 0
+  @signal count = 0;
 
   @action
   doSth() {
@@ -13,7 +15,7 @@ const IndexRoute = () => {
   const state = new State();
   
   return (
-    <button onClick={state.doSth}>
+    <button class={styles.button} onClick={state.doSth}>
       Count: {state.count}
     </button>
   );
