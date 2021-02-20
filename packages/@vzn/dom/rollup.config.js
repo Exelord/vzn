@@ -1,4 +1,3 @@
-import copy from "rollup-plugin-copy";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import babel from "@rollup/plugin-babel";
 import cleanup from "rollup-plugin-cleanup";
@@ -20,25 +19,6 @@ export default [
     external: ["@vzn/reactivity"],
 
     plugins: [
-      copy({
-        targets: [
-          {
-            src: ["../../node_modules/dom-expressions/src/jsx.d.ts"],
-            dest: "./src/"
-          }
-        ]
-      }),
-
-      copy({
-        targets: [
-          {
-            src: ["../../node_modules/dom-expressions/src/client.d.ts"],
-            dest: "./src/"
-          },
-          { src: "../../../node_modules/dom-expressions/src/client.d.ts", dest: "./dist" }
-        ]
-      }),
-
       nodeResolve({
         extensions: [".js", ".ts"]
       }),
