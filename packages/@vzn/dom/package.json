@@ -10,7 +10,8 @@
   "types": "dist/index.d.ts",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "jsx-runtime.d.ts"
   ],
   "scripts": {
     "prebuild": "rimraf dist/*",
