@@ -1,22 +1,13 @@
-import { signal, action } from '@vzn/core';
+import { value } from '@vzn/reactivity';
 // @ts-ignore
 import styles from './styles.module.css';
 
-class State {
-  @signal count = 0;
-
-  @action
-  doSth() {
-    this.count++;
-  }
-}
-
 const IndexRoute = () => {
-  const state = new State();
+  const [getCount, setCount] = value(0)
   
   return (
-    <button class={styles.button} onClick={state.doSth}>
-      Count: {state.count}
+    <button class={styles.button} onClick={() => setCount(getCount() + 1)}>
+      Count: {getCount}
     </button>
   );
 }

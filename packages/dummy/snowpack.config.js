@@ -32,11 +32,7 @@ module.exports = {
       '@snowpack/plugin-babel',
       {
         transformOptions: {
-          presets: ["solid", "@babel/preset-typescript"],
-          plugins: [
-            ["@babel/plugin-proposal-decorators", { "legacy": true }],
-            ["@babel/plugin-proposal-class-properties", { "loose": true}]
-          ]
+          presets: ["vzn", "@babel/preset-typescript"],
         }
       }
     ]

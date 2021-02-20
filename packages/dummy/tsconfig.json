@@ -8,7 +8,7 @@
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "jsx": "preserve",
-    "jsxImportSource": "solid-js",
+    "jsxImportSource": "@vzn/dom",
     "noEmit": true,
     "strict": true,
     "allowJs": true,
