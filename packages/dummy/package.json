@@ -17,8 +17,7 @@
   ],
   "dependencies": {
     "@vzn/dom": "^0.13.0",
-    "@vzn/reactivity": "^0.13.0",
-    "@vzn/store": "^0.13.0"
+    "@vzn/reactivity": "^0.13.0"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.12.17",

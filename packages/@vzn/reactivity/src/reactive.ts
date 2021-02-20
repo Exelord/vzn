@@ -6,15 +6,20 @@ import {
   untrack
 } from "./container";
 
-export function renderEffect<T>(fn: Computation<T>) {
-  runWithContainer(createContainer(untrack(() => fn())), fn);
+export function renderEffect<T>(fn: (v: T) => T, value: T): void;
+export function renderEffect<T>(fn: (v?: T) => T | undefined): void;
+export function renderEffect<T>(fn: (v?: T) => T, value?: T): void {
+  let lastValue = value;
+  const comp = (value?: T) => (lastValue = fn(value))
+  runWithContainer(createContainer(untrack(() => comp(lastValue))), () => comp(lastValue));
 }
 
-export function effect<T>(fn: Computation<T>) {
+export function effect<T>(fn: (v: T) => T, value: T): void;
+export function effect<T>(fn: (v?: T) => T | undefined): void;
+export function effect<T>(fn: (v?: T) => T, value?: T): void {
   const owner = getContainer();
 
-  const computation = () =>
-    runWithContainer(createContainer(untrack(() => fn())), fn);
+  const computation = () => renderEffect(fn, value)
 
   if (owner) {
     owner.scheduleEffect(computation);
