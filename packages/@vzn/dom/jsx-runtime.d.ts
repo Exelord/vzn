@@ -1,1 +1,1 @@
-export * from 'dom-expressions/dist/jsx.d.ts';
+export * from './src/jsx';
