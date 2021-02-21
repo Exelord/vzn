@@ -1,6 +1,6 @@
 {
   "name": "dummy",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "author": "Maciej Kwaśniak",
   "license": "MIT",
   "private": true,
@@ -16,8 +16,8 @@
     "Node 10"
   ],
   "dependencies": {
-    "@vzn/dom": "^0.14.2",
-    "@vzn/reactivity": "^0.14.0"
+    "@vzn/dom": "^0.14.3",
+    "@vzn/reactivity": "^0.14.1"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.12.17",
