@@ -10,7 +10,10 @@ module.exports = function (context, options = {}) {
         {
           moduleName: "@vzn/dom",
           wrapConditionals: true,
-          generate: "dom"
+          generate: "dom",
+          builtIns: [
+            "For"
+          ]
         },
         options
       )
