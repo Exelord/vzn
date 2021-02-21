@@ -5,13 +5,19 @@ import {
   runWithContainer,
   untrack
 } from "./container";
+import { value } from "./value";
 
-export function renderEffect<T>(fn: (v: T) => T, value: T): void;
-export function renderEffect<T>(fn: (v?: T) => T | undefined): void;
-export function renderEffect<T>(fn: (v?: T) => T, value?: T): void {
+export function instantEffect<T>(fn: (v: T) => T, value: T): void;
+export function instantEffect<T>(fn: (v?: T) => T | undefined): void;
+export function instantEffect<T>(fn: (v?: T) => T, value?: T): void {
   let lastValue = value;
-  const comp = (value?: T) => (lastValue = fn(value))
-  runWithContainer(createContainer(untrack(() => comp(lastValue))), () => comp(lastValue));
+
+  const comp = (value?: T) => (lastValue = fn(value));
+
+  runWithContainer(
+    createContainer(() => untrack(() => comp(lastValue))),
+    () => comp(lastValue)
+  );
 }
 
 export function effect<T>(fn: (v: T) => T, value: T): void;
@@ -19,7 +25,7 @@ export function effect<T>(fn: (v?: T) => T | undefined): void;
 export function effect<T>(fn: (v?: T) => T, value?: T): void {
   const owner = getContainer();
 
-  const computation = () => renderEffect(fn, value)
+  const computation = () => instantEffect(fn, value);
 
   if (owner) {
     owner.scheduleEffect(computation);
@@ -29,23 +35,33 @@ export function effect<T>(fn: (v?: T) => T, value?: T): void {
 }
 
 export function starter<T>(fn: Computation<T>) {
-  effect(untrack(fn));
+  effect(() => untrack(fn));
 }
 
-export function memo<T>(fn: Computation<T>) {
-  let isFresh = true;
+export function memo<T>(fn: Computation<T>): () => T {
+  const [getResult, setResult] = value<T | undefined>(undefined);
+  let memoValue: T;
+  let isDirty = false;
 
-  let value = runWithContainer(
-    createContainer(() => (isFresh = false)),
-    fn
+  const memoContainer = createContainer(() => untrack(() => setResult(memoValue)));
+
+  runWithContainer(
+    createContainer(() => {
+      isDirty = true;
+      memoContainer.update();
+    }, true),
+    () => {
+      memoValue = fn();
+    }
   );
 
-  return untrack(() => {
-    if (!isFresh) {
-      value = fn();
-      isFresh = true;
+  return () => {
+    if (isDirty) {
+      memoValue = untrack(fn);
+      isDirty = false;
     }
 
-    return value;
-  });
+    getResult();
+    return memoValue;
+  };
 }

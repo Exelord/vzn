@@ -4,13 +4,13 @@ export type Disposer = () => void;
 export type Computation<T> = () => T;
 
 export interface Container {
+  priority: boolean;
+  isPaused: boolean;
+
   children: Set<Container>;
-
   cleanups: Disposer[];
-
   queue: Set<Container>;
   effects: Set<Computation<void>>;
-  isPaused: boolean;
 
   schedule(container: Container): void;
   scheduleEffect(effect: Computation<void>): void;
@@ -37,14 +37,37 @@ export function cleanup(fn: Disposer) {
   }
 }
 
-export function createContainer<T>(computation: Computation<T>): Container {
+export function runWithContainer<T>(
+  container: Container | undefined,
+  computation: Computation<T>
+): T {
+  const currentContainer = getContainer();
+
+  setContainer(container);
+
+  try {
+    return computation();
+  } finally {
+    setContainer(currentContainer);
+  }
+}
+
+export function untrack<T>(fn: () => T): T {
+  return runWithContainer(undefined, fn);
+}
+
+export function createContainer<T>(
+  computation: Computation<T>,
+  priority = false
+): Container {
   const parent = getContainer();
 
   const container = {
+    priority,
+    isPaused: false,
+
     children: new Set<Container>(),
     cleanups: [] as Disposer[],
-
-    isPaused: false,
     queue: new Set<Container>(),
     effects: new Set<Computation<void>>(),
 
@@ -74,7 +97,7 @@ export function createContainer<T>(computation: Computation<T>): Container {
     update() {
       const container = getContainer();
 
-      if (container) {
+      if (container && !this.priority) {
         container.schedule(this);
       } else {
         this.recompute();
@@ -107,25 +130,6 @@ export function createContainer<T>(computation: Computation<T>): Container {
   return container;
 }
 
-export function runWithContainer<T>(
-  container: Container | undefined,
-  computation: Computation<T>
-): T {
-  const currentContainer = getContainer();
-
-  setContainer(container);
-
-  try {
-    return computation();
-  } finally {
-    setContainer(currentContainer);
-  }
-}
-
-export function untrack<T>(fn: () => T): () => T {
-  return () => runWithContainer(undefined, fn);
-}
-
 export function batch<T>(computation: Computation<T>): T {
   const container = getContainer();
 
@@ -148,6 +152,9 @@ export function batch<T>(computation: Computation<T>): T {
 }
 
 export function root<T>(fn: (dispose: () => void) => T): T {
-  const owner = createContainer(() => {});
-  return runWithContainer(owner, () => batch(() => fn(() => owner.dispose())));
+  const container = createContainer(() => {});
+
+  return runWithContainer(container, () =>
+    batch(() => fn(() => container.dispose()))
+  );
 }
