@@ -143,7 +143,5 @@ export function For<T, U extends JSX.Element>(props: {
   children: (item: T, index: () => number) => U;
 }) {
   const fallback = "fallback" in props && { fallback: () => props.fallback };
-  return memo(
-    () => mapArray<T, U>(() => props.each, props.children, fallback ? fallback : undefined)()
-  );
+  return memo(mapArray<T, U>(() => props.each, props.children, fallback ? fallback : undefined));
 }
