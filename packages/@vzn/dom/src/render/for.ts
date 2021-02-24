@@ -113,7 +113,7 @@ export function mapArray<T, U>(
               indexes[j] = tempIndexes![j];
               indexes[j](j);
             }
-          } else mapped[j] = root(mapper);
+          } else mapped[j] = createRoot(mapper);
         }
         // 3) in case the new set is shorter than the old, set the length of the mapped array
         len = mapped.length = newLen;
