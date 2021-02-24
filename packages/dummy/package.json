@@ -1,6 +1,6 @@
 {
   "name": "dummy",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "author": "Maciej Kwaśniak",
   "license": "MIT",
   "private": true,
@@ -16,7 +16,7 @@
     "Node 10"
   ],
   "dependencies": {
-    "@vzn/dom": "^0.15.1",
+    "@vzn/dom": "^0.15.2",
     "@vzn/reactivity": "^0.15.0"
   },
   "devDependencies": {
