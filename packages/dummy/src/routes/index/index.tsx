@@ -1,4 +1,4 @@
-import { value, batch } from "@vzn/reactivity";
+import { createValue, batch } from "@vzn/reactivity";
 import { buildData } from "./data";
 import { For } from '@vzn/dom';
 
@@ -26,8 +26,8 @@ const Button = ({ id, text, fn }) =>
   </div>
 
 const IndexRoute = () => {
-  const [data, setData] = value([]);
-  const [selected, setSelected] = value(null);
+  const [data, setData] = createValue([]);
+  const [selected, setSelected] = createValue(null);
 
   function remove(id) {
     const d = data();

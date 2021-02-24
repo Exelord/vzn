@@ -1,4 +1,4 @@
-import { onCleanup, createMemo, createRoot, untrack, value } from "@vzn/reactivity";
+import { onCleanup, createMemo, createRoot, untrack, createValue } from "@vzn/reactivity";
 import { JSX } from "../jsx";
 
 const FALLBACK = Symbol("fallback");
@@ -104,7 +104,7 @@ export function mapArray<T, U>(
             newIndices.set(item, j);
           } else disposers[i]();
         }
-        // 2) set all the new values, pulling from the temp array if copied, otherwise entering the new value
+        // 2) set all the new values, pulling from the temp array if copied, otherwise entering the new createValue
         for (j = start; j < newLen; j++) {
           if (j in temp) {
             mapped[j] = temp[j];
@@ -125,7 +125,7 @@ export function mapArray<T, U>(
     function mapper(disposer: () => void) {
       disposers[j] = disposer;
       if (indexes) {
-        const [s, setS] = value(j);
+        const [s, setS] = createValue(j);
         indexes[j] = (n: number) => {
           setS(n);
           return n;

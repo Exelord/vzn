@@ -5,7 +5,7 @@ import {
   runWithContainer,
   untrack
 } from "./container";
-import { value } from "./value";
+import { createValue } from "./value";
 
 export function createInstantEffect<T>(fn: (v: T) => T, value: T): void;
 export function createInstantEffect<T>(fn: (v?: T) => T | undefined): void;
@@ -39,7 +39,7 @@ export function createSingleEffect<T>(fn: Computation<T>) {
 }
 
 export function createMemo<T>(fn: Computation<T>): () => T {
-  const [getResult, setResult] = value<T | undefined>(undefined);
+  const [getResult, setResult] = createValue<T | undefined>(undefined);
   let memoValue: T;
   let isDirty = false;
 

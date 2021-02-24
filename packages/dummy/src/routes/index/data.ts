@@ -1,4 +1,4 @@
-import { value } from "@vzn/reactivity";
+import { createValue } from "@vzn/reactivity";
 
 function _random (max: number) { return Math.round(Math.random() * 1000) % max; };
 
@@ -11,12 +11,12 @@ export function buildData(count: number) {
   const data = [];
 
   for (let i = 0; i < count; i++) {
-    const [getLabel, setLabel] = value(adjectives[_random(adjectives.length)] + " " + colours[_random(colours.length)] + " " + nouns[_random(nouns.length)]);
+    const [getLabel, setLabel] = createValue(adjectives[_random(adjectives.length)] + " " + colours[_random(colours.length)] + " " + nouns[_random(nouns.length)]);
     
     data.push({
       id: ID++,
       get label() { return getLabel() },
-      set label(value) { setLabel(value) }
+      set label(createValue) { setLabel(createValue) }
     });
   }
 

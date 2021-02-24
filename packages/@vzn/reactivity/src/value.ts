@@ -1,10 +1,19 @@
 import { Container, onCleanup, getContainer } from "./container";
 
-export function value<T>(defaultValue: T): [() => T, (value: T) => void] {
+export function createValue<T>(): [() => T | undefined, <U extends T | undefined>(value?: U) => void];
+export function createValue<T>(
+  defaultValue: T,
+  compare?: boolean | ((prev: T, next: T) => boolean),
+): [() => T, (value: T) => void];
+export function createValue<T>(
+  defaultValue?: T,
+  compare?: boolean | ((prev: T | undefined, next: T) => boolean),
+): [() => T | undefined, (value: T) => void] {
   let currentValue = defaultValue;
   const owners = new Set<Container>();
+  compare ??= true;
 
-  const getter = (): T => {
+  const getter = (): T | undefined => {
     const owner = getContainer();
 
     if (owner && !owners.has(owner)) {
@@ -16,6 +25,9 @@ export function value<T>(defaultValue: T): [() => T, (value: T) => void] {
   };
 
   const setter = (newValue: T): void => {
+    if (typeof compare === 'function' && compare(currentValue, newValue)) return;
+    if (compare === true && currentValue === newValue) return;
+
     currentValue = newValue;
     owners.forEach((owner) => owner.update());
   };
