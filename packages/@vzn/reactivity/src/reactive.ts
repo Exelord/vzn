@@ -7,9 +7,9 @@ import {
 } from "./container";
 import { value } from "./value";
 
-export function instantEffect<T>(fn: (v: T) => T, value: T): void;
-export function instantEffect<T>(fn: (v?: T) => T | undefined): void;
-export function instantEffect<T>(fn: (v?: T) => T, value?: T): void {
+export function createInstantEffect<T>(fn: (v: T) => T, value: T): void;
+export function createInstantEffect<T>(fn: (v?: T) => T | undefined): void;
+export function createInstantEffect<T>(fn: (v?: T) => T, value?: T): void {
   let lastValue = value;
 
   const comp = (value?: T) => (lastValue = fn(value));
@@ -20,12 +20,12 @@ export function instantEffect<T>(fn: (v?: T) => T, value?: T): void {
   );
 }
 
-export function effect<T>(fn: (v: T) => T, value: T): void;
-export function effect<T>(fn: (v?: T) => T | undefined): void;
-export function effect<T>(fn: (v?: T) => T, value?: T): void {
+export function createEffect<T>(fn: (v: T) => T, value: T): void;
+export function createEffect<T>(fn: (v?: T) => T | undefined): void;
+export function createEffect<T>(fn: (v?: T) => T, value?: T): void {
   const owner = getContainer();
 
-  const computation = () => instantEffect(fn, value);
+  const computation = () => createInstantEffect(fn, value);
 
   if (owner) {
     owner.scheduleEffect(computation);
@@ -34,11 +34,11 @@ export function effect<T>(fn: (v?: T) => T, value?: T): void {
   }
 }
 
-export function starter<T>(fn: Computation<T>) {
-  effect(() => untrack(fn));
+export function createSingleEffect<T>(fn: Computation<T>) {
+  createEffect(() => untrack(fn));
 }
 
-export function memo<T>(fn: Computation<T>): () => T {
+export function createMemo<T>(fn: Computation<T>): () => T {
   const [getResult, setResult] = value<T | undefined>(undefined);
   let memoValue: T;
   let isDirty = false;

@@ -1,4 +1,4 @@
-import { Container, cleanup, getContainer } from "./container";
+import { Container, onCleanup, getContainer } from "./container";
 
 export function value<T>(defaultValue: T): [() => T, (value: T) => void] {
   let currentValue = defaultValue;
@@ -9,7 +9,7 @@ export function value<T>(defaultValue: T): [() => T, (value: T) => void] {
 
     if (owner && !owners.has(owner)) {
       owners.add(owner);
-      cleanup(() => owners.delete(owner));
+      onCleanup(() => owners.delete(owner));
     }
 
     return currentValue;

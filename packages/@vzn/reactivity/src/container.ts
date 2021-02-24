@@ -29,7 +29,7 @@ export function getContainer(): Container | undefined {
   return globalContainer;
 }
 
-export function cleanup(fn: Disposer) {
+export function onCleanup(fn: Disposer) {
   const container = getContainer();
 
   if (container) {
@@ -151,7 +151,7 @@ export function batch<T>(computation: Computation<T>): T {
   return result;
 }
 
-export function root<T>(fn: (dispose: () => void) => T): T {
+export function createRoot<T>(fn: (dispose: () => void) => T): T {
   const container = createContainer(() => {});
 
   return runWithContainer(container, () =>

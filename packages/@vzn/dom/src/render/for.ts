@@ -1,4 +1,4 @@
-import { cleanup, memo, root, untrack, value } from "@vzn/reactivity";
+import { onCleanup, createMemo, createRoot, untrack, value } from "@vzn/reactivity";
 import { JSX } from "../jsx";
 
 const FALLBACK = Symbol("fallback");
@@ -15,7 +15,7 @@ export function mapArray<T, U>(
     len = 0,
     indexes: ((v: number) => number)[] | null = mapFn.length > 1 ? [] : null;
 
-  cleanup(() => {
+  onCleanup(() => {
     for (let i = 0, length = disposers.length; i < length; i++) disposers[i]();
   });
   return () => {
@@ -46,7 +46,7 @@ export function mapArray<T, U>(
         }
         if (options.fallback) {
           items = [FALLBACK];
-          mapped[0] = root(disposer => {
+          mapped[0] = createRoot(disposer => {
             disposers[0] = disposer;
             return options.fallback!();
           });
@@ -57,7 +57,7 @@ export function mapArray<T, U>(
       else if (len === 0) {
         for (j = 0; j < newLen; j++) {
           items[j] = newItems[j];
-          mapped[j] = root(mapper);
+          mapped[j] = createRoot(mapper);
         }
         len = newLen;
       } else {
@@ -143,5 +143,5 @@ export function For<T, U extends JSX.Element>(props: {
   children: (item: T, index: () => number) => U;
 }) {
   const fallback = "fallback" in props && { fallback: () => props.fallback };
-  return memo(mapArray<T, U>(() => props.each, props.children, fallback ? fallback : undefined));
+  return createMemo(mapArray<T, U>(() => props.each, props.children, fallback ? fallback : undefined));
 }
