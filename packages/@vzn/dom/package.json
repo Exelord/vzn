@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "@vzn/dom",
-  "version": "0.14.6",
+  "version": "0.15.0",
   "author": "Maciej Kwaśniak <kmaciek17@gmail.com>",
   "license": "MIT",
   "repository": "https://github.com/exelord/vzn",
@@ -21,7 +21,7 @@
     "build:types": "tsc"
   },
   "dependencies": {
-    "@vzn/reactivity": "^0.14.1",
+    "@vzn/reactivity": "^0.15.0",
     "dom-expressions": "^0.25.7"
   },
   "devDependencies": {
