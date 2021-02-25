@@ -16,7 +16,7 @@ export function buildData(count: number) {
     data.push({
       id: ID++,
       get label() { return getLabel() },
-      set label(createValue) { setLabel(createValue) }
+      set label(value) { setLabel(value) }
     });
   }
 

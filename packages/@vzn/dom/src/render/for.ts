@@ -104,7 +104,7 @@ export function mapArray<T, U>(
             newIndices.set(item, j);
           } else disposers[i]();
         }
-        // 2) set all the new values, pulling from the temp array if copied, otherwise entering the new createValue
+        // 2) set all the new values, pulling from the temp array if copied, otherwise entering the new value
         for (j = start; j < newLen; j++) {
           if (j in temp) {
             mapped[j] = temp[j];
@@ -125,7 +125,7 @@ export function mapArray<T, U>(
     function mapper(disposer: () => void) {
       disposers[j] = disposer;
       if (indexes) {
-        const [s, setS] = createValue(j);
+        const [s, setS] = createValue(j, false);
         indexes[j] = (n: number) => {
           setS(n);
           return n;

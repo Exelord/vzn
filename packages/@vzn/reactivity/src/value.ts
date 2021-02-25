@@ -13,7 +13,7 @@ export function createValue<T>(
   const owners = new Set<Container>();
   compare ??= true;
 
-  const getter = (): T | undefined => {
+  function getter(): T | undefined {
     const owner = getContainer();
 
     if (owner && !owners.has(owner)) {
@@ -22,9 +22,9 @@ export function createValue<T>(
     }
 
     return currentValue;
-  };
+  }
 
-  const setter = (newValue: T): void => {
+  function setter(newValue: T): void {
     if (typeof compare === 'function' && compare(currentValue, newValue)) return;
     if (compare === true && currentValue === newValue) return;
 

@@ -14,7 +14,8 @@
   ],
   "scripts": {
     "prepublishOnly": "yarn build",
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "tsc -w"
   },
   "devDependencies": {
     "typescript": "^4.1.3"

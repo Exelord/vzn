@@ -16,7 +16,7 @@ const Button = ({ id, text, fn }) =>
   </div>
 
 const IndexRoute = () => {
-  const [data, setData] = createValue([]);
+  const [data, setData] = createValue([], false);
   const [selected, setSelected] = createValue(null);
 
   function remove(id) {

@@ -1,3 +1,4 @@
 export * from "./container";
-export * from "./reactive";
+export * from "./effect";
 export * from "./value";
+export * from "./memo";
