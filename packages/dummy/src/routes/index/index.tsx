@@ -2,23 +2,13 @@ import { createValue, batch } from "@vzn/reactivity";
 import { buildData } from "./data";
 import { For } from '@vzn/dom';
 
-let startTime: number;
-let lastMeasure: string | null;
+function benchmark<T>(name: string, fn: (...args: any[]) => T) {
+  const startTime = performance.now();
+  fn();
+  const stop = performance.now();
 
-const startMeasure = function(name: string) {
-    startTime = performance.now();
-    lastMeasure = name;
-};
-const stopMeasure = function() {
-    const last = lastMeasure;
-    if (lastMeasure) {
-        window.setTimeout(function () {
-            lastMeasure = null;
-            const stop = performance.now();
-            console.log(last+" took "+(stop-startTime));
-        }, 0);
-    }
-};
+  window.setTimeout(() => console.log(name+" took "+(stop-startTime)), 0);
+}
 
 const Button = ({ id, text, fn }) =>
   <div class="col-sm-6 smallpad">
@@ -36,21 +26,21 @@ const IndexRoute = () => {
   }
 
   function run() {
-    startMeasure('run');
-    batch(() => {
-      setData(buildData(1000));
-      setSelected(null);
-    });
-    stopMeasure();
+    benchmark('run', () => {
+      batch(() => {
+        setData(buildData(1000));
+        setSelected(null);
+      });
+    })
   }
 
   function runLots() {
-    startMeasure('runLots');
-    batch(() => {
-      setData(buildData(10000));
-      setSelected(null);
+    benchmark('runLots', () => {
+      batch(() => {
+        setData(buildData(10000));
+        setSelected(null);
+      });
     });
-    stopMeasure();
   }
 
   function add() { setData(data().concat(buildData(1000))); }
