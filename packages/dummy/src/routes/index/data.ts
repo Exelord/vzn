@@ -7,7 +7,12 @@ const adjectives = ["pretty", "large", "big", "small", "tall", "short", "long", 
 const colours = ["red", "yellow", "blue", "green", "pink", "brown", "purple", "brown", "white", "black", "orange"];
 const nouns = ["table", "chair", "house", "bbq", "desk", "car", "pony", "cookie", "sandwich", "burger", "pizza", "mouse", "keyboard"];
 
-export function buildData(count: number) {
+export type Todo = {
+  id: number;
+  label: string;
+}
+
+export function buildData(count: number): Todo[] {
   const data = [];
 
   for (let i = 0; i < count; i++) {

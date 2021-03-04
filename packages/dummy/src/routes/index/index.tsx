@@ -1,5 +1,5 @@
 import { createValue, batch } from "@vzn/reactivity";
-import { buildData } from "./data";
+import { buildData, Todo } from "./data";
 import { For } from '@vzn/dom';
 
 function benchmark<T>(name: string, fn: (...args: any[]) => T) {
@@ -10,16 +10,16 @@ function benchmark<T>(name: string, fn: (...args: any[]) => T) {
   window.setTimeout(() => console.log(name+" took "+(stop-startTime)), 0);
 }
 
-const Button = ({ id, text, fn }) =>
+const Button = ({ id, text, fn }: { id: string, text: string, fn: () => void}) =>
   <div class="col-sm-6 smallpad">
     <button id={id} class="btn btn-primary btn-block" type="button" onClick={fn}>{text}</button>
   </div>
 
 const IndexRoute = () => {
-  const [data, setData] = createValue([], false);
+  const [data, setData] = createValue<Todo[]>([], false);
   const [selected, setSelected] = createValue(null);
 
-  function remove(id) {
+  function remove(id: number) {
     const d = data();
     d.splice(d.findIndex(d => d.id === id), 1);
     setData(d);
@@ -94,7 +94,7 @@ const IndexRoute = () => {
           <For each={data()}>{(row) => {
             let rowId = row.id;
             return <tr class={rowId === selected() ? "danger": ""}>
-              <td class="col-md-1" textContent={ rowId } />
+              <td class="col-md-1" textContent={`${rowId}`} />
               <td class="col-md-4"><a onClick={[setSelected, rowId]} textContent={row.label} /></td>
               <td class="col-md-1"><a onClick={[remove, rowId]}><span class="glyphicon glyphicon-remove" aria-hidden="true" /></a></td>
               <td class="col-md-6"/>

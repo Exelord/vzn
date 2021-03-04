@@ -30,7 +30,7 @@ export function createValue<T>(
 
     currentValue = newValue;
     owners.forEach((owner) => owner.update());
-  };
+  }
 
   return [getter, setter];
 }
