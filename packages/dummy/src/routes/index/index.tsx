@@ -3,6 +3,11 @@ import { buildData, Todo } from "./data";
 import { For } from '@vzn/dom';
 
 function benchmark<T>(name: string, fn: (...args: any[]) => T) {
+  if (import.meta.env.PROD) {
+    fn();
+    return;
+  }
+  
   const startTime = performance.now();
   fn();
   const stop = performance.now();
