@@ -134,10 +134,7 @@ export function batch<T>(computation: Computation<T>): T {
   const container = getContainer();
 
   if (!container) {
-    return runWithContainer(
-      createContainer(() => {}),
-      () => batch(computation)
-    );
+    return runWithContainer(createContainer(() => {}), () => batch(computation));
   }
 
   if (container.isPaused) {
@@ -145,10 +142,12 @@ export function batch<T>(computation: Computation<T>): T {
   }
 
   container.pause();
-  const result = computation();
-  container.resume();
 
-  return result;
+  try {
+    return computation();
+  } finally {
+    container.resume();
+  }
 }
 
 export function createRoot<T>(fn: (dispose: () => void) => T): T {
