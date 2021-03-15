@@ -40,10 +40,6 @@ export function runWithContainer<T>(
   }
 }
 
-export function untrack<T>(fn: () => T): T {
-  return runWithContainer(undefined, fn);
-}
-
 export function onCleanup(fn: Disposer) {
   const container = getContainer();
 
@@ -132,6 +128,10 @@ export function createContainer<T>(
   return container;
 }
 
+export function untrack<T>(fn: () => T): T {
+  return runWithContainer(undefined, fn);
+}
+
 export function batch<T>(computation: Computation<T>): T {
   const container = getContainer();
 
@@ -150,12 +150,4 @@ export function batch<T>(computation: Computation<T>): T {
   } finally {
     container.resume();
   }
-}
-
-export function createRoot<T>(fn: (dispose: () => void) => T): T {
-  const container = createContainer(() => {});
-
-  return runWithContainer(container, () =>
-    batch(() => fn(() => container.dispose()))
-  );
 }
