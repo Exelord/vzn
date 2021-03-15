@@ -10,15 +10,15 @@ export function createValue<T>(
   compare?: boolean | ((prev: T | undefined, next: T) => boolean),
 ): [() => T | undefined, (value: T) => void] {
   let currentValue = defaultValue;
-  const owners = new Set<Container>();
+  const containers = new Set<Container>();
   compare ??= true;
 
   function getter(): T | undefined {
-    const owner = getContainer();
+    const container = getContainer();
 
-    if (owner && !owners.has(owner)) {
-      owners.add(owner);
-      onCleanup(() => owners.delete(owner));
+    if (container && !containers.has(container)) {
+      containers.add(container);
+      onCleanup(() => containers.delete(container));
     }
 
     return currentValue;
@@ -29,7 +29,7 @@ export function createValue<T>(
     if (compare === true && currentValue === newValue) return;
 
     currentValue = newValue;
-    owners.forEach((owner) => owner.update());
+    containers.forEach((container) => container.update());
   }
 
   return [getter, setter];

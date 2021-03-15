@@ -6,9 +6,9 @@ import {
   untrack
 } from "./container";
 
-export function createInstantEffect<T>(fn: (v: T) => T, value: T): void;
-export function createInstantEffect<T>(fn: (v?: T) => T | undefined): void;
-export function createInstantEffect<T>(fn: (v?: T) => T, value?: T): void {
+export function createRenderEffect<T>(fn: (v: T) => T, value: T): void;
+export function createRenderEffect<T>(fn: (v?: T) => T | undefined): void;
+export function createRenderEffect<T>(fn: (v?: T) => T, value?: T): void {
   let lastValue = value;
 
   function computation(value?: T) { lastValue = fn(value) };
@@ -22,12 +22,12 @@ export function createInstantEffect<T>(fn: (v?: T) => T, value?: T): void {
 export function createEffect<T>(fn: (v: T) => T, value: T): void;
 export function createEffect<T>(fn: (v?: T) => T | undefined): void;
 export function createEffect<T>(fn: (v?: T) => T, value?: T): void {
-  const owner = getContainer();
+  const container = getContainer();
 
-  function computation() { createInstantEffect(fn, value); }
+  function computation() { createRenderEffect(fn, value); }
 
-  if (owner) {
-    owner.scheduleEffect(computation);
+  if (container) {
+    container.scheduleEffect(computation);
   } else {
     computation();
   }
