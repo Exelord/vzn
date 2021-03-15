@@ -1,19 +1,5 @@
-import {
-  createRoot,
-  createInstantEffect,
-  createMemo,
-  getContainer,
-} from "@vzn/reactivity";
+export { component as createComponent } from "./render/component";
+export { createMemo as memo, createRenderEffect as effect, createRoot as root } from './reactivity';
 
-import { component } from "./render/component";
-
-const sharedConfig = {};
-
-export {
-  getContainer as getOwner,
-  component as createComponent,
-  createRoot as root,
-  createInstantEffect as effect,
-  createMemo as memo,
-  sharedConfig
-}
+export const getOwner = null;
+export const sharedConfig = {};

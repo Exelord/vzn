@@ -16,8 +16,6 @@ export default [
       }
     ],
     
-    external: ["@vzn/reactivity"],
-
     plugins: [
       nodeResolve({
         extensions: [".js", ".ts"]

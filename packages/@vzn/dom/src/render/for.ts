@@ -1,5 +1,5 @@
-import { onCleanup, createMemo, createRoot, untrack, createValue } from "@vzn/reactivity";
 import { JSX } from "../jsx";
+import { createValue, createMemo, onCleanup, createRoot, untrack } from "../reactivity";
 
 const FALLBACK = Symbol("fallback");
 
