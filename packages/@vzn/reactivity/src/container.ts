@@ -1,25 +1,19 @@
-let globalContainer: Container | undefined;
-
 export type Disposer = () => void;
 export type Computation<T> = () => T;
 
 export interface Container {
   readonly isPaused: boolean;
-  readonly isDisposed: boolean;
 
-  scheduleUpdate(container: Container): void;
-  scheduleEffect(effect: Computation<void>): void;
-  update(): void;
+  scheduleUpdate(computation: Computation<void>): void;
+  scheduleEffect(computation: Computation<void>): void;
   recompute(): void;
   pause(): void;
   resume(): void;
   dispose(): void;
-  onCleanup(fn: Disposer): void;
+  addDisposer(fn: Disposer): void;
 }
 
-function setContainer(container: Container | undefined) {
-  globalContainer = container;
-}
+let globalContainer: Container | undefined;
 
 export function getContainer(): Container | undefined {
   return globalContainer;
@@ -31,105 +25,103 @@ export function runWithContainer<T>(
 ): T {
   const currentContainer = getContainer();
 
-  setContainer(container);
+  globalContainer = container;
 
   try {
     return computation();
   } finally {
-    setContainer(currentContainer);
+    globalContainer = currentContainer;
   }
+}
+
+export function untrack<T>(fn: () => T): T {
+  return runWithContainer(undefined, fn);
 }
 
 export function onCleanup(fn: Disposer) {
   const container = getContainer();
 
   if (container) {
-    container.onCleanup(fn);
+    container.addDisposer(fn);
   }
 }
 
 export function createContainer<T>(
   computation: Computation<T>,
-  isPrivileged = false
+  isPrioritized = false
 ): Container {
   let isPaused = false;
-  let isDisposed = false;
 
-  let cleanups = [] as Disposer[];
-  const updates = new Set<Container>();
-  const effects = new Set<Computation<void>>();
+  const disposers = new Set<Disposer>();
+  const updatesQueue = new Set<Computation<void>>();
+  const effectsQueue = new Set<Computation<void>>();
 
   const container = {
     get isPaused() {
       return isPaused;
     },
 
-    get isDisposed() {
-      return isDisposed;
-    },
-
-    scheduleUpdate(container: Container) {
-      if (isPaused) {
-        updates.add(container);
-      } else {
-        container.recompute();
-      }
-    },
-
-    scheduleEffect(effect: Computation<void>) {
-      if (isPaused) {
-        effects.add(effect);
-      } else {
-        effect();
-      }
-    },
-
-    update() {
-      const container = getContainer();
-
-      if (container && !isPrivileged) {
-        container.scheduleUpdate(this);
-      } else {
-        this.recompute();
-      }
-    },
-
     recompute() {
-      computation();
+      const parentContainer = getContainer();
+  
+      if (parentContainer && !isPrioritized) {
+        parentContainer.scheduleUpdate(computation);
+      } else {
+        untrack(computation);
+      }
     },
-
+  
+    scheduleUpdate(computation: Computation<void>) {
+      if (isPaused) {
+        updatesQueue.add(computation);
+      } else {
+        untrack(computation);
+      }
+    },
+  
+    scheduleEffect(computation: Computation<void>) {
+      if (isPaused) {
+        effectsQueue.add(computation);
+      } else {
+        untrack(computation);
+      }
+    },
+  
     pause() {
       isPaused = true;
     },
-
+  
     resume() {
       if (isPaused) {
         isPaused = false;
-        updates.forEach((container) => container.recompute());
-        updates.clear();
-        effects.forEach((effect) => effect());
-        effects.clear();
+        
+        const updates = [...updatesQueue];
+        const effects = [...effectsQueue];
+        
+        updatesQueue.clear();
+        effectsQueue.clear();
+        
+        updates.forEach(async (computation) => untrack(computation));
+        effects.forEach(async (computation) => untrack(computation));
       }
     },
-
+  
     dispose() {
-      cleanups.forEach((disposer) => disposer());
-      cleanups = [];
-      isDisposed = true;
+      const tmpDisposers = [...disposers]
+      
+      disposers.clear();
+      
+      tmpDisposers.forEach(async (disposer) => untrack(disposer));
     },
-
-    onCleanup(fn: Disposer) {
-      cleanups.push(fn)
+  
+    addDisposer(fn: Disposer) {
+      disposers.add(fn)
     }
   };
 
   onCleanup(() => container.dispose());
 
   return container;
-}
-
-export function untrack<T>(fn: () => T): T {
-  return runWithContainer(undefined, fn);
 }
 
 export function batch<T>(computation: Computation<T>): T {
