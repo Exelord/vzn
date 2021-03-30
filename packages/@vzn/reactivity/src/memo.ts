@@ -11,19 +11,19 @@ export function createMemo<T>(fn: Computation<T>): () => T {
   let memoValue: T;
   let isDirty = false;
 
-  const memoContainer = createContainer(() => untrack(() => {
+  const memoContainer = createContainer(() => {
     if (isDirty) {
       memoValue = fn();
       isDirty = false;
     }
 
     setResult(memoValue);
-  }));
+  });
 
   runWithContainer(
     createContainer(() => {
       isDirty = true;
-      memoContainer.update();
+      memoContainer.recompute();
     }, true),
     () => {
       memoValue = fn();
