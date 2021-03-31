@@ -19,6 +19,10 @@ export function createRenderEffect<T>(fn: (v?: T) => T, value?: T): void {
   });
   
   runWithContainer(container, () => computation(lastValue));
+
+  if (!getContainer()) {
+    container.dispose();
+  }
 }
 
 export function createEffect<T>(fn: (v: T) => T, value: T): void;
