@@ -1,6 +1,6 @@
 import { batch, createContainer, runWithContainer } from '../src/container';
 import { createMemo } from '../src/memo';
-import { createRenderEffect } from '../src/effect';
+import { createInstantEffect } from '../src/effect';
 import { createValue } from '../src/value';
 
 describe('createMemo', () => {
@@ -93,7 +93,7 @@ describe('createMemo', () => {
     expect(spy.mock.calls.length).toBe(0);
     
     runWithContainer(container, () => {
-      createRenderEffect(() => {
+      createInstantEffect(() => {
         getMemo();
       })
     })

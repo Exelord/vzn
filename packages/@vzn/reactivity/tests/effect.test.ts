@@ -1,8 +1,8 @@
 import { batch, onCleanup } from '../src/container';
-import { createEffect, createRenderEffect, createSingleEffect } from '../src/effect';
+import { createEffect, createInstantEffect, createSingleEffect } from '../src/effect';
 import { createValue } from '../src/value';
 
-describe('createRenderEffect', () => {
+describe('createInstantEffect', () => {
   it('reruns and cleanups on change', () => {
     const [getSignal, setSignal] = createValue('value');
     const effectFn = jest.fn();
@@ -11,7 +11,7 @@ describe('createRenderEffect', () => {
     expect(effectFn.mock.calls.length).toBe(0);
     expect(cleanupFn.mock.calls.length).toBe(0);
 
-    createRenderEffect(() => {
+    createInstantEffect(() => {
       getSignal();
       effectFn();
       onCleanup(() => cleanupFn())
@@ -37,7 +37,7 @@ describe('createRenderEffect', () => {
     expect(getSignal()).toBe('start');
     
     batch(() => {
-      createRenderEffect(() => {
+      createInstantEffect(() => {
         setSignal('effect');
       });
       
