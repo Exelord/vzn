@@ -29,7 +29,7 @@ export function createEffect<T>(fn: (v?: T) => T, value?: T): void {
   const container = getContainer();
 
   if (container) {
-    container.scheduleEffect(computation);
+    container.scheduleDelayed(computation);
   } else {
     computation();
   }

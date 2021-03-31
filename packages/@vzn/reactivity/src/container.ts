@@ -4,8 +4,8 @@ export type Computation<T> = () => T;
 export interface Container {
   readonly isPaused: boolean;
 
-  scheduleUpdate(computation: Computation<void>): void;
-  scheduleEffect(computation: Computation<void>): void;
+  schedule(computation: Computation<void>): void;
+  scheduleDelayed(computation: Computation<void>): void;
   recompute(): void;
   pause(): void;
   resume(): void;
@@ -53,8 +53,8 @@ export function createContainer<T>(
   let isPaused = false;
 
   const disposers = new Set<Disposer>();
-  const updatesQueue = new Set<Computation<void>>();
-  const effectsQueue = new Set<Computation<void>>();
+  const computationsQueue = new Set<Computation<void>>();
+  const delayedQueue = new Set<Computation<void>>();
 
   const container = {
     get isPaused() {
@@ -65,23 +65,23 @@ export function createContainer<T>(
       const parentContainer = getContainer();
   
       if (parentContainer && !isPrioritized) {
-        parentContainer.scheduleUpdate(computation);
+        parentContainer.schedule(computation);
       } else {
         untrack(computation);
       }
     },
   
-    scheduleUpdate(computation: Computation<void>) {
+    schedule(computation: Computation<void>) {
       if (isPaused) {
-        updatesQueue.add(computation);
+        computationsQueue.add(computation);
       } else {
         untrack(computation);
       }
     },
   
-    scheduleEffect(computation: Computation<void>) {
+    scheduleDelayed(computation: Computation<void>) {
       if (isPaused) {
-        effectsQueue.add(computation);
+        delayedQueue.add(computation);
       } else {
         untrack(computation);
       }
@@ -95,13 +95,13 @@ export function createContainer<T>(
       if (isPaused) {
         isPaused = false;
         
-        const updates = [...updatesQueue];
-        const effects = [...effectsQueue];
+        const computations = [...computationsQueue];
+        const effects = [...delayedQueue];
         
-        updatesQueue.clear();
-        effectsQueue.clear();
+        computationsQueue.clear();
+        delayedQueue.clear();
         
-        updates.forEach(async (computation) => untrack(computation));
+        computations.forEach(async (computation) => untrack(computation));
         effects.forEach(async (computation) => untrack(computation));
       }
     },
