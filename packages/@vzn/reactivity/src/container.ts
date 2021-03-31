@@ -128,7 +128,12 @@ export function batch<T>(computation: Computation<T>): T {
   const container = getContainer();
 
   if (!container) {
-    return runWithContainer(createContainer(() => {}), () => batch(computation));
+    const tmpContainer = createContainer(() => {});
+    const result = runWithContainer(tmpContainer, () => batch(computation));
+
+    tmpContainer.dispose();
+
+    return result;
   }
 
   if (container.isPaused) {
