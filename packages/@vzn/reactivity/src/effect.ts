@@ -28,9 +28,9 @@ export function createInstantEffect<T>(fn: (v?: T) => T, value?: T): void {
 export function createEffect<T>(fn: (v: T) => T, value: T): void;
 export function createEffect<T>(fn: (v?: T) => T | undefined): void;
 export function createEffect<T>(fn: (v?: T) => T, value?: T): void {
-  function computation() { createInstantEffect(fn, value); }
-
   const container = getContainer();
+
+  function computation() { runWithContainer(container, () => createInstantEffect(fn, value)); }
 
   if (container) {
     container.scheduleDelayed(computation);

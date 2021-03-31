@@ -1,4 +1,4 @@
-import { batch, onCleanup } from '../src/container';
+import { batch, createContainer, onCleanup, runWithContainer } from '../src/container';
 import { createEffect, createInstantEffect, createSingleEffect } from '../src/effect';
 import { createValue } from '../src/value';
 
@@ -11,11 +11,13 @@ describe('createInstantEffect', () => {
     expect(effectFn.mock.calls.length).toBe(0);
     expect(cleanupFn.mock.calls.length).toBe(0);
 
-    createInstantEffect(() => {
-      getSignal();
-      effectFn();
-      onCleanup(() => cleanupFn())
-    });
+    runWithContainer(createContainer(() => {}), () => {
+      createInstantEffect(() => {
+        getSignal();
+        effectFn();
+        onCleanup(() => cleanupFn())
+      });
+    })
     
     expect(effectFn.mock.calls.length).toBe(1);
     expect(cleanupFn.mock.calls.length).toBe(0);
@@ -61,10 +63,12 @@ describe('createEffect', () => {
     expect(effectFn.mock.calls.length).toBe(0);
     expect(cleanupFn.mock.calls.length).toBe(0);
 
-    createEffect(() => {
-      getSignal();
-      effectFn();
-      onCleanup(() => cleanupFn())
+    runWithContainer(createContainer(() => {}), () => {
+      createEffect(() => {
+        getSignal();
+        effectFn();
+        onCleanup(() => cleanupFn())
+      });
     });
     
     expect(effectFn.mock.calls.length).toBe(1);
