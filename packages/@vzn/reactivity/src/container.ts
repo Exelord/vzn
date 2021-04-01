@@ -13,6 +13,8 @@ export interface Container {
   addDisposer(fn: Disposer): void;
 }
 
+function dummyFn() {}
+
 let globalContainer: Container | undefined;
 
 export function getContainer(): Container | undefined {
@@ -35,7 +37,7 @@ export function runWithContainer<T>(
 }
 
 export function untrack<T>(fn: () => T): T {
-  const container = createContainer(() => {});
+  const container = createContainer(dummyFn);
   const result = runWithContainer(container, fn);
 
   if (!getContainer()) {
@@ -140,7 +142,7 @@ export function batch<T>(computation: Computation<T>): T {
   const container = getContainer();
 
   if (!container) {
-    const tmpContainer = createContainer(() => {});
+    const tmpContainer = createContainer(dummyFn);
     const result = runWithContainer(tmpContainer, () => batch(computation));
 
     tmpContainer.dispose();
