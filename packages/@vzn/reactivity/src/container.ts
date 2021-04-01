@@ -35,7 +35,14 @@ export function runWithContainer<T>(
 }
 
 export function untrack<T>(fn: () => T): T {
-  return runWithContainer(undefined, fn);
+  const container = createContainer(() => {});
+  const result = runWithContainer(container, fn);
+
+  if (!getContainer()) {
+    container.dispose();
+  }
+
+  return result;
 }
 
 export function onCleanup(fn: Disposer) {
@@ -54,6 +61,7 @@ export function createContainer<T>(
 ): Container {
   let isPaused = false;
 
+  const parentContainer = getContainer();
   const disposers = new Set<Disposer>();
   const computationsQueue = new Set<Computation<void>>();
   const delayedQueue = new Set<Computation<void>>();
@@ -73,19 +81,19 @@ export function createContainer<T>(
       }
     },
   
-    schedule(computation: Computation<void>) {
+    schedule(fn: Computation<void>) {
       if (isPaused) {
-        computationsQueue.add(computation);
+        computationsQueue.add(fn);
       } else {
-        untrack(computation);
+        untrack(fn);
       }
     },
   
-    scheduleDelayed(computation: Computation<void>) {
+    scheduleDelayed(fn: Computation<void>) {
       if (isPaused) {
-        delayedQueue.add(computation);
+        delayedQueue.add(fn);
       } else {
-        untrack(computation);
+        untrack(fn);
       }
     },
   
@@ -121,7 +129,9 @@ export function createContainer<T>(
     }
   };
 
-  onCleanup(() => container.dispose());
+  if (parentContainer) {
+    parentContainer.addDisposer(container.dispose)
+  }
 
   return container;
 }

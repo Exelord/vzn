@@ -32,13 +32,32 @@ it('runs without any container', () => {
       expect(getContainer()).toBe(container);
       
       untrack(() => {
-        expect(getContainer()).toBeUndefined();
+        expect(getContainer()).not.toBe(container);
       });
 
       expect(getContainer()).toBe(container);
     });
     
     expect(getContainer()).toBeUndefined();
+  });
+
+  it('runs cleanups in effects correctly', () => {
+    const container = createContainer(() => {});
+    const cleanupMock = jest.fn();
+    
+    expect(getContainer()).toBeUndefined();
+    
+    runWithContainer(container, () => {
+      untrack(() => {
+        onCleanup(cleanupMock)
+      });
+    });
+    
+    expect(cleanupMock.mock.calls.length).toBe(0);
+
+    container.dispose();
+    
+    expect(cleanupMock.mock.calls.length).toBe(1);
   });
 });
 
@@ -273,7 +292,7 @@ describe('createContainer', () => {
       container.dispose();
       
       expect(spy1.mock.calls.length).toBe(1);
-      expect(spy2.mock.calls.length).toBe(0);
+      expect(spy2.mock.calls.length).toBe(1);
     });
   });
   
