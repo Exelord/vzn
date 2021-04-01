@@ -43,6 +43,8 @@ export function onCleanup(fn: Disposer) {
 
   if (container) {
     container.addDisposer(fn);
+  } else {
+    fn();
   }
 }
 

@@ -58,12 +58,12 @@ it('registers disposer and calls it on dispose', () => {
     expect(cleanupMock.mock.calls.length).toBe(1);
   });
 
-it('does nothing if there is no container', () => {
+it('runs cleanup if there is no container', () => {
     const cleanupMock = jest.fn();
     
     onCleanup(cleanupMock)
     
-    expect(cleanupMock.mock.calls.length).toBe(0);
+    expect(cleanupMock.mock.calls.length).toBe(1);
   });
 });
 

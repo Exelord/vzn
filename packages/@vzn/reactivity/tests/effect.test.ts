@@ -115,10 +115,12 @@ describe('createSingleEffect', () => {
     expect(effectFn.mock.calls.length).toBe(0);
     expect(cleanupFn.mock.calls.length).toBe(0);
 
-    createSingleEffect(() => {
-      getSignal();
-      effectFn();
-      onCleanup(() => cleanupFn())
+    runWithContainer(createContainer(() => {}), () => {
+      createSingleEffect(() => {
+        getSignal();
+        effectFn();
+        onCleanup(() => cleanupFn())
+      });
     });
     
     expect(effectFn.mock.calls.length).toBe(1);
