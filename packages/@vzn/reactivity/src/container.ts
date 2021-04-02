@@ -37,7 +37,7 @@ export function runWithContainer<T>(
 }
 
 export function untrack<T>(fn: () => T): T {
-  const container = createContainer(dummyFn);
+  const container = createContainer();
   const result = runWithContainer(container, fn);
 
   onCleanup(container.dispose);
@@ -55,8 +55,8 @@ export function onCleanup(fn: Disposer) {
   }
 }
 
-export function createContainer<T>(
-  computation: Computation<T>,
+export function createContainer(
+  computation: Computation<void> = dummyFn,
   isPrioritized = false
 ): Container {
   let isPaused = false;
@@ -135,7 +135,7 @@ export function batch<T>(computation: Computation<T>): T {
   const container = getContainer();
 
   if (!container) {
-    const tmpContainer = createContainer(dummyFn);
+    const tmpContainer = createContainer();
     const result = runWithContainer(tmpContainer, () => batch(computation));
 
     tmpContainer.dispose();

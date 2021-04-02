@@ -2,12 +2,12 @@ import { batch, createContainer, getContainer, onCleanup, runWithContainer, untr
 
 describe('runWithContainer', () => {
   it('sets correct container', () => {
-    const container = createContainer(() => {});
+    const container = createContainer();
     
     expect(getContainer()).toBeUndefined();
     
     runWithContainer(container, () => {
-      const nestedContainer = createContainer(() => {});
+      const nestedContainer = createContainer();
 
       expect(getContainer()).toBe(container);
       
@@ -24,7 +24,7 @@ describe('runWithContainer', () => {
 
 describe('untrack', () => {
 it('runs without any container', () => {
-    const container = createContainer(() => {});
+    const container = createContainer();
     
     expect(getContainer()).toBeUndefined();
     
@@ -42,7 +42,7 @@ it('runs without any container', () => {
   });
 
   it('runs cleanups in effects correctly', () => {
-    const container = createContainer(() => {});
+    const container = createContainer();
     const cleanupMock = jest.fn();
     
     expect(getContainer()).toBeUndefined();
@@ -63,7 +63,7 @@ it('runs without any container', () => {
 
 describe('onCleanup', () => {
 it('registers disposer and calls it on dispose', () => {
-    const container = createContainer(() => {});
+    const container = createContainer();
     const cleanupMock = jest.fn();
     
     runWithContainer(container, () => {
@@ -100,7 +100,7 @@ it('batches operations', () => {
   });
 
   it('uses parent container if available', () => {
-    const container = createContainer(() => {});
+    const container = createContainer();
 
     runWithContainer(container, () => {
       batch(() => {
@@ -134,7 +134,7 @@ describe('createContainer', () => {
     });
 
   it('schedules recomputation if parent is paused', () => {
-      const parentContainer = createContainer(() => {});
+      const parentContainer = createContainer();
       const container = createContainer(() => spy());
       const spy = jest.fn();
       
@@ -152,7 +152,7 @@ describe('createContainer', () => {
     });
   
     it('recomputes if parent is not paused', () => {
-      const parentContainer = createContainer(() => {});
+      const parentContainer = createContainer();
       const container = createContainer(() => spy());
       const spy = jest.fn();
       
@@ -164,7 +164,7 @@ describe('createContainer', () => {
     });
     
     it('recomputes if it is prioritized and parent is paused', () => {
-      const parentContainer = createContainer(() => {});
+      const parentContainer = createContainer();
       const container = createContainer(() => spy(), true);
       const spy = jest.fn();
       
@@ -180,7 +180,7 @@ describe('createContainer', () => {
 
   describe('schedule', () => {
   it('computes instantly if not paused', () => {
-      const container = createContainer(() => {});
+      const container = createContainer();
       const spy = jest.fn();
   
       container.schedule(spy);
@@ -189,7 +189,7 @@ describe('createContainer', () => {
     });
   
     it('schedules update if paused', () => {
-      const container = createContainer(() => {});
+      const container = createContainer();
       const spy = jest.fn();
       
       container.pause();
@@ -206,7 +206,7 @@ describe('createContainer', () => {
   
   describe('scheduleDelayed', () => {
     it('computes instantly if not paused', () => {
-      const container = createContainer(() => {});
+      const container = createContainer();
       const spy = jest.fn();
   
       container.scheduleDelayed(spy);
@@ -215,7 +215,7 @@ describe('createContainer', () => {
     });
   
     it('schedules update if paused', () => {
-      const container = createContainer(() => {});
+      const container = createContainer();
       const spy = jest.fn();
       
       container.pause();
@@ -232,7 +232,7 @@ describe('createContainer', () => {
   
   describe('pause', () => {
   it('pauses', () => {
-      const container = createContainer(() => {});
+      const container = createContainer();
   
       expect(container.isPaused).toBe(false);
 
@@ -244,7 +244,7 @@ describe('createContainer', () => {
   
   describe('resume', () => {
   it('resumes', () => {
-      const container = createContainer(() => {});
+      const container = createContainer();
   
       expect(container.isPaused).toBe(false);
       
@@ -260,7 +260,7 @@ describe('createContainer', () => {
   
   describe('dispose', () => {
   it('disposes all disposers', () => {
-      const container = createContainer(() => {});
+      const container = createContainer();
       const spy = jest.fn();
 
       runWithContainer(container, () => {
@@ -275,7 +275,7 @@ describe('createContainer', () => {
     });
   
     it('does work with nested disposers', () => {
-      const container = createContainer(() => {});
+      const container = createContainer();
       const spy1 = jest.fn();
       const spy2 = jest.fn();
 
@@ -298,7 +298,7 @@ describe('createContainer', () => {
   
   describe('addDisposer', () => {
   it('add disposer', () => {
-      const container = createContainer(() => {});
+      const container = createContainer();
       const spy = jest.fn();
 
       container.addDisposer(spy)

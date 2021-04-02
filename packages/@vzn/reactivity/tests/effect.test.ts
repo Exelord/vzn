@@ -11,7 +11,7 @@ describe('createInstantEffect', () => {
     expect(effectFn.mock.calls.length).toBe(0);
     expect(cleanupFn.mock.calls.length).toBe(0);
 
-    runWithContainer(createContainer(() => {}), () => {
+    runWithContainer(createContainer(), () => {
       createInstantEffect(() => {
         getSignal();
         effectFn();
@@ -63,7 +63,7 @@ describe('createEffect', () => {
     expect(effectFn.mock.calls.length).toBe(0);
     expect(cleanupFn.mock.calls.length).toBe(0);
 
-    runWithContainer(createContainer(() => {}), () => {
+    runWithContainer(createContainer(), () => {
       createEffect(() => {
         getSignal();
         effectFn();
@@ -115,7 +115,7 @@ describe('createSingleEffect', () => {
     expect(effectFn.mock.calls.length).toBe(0);
     expect(cleanupFn.mock.calls.length).toBe(0);
 
-    runWithContainer(createContainer(() => {}), () => {
+    runWithContainer(createContainer(), () => {
       createSingleEffect(() => {
         getSignal();
         effectFn();

@@ -9,7 +9,7 @@ describe('createMemo', () => {
     
     expect(spy.mock.calls.length).toBe(0);
     
-    runWithContainer(createContainer(() => {}), () => {
+    runWithContainer(createContainer(), () => {
       const getMemo = createMemo(() => {
         spy();
       });
@@ -82,7 +82,7 @@ describe('createMemo', () => {
   
   it('does recompute on change in effects', () => {
     const [getSignal, setSignal] = createValue(1);
-    const container = createContainer(() => {});
+    const container = createContainer();
     const spy = jest.fn();
     
     runWithContainer(container, () => {
