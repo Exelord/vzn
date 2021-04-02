@@ -1,4 +1,4 @@
-import { batch, createContainer, onCleanup, runWithContainer } from '../src/container';
+import { batch, createContainer, cleanup, runWithContainer } from '../src/container';
 import { createEffect, createInstantEffect, createSingleEffect } from '../src/effect';
 import { createValue } from '../src/value';
 
@@ -15,7 +15,7 @@ describe('createInstantEffect', () => {
       createInstantEffect(() => {
         getSignal();
         effectFn();
-        onCleanup(() => cleanupFn())
+        cleanup(() => cleanupFn())
       });
     })
     
@@ -67,7 +67,7 @@ describe('createEffect', () => {
       createEffect(() => {
         getSignal();
         effectFn();
-        onCleanup(() => cleanupFn())
+        cleanup(() => cleanupFn())
       });
     });
     
@@ -119,7 +119,7 @@ describe('createSingleEffect', () => {
       createSingleEffect(() => {
         getSignal();
         effectFn();
-        onCleanup(() => cleanupFn())
+        cleanup(() => cleanupFn())
       });
     });
     

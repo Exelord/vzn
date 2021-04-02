@@ -1,4 +1,4 @@
-import { batch, createContainer, getContainer, onCleanup, runWithContainer, untrack } from '../src/container';
+import { batch, createContainer, getContainer, cleanup, runWithContainer, untrack } from '../src/container';
 
 describe('runWithContainer', () => {
   it('sets correct container', () => {
@@ -49,7 +49,7 @@ it('runs without any container', () => {
     
     runWithContainer(container, () => {
       untrack(() => {
-        onCleanup(cleanupMock)
+        cleanup(cleanupMock)
       });
     });
     
@@ -61,13 +61,13 @@ it('runs without any container', () => {
   });
 });
 
-describe('onCleanup', () => {
+describe('cleanup', () => {
 it('registers disposer and calls it on dispose', () => {
     const container = createContainer();
     const cleanupMock = jest.fn();
     
     runWithContainer(container, () => {
-      onCleanup(cleanupMock)
+      cleanup(cleanupMock)
     });
     
     expect(cleanupMock.mock.calls.length).toBe(0);
@@ -80,7 +80,7 @@ it('registers disposer and calls it on dispose', () => {
 it('runs cleanup if there is no container', () => {
     const cleanupMock = jest.fn();
     
-    onCleanup(cleanupMock)
+    cleanup(cleanupMock)
     
     expect(cleanupMock.mock.calls.length).toBe(1);
   });
@@ -264,7 +264,7 @@ describe('createContainer', () => {
       const spy = jest.fn();
 
       runWithContainer(container, () => {
-        onCleanup(() => spy())
+        cleanup(() => spy())
       });
 
       expect(spy.mock.calls.length).toBe(0);
@@ -280,9 +280,9 @@ describe('createContainer', () => {
       const spy2 = jest.fn();
 
       runWithContainer(container, () => {
-        onCleanup(() => {
+        cleanup(() => {
           spy1();
-          onCleanup(() => spy2());
+          cleanup(() => spy2());
         })
       });
 

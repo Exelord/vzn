@@ -2,7 +2,7 @@ import {
   Computation,
   createContainer,
   getContainer,
-  onCleanup,
+  cleanup,
   runWithContainer,
   untrack
 } from "./container";
@@ -28,7 +28,7 @@ export function createMemo<T>(fn: Computation<T>): () => T {
       firstRun = false;
       
       runWithContainer(currentContainer, () => {
-        onCleanup(() => {
+        cleanup(() => {
           memoContainer.dispose();
           privilegedContainer.dispose();
           firstRun = true;

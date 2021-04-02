@@ -1,4 +1,4 @@
-import { Container, onCleanup, getContainer } from "./container";
+import { Container, cleanup, getContainer } from "./container";
 
 export function createValue<T>(): [() => T | undefined, <U extends T | undefined>(value?: U) => void];
 export function createValue<T>(
@@ -18,7 +18,7 @@ export function createValue<T>(
 
     if (container && !containers.has(container)) {
       containers.add(container);
-      onCleanup(() => containers.delete(container));
+      cleanup(() => containers.delete(container));
     }
 
     return currentValue;

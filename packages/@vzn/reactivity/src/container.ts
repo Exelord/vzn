@@ -40,12 +40,12 @@ export function untrack<T>(fn: () => T): T {
   const container = createContainer();
   const result = runWithContainer(container, fn);
 
-  onCleanup(container.dispose);
+  cleanup(container.dispose);
 
   return result;
 }
 
-export function onCleanup(fn: Disposer) {
+export function cleanup(fn: Disposer) {
   const container = getContainer();
 
   if (container) {
