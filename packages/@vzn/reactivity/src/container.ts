@@ -110,8 +110,8 @@ export function createContainer(
         computationsQueue.clear();
         delayedQueue.clear();
         
-        computations.forEach((computation) => untrack(computation));
-        effects.forEach((computation) => untrack(computation));
+        computations.forEach(async (computation) => untrack(computation));
+        effects.forEach(async (computation) => untrack(computation));
       }
     },
   
@@ -120,7 +120,7 @@ export function createContainer(
       
       disposers.clear();
       
-      tmpDisposers.forEach((disposer) => untrack(disposer));
+      tmpDisposers.forEach(async (disposer) => untrack(disposer));
     },
   
     addDisposer(fn: Disposer) {
