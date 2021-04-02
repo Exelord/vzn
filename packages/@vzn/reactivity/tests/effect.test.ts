@@ -52,6 +52,29 @@ describe('createInstantEffect', () => {
 
     expect(getSignal()).toBe('order');
   });
+
+  it('is computes instantly if no container and does not watch changes', () => {
+    const [getSignal, setSignal] = createValue('start');
+    const effectFn = jest.fn();
+    
+    expect(getSignal()).toBe('start');
+
+    expect(effectFn.mock.calls.length).toBe(0);
+    
+    createInstantEffect(() => {
+      setSignal('effect');
+      effectFn();
+    });
+
+    expect(effectFn.mock.calls.length).toBe(1);
+    
+    expect(getSignal()).toBe('effect');
+    
+    setSignal('order');
+    
+    expect(getSignal()).toBe('order');
+    expect(effectFn.mock.calls.length).toBe(1);
+  });
 });
 
 describe('createEffect', () => {
@@ -103,6 +126,29 @@ describe('createEffect', () => {
     })
     
     expect(getSignal()).toBe('effect');
+  });
+  
+  it('is computes instantly if no container and does not watch changes', () => {
+    const [getSignal, setSignal] = createValue('start');
+    const effectFn = jest.fn();
+    
+    expect(getSignal()).toBe('start');
+
+    expect(effectFn.mock.calls.length).toBe(0);
+    
+    createEffect(() => {
+      setSignal('effect');
+      effectFn();
+    });
+
+    expect(effectFn.mock.calls.length).toBe(1);
+    
+    expect(getSignal()).toBe('effect');
+    
+    setSignal('order');
+    
+    expect(getSignal()).toBe('order');
+    expect(effectFn.mock.calls.length).toBe(1);
   });
 });
 

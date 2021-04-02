@@ -244,17 +244,35 @@ describe('createContainer', () => {
   
   describe('resume', () => {
   it('resumes', () => {
+      const spy = jest.fn();
       const container = createContainer();
-  
+      
       expect(container.isPaused).toBe(false);
       
       container.pause();
       
+      container.schedule(spy)
+      
       expect(container.isPaused).toBe(true);
+      
+      container.resume();
+
+      expect(container.isPaused).toBe(false);
+      expect(spy.mock.calls.length).toBe(1);
+    });
+  
+    it('does nothing if not paused', () => {
+      const spy = jest.fn();
+      const container = createContainer();
+
+      container.schedule(spy)
+      
+      expect(container.isPaused).toBe(false);
       
       container.resume();
       
       expect(container.isPaused).toBe(false);
+      expect(spy.mock.calls.length).toBe(1);
     });
   });
   

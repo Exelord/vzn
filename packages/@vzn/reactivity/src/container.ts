@@ -102,18 +102,18 @@ export function createContainer(
     },
   
     resume() {
-      if (isPaused) {
-        isPaused = false;
-        
-        const computations = [...computationsQueue];
-        const effects = [...delayedQueue];
-        
-        computationsQueue.clear();
-        delayedQueue.clear();
-        
-        computations.forEach(async (computation) => untrack(computation));
-        effects.forEach(async (computation) => untrack(computation));
-      }
+      if (!isPaused) return;
+
+      isPaused = false;
+      
+      const computations = [...computationsQueue];
+      const effects = [...delayedQueue];
+      
+      computationsQueue.clear();
+      delayedQueue.clear();
+      
+      computations.forEach(async (computation) => untrack(computation));
+      effects.forEach(async (computation) => untrack(computation));
     },
   
     dispose() {
@@ -137,11 +137,12 @@ export function batch<T>(computation: Computation<T>): T {
 
   if (!container) {
     const tmpContainer = createContainer();
-    const result = runWithContainer(tmpContainer, () => batch(computation));
 
-    tmpContainer.dispose();
-
-    return result;
+    try {
+      return runWithContainer(tmpContainer, () => batch(computation));
+    } finally {
+      tmpContainer.dispose();
+    }
   }
 
   if (container.isPaused) {
