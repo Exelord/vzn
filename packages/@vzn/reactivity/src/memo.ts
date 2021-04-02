@@ -23,17 +23,18 @@ export function createMemo<T>(fn: Computation<T>): () => T {
 
   function getter() {
     if (firstRun) {
-      runWithContainer(privilegedContainer, () => memoValue = fn());
-
-      firstRun = false;
-      
-      runWithContainer(currentContainer, () => {
-        cleanup(() => {
-          memoContainer.dispose();
-          privilegedContainer.dispose();
-          firstRun = true;
-        });
-      })
+      try {
+        runWithContainer(privilegedContainer, () => memoValue = fn());
+        firstRun = false;
+      } finally {
+        runWithContainer(currentContainer, () => {
+          cleanup(() => {
+            memoContainer.dispose();
+            privilegedContainer.dispose();
+            firstRun = true;
+          });
+        })
+      }
     }
   
     if (isDirty) {

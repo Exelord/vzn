@@ -38,11 +38,12 @@ export function runWithContainer<T>(
 
 export function untrack<T>(fn: () => T): T {
   const container = createContainer();
-  const result = runWithContainer(container, fn);
 
-  cleanup(container.dispose);
-
-  return result;
+  try {
+    return runWithContainer(container, fn);
+  } finally {
+    cleanup(container.dispose);
+  }
 }
 
 export function cleanup(fn: Disposer) {
