@@ -1,7 +1,7 @@
 export type Config = {
   batch<T>(fn: () => T): T;
   untrack<T>(fn: () => T): T;
-  onCleanup(fn: () => void): void;
+  cleanup(fn: () => void): void;
   createRoot<T>(fn: (dispose: () => void) => T): T;
   createMemo<T>(fn: () => T, equal?: boolean): () => T;
   
@@ -42,8 +42,8 @@ export function untrack<T>(fn: () => T): T {
   return configuration.untrack(fn);
 }
 
-export function onCleanup(fn: () => void): void {
-  return configuration.onCleanup(fn);
+export function cleanup(fn: () => void): void {
+  return configuration.cleanup(fn);
 }
 
 export function createRoot<T>(fn: (dispose: () => void) => T): T {

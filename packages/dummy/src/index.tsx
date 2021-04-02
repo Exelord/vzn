@@ -5,23 +5,23 @@ import { configure, render } from '@vzn/dom';
 import {
   batch,
   untrack,
-  onCleanup,
+  cleanup,
   createRoot,
   createMemo,
   createValue,
   createEffect,
-  createRenderEffect
+  createInstantEffect
 } from "@vzn/reactivity";
 
 configure({
   batch,
   untrack,
-  onCleanup,
+  cleanup,
   createRoot,
   createMemo,
   createValue,
   createEffect,
-  createRenderEffect
+  createRenderEffect: createInstantEffect
 })
 
 render(App, document.querySelector('#app')!);

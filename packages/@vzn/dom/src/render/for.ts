@@ -1,5 +1,5 @@
 import { JSX } from "../jsx";
-import { createValue, createMemo, onCleanup, createRoot, untrack } from "../reactivity";
+import { createValue, createMemo, cleanup, createRoot, untrack } from "../reactivity";
 
 const FALLBACK = Symbol("fallback");
 
@@ -15,7 +15,7 @@ export function mapArray<T, U>(
     len = 0,
     indexes: ((v: number) => number)[] | null = mapFn.length > 1 ? [] : null;
 
-  onCleanup(() => {
+  cleanup(() => {
     for (let i = 0, length = disposers.length; i < length; i++) disposers[i]();
   });
   return () => {
