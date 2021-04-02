@@ -65,7 +65,7 @@ export function createContainer(
   const computationsQueue = new Set<Computation<void>>();
   const delayedQueue = new Set<Computation<void>>();
 
-  const container = {
+  const container = Object.freeze({
     get isPaused() {
       return isPaused;
     },
@@ -110,8 +110,8 @@ export function createContainer(
         computationsQueue.clear();
         delayedQueue.clear();
         
-        computations.forEach(async (computation) => untrack(computation));
-        effects.forEach(async (computation) => untrack(computation));
+        computations.forEach((computation) => untrack(computation));
+        effects.forEach((computation) => untrack(computation));
       }
     },
   
@@ -120,13 +120,13 @@ export function createContainer(
       
       disposers.clear();
       
-      tmpDisposers.forEach(async (disposer) => untrack(disposer));
+      tmpDisposers.forEach((disposer) => untrack(disposer));
     },
   
     addDisposer(fn: Disposer) {
       disposers.add(fn)
     }
-  };
+  });
 
   return container;
 }
