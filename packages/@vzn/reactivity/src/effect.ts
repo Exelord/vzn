@@ -2,6 +2,7 @@ import {
   Computation,
   createContainer,
   getContainer,
+  onCleanup,
   runWithContainer,
   untrack
 } from "./container";
@@ -20,9 +21,7 @@ export function createInstantEffect<T>(fn: (v?: T) => T, value?: T): void {
   
   runWithContainer(container, () => computation(lastValue));
 
-  if (!getContainer()) {
-    container.dispose();
-  }
+  onCleanup(container.dispose);
 }
 
 export function createEffect<T>(fn: (v: T) => T, value: T): void;

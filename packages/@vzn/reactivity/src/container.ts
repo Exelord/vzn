@@ -40,9 +40,7 @@ export function untrack<T>(fn: () => T): T {
   const container = createContainer(dummyFn);
   const result = runWithContainer(container, fn);
 
-  if (!getContainer()) {
-    container.dispose();
-  }
+  onCleanup(container.dispose);
 
   return result;
 }
@@ -63,7 +61,6 @@ export function createContainer<T>(
 ): Container {
   let isPaused = false;
 
-  const parentContainer = getContainer();
   const disposers = new Set<Disposer>();
   const computationsQueue = new Set<Computation<void>>();
   const delayedQueue = new Set<Computation<void>>();
@@ -130,10 +127,6 @@ export function createContainer<T>(
       disposers.add(fn)
     }
   };
-
-  if (parentContainer) {
-    parentContainer.addDisposer(container.dispose)
-  }
 
   return container;
 }
