@@ -2,6 +2,7 @@ import {
   Computation,
   createContainer,
   getContainer,
+  onCleanup,
   runWithContainer,
   untrack
 } from "./container";
@@ -20,19 +21,30 @@ export function createMemo<T>(fn: Computation<T>): () => T {
   let isDirty = false;
   let firstRun = true;
 
-  return () => {
+  function getter() {
     if (firstRun) {
       runWithContainer(privilegedContainer, () => memoValue = fn());
-      firstRun = false;
-    }
 
+      firstRun = false;
+      
+      runWithContainer(currentContainer, () => {
+        onCleanup(() => {
+          memoContainer.dispose();
+          privilegedContainer.dispose();
+          firstRun = true;
+        });
+      })
+    }
+  
     if (isDirty) {
       memoValue = untrack(fn);
       isDirty = false;
     }
-
+  
     getResult();
-
+  
     return memoValue;
-  };
+  }
+
+  return getter;
 }

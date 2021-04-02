@@ -9,19 +9,21 @@ describe('createMemo', () => {
     
     expect(spy.mock.calls.length).toBe(0);
     
-    const getMemo = createMemo(() => {
-      spy();
-    });
-    
-    expect(spy.mock.calls.length).toBe(0);
+    runWithContainer(createContainer(() => {}), () => {
+      const getMemo = createMemo(() => {
+        spy();
+      });
 
-    getMemo();
-    
-    expect(spy.mock.calls.length).toBe(1);
-    
-    getMemo();
-    
-    expect(spy.mock.calls.length).toBe(1);
+      expect(spy.mock.calls.length).toBe(0);
+  
+      getMemo();
+      
+      expect(spy.mock.calls.length).toBe(1);
+      
+      getMemo();
+      
+      expect(spy.mock.calls.length).toBe(1);
+    })
   });
   
   it('does recompute if changed', () => {
@@ -83,40 +85,40 @@ describe('createMemo', () => {
     const container = createContainer(() => {});
     const spy = jest.fn();
     
-    expect(spy.mock.calls.length).toBe(0);
-
-    const getMemo = createMemo(() => {
-      getSignal();
-      spy();
-    });
-
-    expect(spy.mock.calls.length).toBe(0);
-    
     runWithContainer(container, () => {
+      expect(spy.mock.calls.length).toBe(0);
+
+      const getMemo = createMemo(() => {
+        getSignal();
+        spy();
+      });
+  
+      expect(spy.mock.calls.length).toBe(0);
+
       createInstantEffect(() => {
         getMemo();
       })
+      
+      expect(spy.mock.calls.length).toBe(1);
+  
+      setSignal(2);
+      setSignal(3);
+
+      expect(spy.mock.calls.length).toBe(3);
+      
+      getMemo();
+  
+      expect(spy.mock.calls.length).toBe(3);
+      
+      container.dispose();
+      
+      setSignal(4);
+  
+      expect(spy.mock.calls.length).toBe(3);
+      
+      getMemo();
+  
+      expect(spy.mock.calls.length).toBe(4);
     })
-    
-    expect(spy.mock.calls.length).toBe(1);
-
-    setSignal(2);
-    setSignal(3);
-    
-    expect(spy.mock.calls.length).toBe(3);
-    
-    getMemo();
-
-    expect(spy.mock.calls.length).toBe(3);
-    
-    container.dispose();
-    
-    setSignal(4);
-
-    expect(spy.mock.calls.length).toBe(3);
-    
-    getMemo();
-
-    expect(spy.mock.calls.length).toBe(4);
   });
 });
