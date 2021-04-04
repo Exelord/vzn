@@ -1,6 +1,6 @@
 {
   "name": "dummy",
-  "version": "0.14.1",
+  "version": "0.15.0",
   "author": "Maciej Kwaśniak",
   "license": "MIT",
   "private": true,
@@ -17,14 +17,14 @@
     "Node 10"
   ],
   "dependencies": {
-    "@vzn/dom": "^0.16.1",
-    "@vzn/reactivity": "^0.16.1"
+    "@vzn/dom": "^0.17.0",
+    "@vzn/reactivity": "^0.17.0"
   },
   "devDependencies": {
-    "vite": "^2.0.5",
-    "typescript": "^4.2.2",
     "@babel/core": "^7.13.8",
     "@babel/preset-typescript": "^7.13.0",
-    "babel-preset-vzn": "^0.11.1"
+    "babel-preset-vzn": "^0.11.1",
+    "typescript": "^4.2.2",
+    "vite": "^2.0.5"
   }
 }
