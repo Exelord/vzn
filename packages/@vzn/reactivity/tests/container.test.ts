@@ -83,6 +83,9 @@ it('runs cleanup if there is no container', () => {
     const cleanupMock = jest.fn();
     
     cleanup(cleanupMock);
+    
+    expect(cleanupMock.mock.calls.length).toBe(0);
+    
     jest.runAllTimers();
 
     expect(cleanupMock.mock.calls.length).toBe(1);
@@ -311,6 +314,10 @@ describe('createContainer', () => {
       expect(spy2.mock.calls.length).toBe(0);
       
       container.dispose();
+      
+      expect(spy1.mock.calls.length).toBe(1);
+      expect(spy2.mock.calls.length).toBe(0);
+      
       jest.runAllTimers();
       
       expect(spy1.mock.calls.length).toBe(1);

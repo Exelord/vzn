@@ -2,6 +2,8 @@ import { batch, createContainer, cleanup, runWithContainer } from '../src/contai
 import { createEffect, createInstantEffect, createSingleEffect } from '../src/effect';
 import { createValue } from '../src/value';
 
+jest.useFakeTimers('modern');
+
 describe('createInstantEffect', () => {
   it('reruns and cleanups on change', () => {
     const [getSignal, setSignal] = createValue('value');
@@ -93,7 +95,7 @@ describe('createEffect', () => {
         cleanup(() => cleanupFn())
       });
     });
-    
+
     expect(effectFn.mock.calls.length).toBe(1);
     expect(cleanupFn.mock.calls.length).toBe(0);
 
@@ -128,7 +130,7 @@ describe('createEffect', () => {
     expect(getSignal()).toBe('effect');
   });
   
-  it('is computes instantly if no container and does not watch changes', () => {
+  it('is computes in next micro queue if no container and does not watch changes', () => {
     const [getSignal, setSignal] = createValue('start');
     const effectFn = jest.fn();
     
@@ -140,6 +142,10 @@ describe('createEffect', () => {
       setSignal('effect');
       effectFn();
     });
+
+    expect(effectFn.mock.calls.length).toBe(0);
+
+    jest.runAllTimers();
 
     expect(effectFn.mock.calls.length).toBe(1);
     

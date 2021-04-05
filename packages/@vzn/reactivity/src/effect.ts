@@ -36,7 +36,7 @@ export function createEffect<T>(fn: (v?: T) => T, value?: T): void {
   if (container) {
     container.scheduleDelayed(computation);
   } else {
-    computation();
+    queueMicrotask(() => createInstantEffect(fn, value))
   }
 }
 
