@@ -50,7 +50,7 @@ export function cleanup(fn: Disposer) {
   if (container) {
     container.addDisposer(fn);
   } else {
-    fn();
+    queueMicrotask(fn);
   }
 }
 

@@ -1,5 +1,7 @@
 import { batch, createContainer, getContainer, cleanup, runWithContainer, untrack } from '../src/container';
 
+jest.useFakeTimers('modern');
+
 describe('runWithContainer', () => {
   it('sets correct container', () => {
     const container = createContainer();
@@ -80,8 +82,9 @@ it('registers disposer and calls it on dispose', () => {
 it('runs cleanup if there is no container', () => {
     const cleanupMock = jest.fn();
     
-    cleanup(cleanupMock)
-    
+    cleanup(cleanupMock);
+    jest.runAllTimers();
+
     expect(cleanupMock.mock.calls.length).toBe(1);
   });
 });
@@ -308,6 +311,7 @@ describe('createContainer', () => {
       expect(spy2.mock.calls.length).toBe(0);
       
       container.dispose();
+      jest.runAllTimers();
       
       expect(spy1.mock.calls.length).toBe(1);
       expect(spy2.mock.calls.length).toBe(1);
