@@ -29,7 +29,7 @@ export function createValue<T>(
     if (compare === true && currentValue === newValue) return;
 
     currentValue = newValue;
-    [...containers].forEach(async (container) => container.recompute());
+    [...containers].forEach((container) => container.recompute());
   }
 
   return [getter, setter];

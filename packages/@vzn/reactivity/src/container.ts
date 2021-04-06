@@ -15,6 +15,14 @@ export interface Container {
 
 let globalContainer: Container | undefined;
 
+function rethrowError<T>(fn: Computation<T>): void {
+  try {
+    fn();
+  } catch (error) {
+    setTimeout(() => { throw error; })
+  }
+}
+
 export function getContainer(): Container | undefined {
   return globalContainer;
 }
@@ -61,34 +69,34 @@ export function createContainer(
   let isPaused = false;
 
   const disposers = new Set<Disposer>();
-  const computationsQueue = new Set<Computation<void>>();
-  const delayedQueue = new Set<Computation<void>>();
+  const microQueue = new Set<Computation<void>>();
+  const macroQueue = new Set<Computation<void>>();
 
   function recompute() {
     if (!computation) return;
     
-    const parentContainer = getContainer();
+    const currentContainer = getContainer();
   
-    if (parentContainer && !isPrioritized) {
-      parentContainer.schedule(computation);
+    if (currentContainer && !isPrioritized) {
+      currentContainer.schedule(computation);
     } else {
-      untrack(computation);
+      rethrowError(() => untrack(computation));
     }
   }
 
   function schedule(fn: Computation<void>) {
     if (isPaused) {
-      computationsQueue.add(fn);
+      microQueue.add(fn);
     } else {
-      untrack(fn);
+      rethrowError(() => untrack(fn));
     }
   }
 
   function scheduleDelayed(fn: Computation<void>) {
     if (isPaused) {
-      delayedQueue.add(fn);
+      macroQueue.add(fn);
     } else {
-      untrack(fn);
+      rethrowError(() => untrack(fn));
     }
   }
 
@@ -101,14 +109,14 @@ export function createContainer(
 
     isPaused = false;
     
-    const computations = [...computationsQueue];
-    const delayed = [...delayedQueue];
+    const micro = [...microQueue];
+    const macro = [...macroQueue];
     
-    computationsQueue.clear();
-    delayedQueue.clear();
+    microQueue.clear();
+    macroQueue.clear();
     
-    computations.forEach(async (fn) => untrack(fn));
-    delayed.forEach(async (fn) => untrack(fn));
+    micro.forEach((fn) => rethrowError(() => untrack(fn)));
+    macro.forEach((fn) => rethrowError(() => untrack(fn)));
   }
 
   function dispose() {
