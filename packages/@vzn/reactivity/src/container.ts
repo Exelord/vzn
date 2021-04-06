@@ -4,8 +4,8 @@ export type Computation<T> = () => T;
 export interface Container {
   readonly isPaused: boolean;
 
-  schedule(computation: Computation<void>): void;
-  scheduleDelayed(computation: Computation<void>): void;
+  scheduleMicroTask(computation: Computation<void>): void;
+  scheduleMacroTask(computation: Computation<void>): void;
   recompute(): void;
   pause(): void;
   resume(): void;
@@ -78,13 +78,13 @@ export function createContainer(
     const currentContainer = getContainer();
   
     if (currentContainer && !isPrioritized) {
-      currentContainer.schedule(computation);
+      currentContainer.scheduleMicroTask(computation);
     } else {
       rethrowError(() => untrack(computation));
     }
   }
 
-  function schedule(fn: Computation<void>) {
+  function scheduleMicroTask(fn: Computation<void>) {
     if (isPaused) {
       microQueue.add(fn);
     } else {
@@ -92,7 +92,7 @@ export function createContainer(
     }
   }
 
-  function scheduleDelayed(fn: Computation<void>) {
+  function scheduleMacroTask(fn: Computation<void>) {
     if (isPaused) {
       macroQueue.add(fn);
     } else {
@@ -133,8 +133,8 @@ export function createContainer(
 
   return Object.freeze({
     recompute,
-    schedule,
-    scheduleDelayed,
+    scheduleMicroTask,
+    scheduleMacroTask,
     pause,
     resume,
     dispose,
