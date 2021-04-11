@@ -147,9 +147,9 @@ export function createContainer(
 }
 
 export function batch<T>(computation: Computation<T>): T {
-  const container = getContainer();
+  const currentContainer = getContainer();
 
-  if (!container) {
+  if (!currentContainer) {
     const tmpContainer = createContainer();
 
     try {
@@ -159,15 +159,15 @@ export function batch<T>(computation: Computation<T>): T {
     }
   }
 
-  if (container.isPaused) {
+  if (currentContainer.isPaused) {
     return computation();
   }
 
-  container.pause();
+  currentContainer.pause();
 
   try {
     return computation();
   } finally {
-    container.resume();
+    currentContainer.resume();
   }
 }
