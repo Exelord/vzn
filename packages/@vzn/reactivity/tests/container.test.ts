@@ -184,12 +184,12 @@ describe('createContainer', () => {
     });
   });
 
-  describe('scheduleMicroTask', () => {
+  describe('scheduleTask', () => {
   it('computes instantly if not paused', () => {
       const container = createContainer();
       const spy = jest.fn();
   
-      container.scheduleMicroTask(spy);
+      container.scheduleTask(spy);
   
       expect(spy.mock.calls.length).toBe(1);
     });
@@ -200,7 +200,7 @@ describe('createContainer', () => {
       
       container.pause();
       
-      container.scheduleMicroTask(spy);
+      container.scheduleTask(spy);
       
       expect(spy.mock.calls.length).toBe(0);
       
@@ -210,12 +210,14 @@ describe('createContainer', () => {
     });
   });
   
-  describe('scheduleMacroTask', () => {
-    it('computes instantly if not paused', () => {
+  describe('scheduleMicroTask', () => {
+    it('computes in next micro queue if not paused', () => {
       const container = createContainer();
       const spy = jest.fn();
   
-      container.scheduleMacroTask(spy);
+      container.scheduleMicroTask(spy);
+
+      jest.runAllTimers();
   
       expect(spy.mock.calls.length).toBe(1);
     });
@@ -226,11 +228,13 @@ describe('createContainer', () => {
       
       container.pause();
       
-      container.scheduleMacroTask(spy);
+      container.scheduleMicroTask(spy);
       
       expect(spy.mock.calls.length).toBe(0);
       
       container.resume();
+
+      jest.runAllTimers();
   
       expect(spy.mock.calls.length).toBe(1);
     });
@@ -257,7 +261,7 @@ describe('createContainer', () => {
       
       container.pause();
       
-      container.scheduleMicroTask(spy)
+      container.scheduleTask(spy)
       
       expect(container.isPaused).toBe(true);
       
@@ -271,7 +275,7 @@ describe('createContainer', () => {
       const spy = jest.fn();
       const container = createContainer();
 
-      container.scheduleMicroTask(spy)
+      container.scheduleTask(spy)
       
       expect(container.isPaused).toBe(false);
       

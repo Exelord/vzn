@@ -4,8 +4,8 @@ export type Computation<T> = () => T;
 export interface Container {
   readonly isPaused: boolean;
 
+  scheduleTask(computation: Computation<void>): void;
   scheduleMicroTask(computation: Computation<void>): void;
-  scheduleMacroTask(computation: Computation<void>): void;
   recompute(): void;
   pause(): void;
   resume(): void;
@@ -15,7 +15,7 @@ export interface Container {
 
 let globalContainer: Container | undefined;
 
-function rethrowError<T>(fn: Computation<T>): void {
+function asyncRethrow<T>(fn: Computation<T>): void {
   try {
     fn();
   } catch (error) {
@@ -77,8 +77,8 @@ export function createContainer(
   let isPaused = false;
 
   const disposers = new Set<Disposer>();
-  const microQueue = new Set<Computation<void>>();
-  const macroQueue = new Set<Computation<void>>();
+  const tasksQueue = new Set<Computation<void>>();
+  const microTasksQueue = new Set<Computation<void>>();
 
   function recompute() {
     if (!computation) return;
@@ -86,25 +86,26 @@ export function createContainer(
     const currentContainer = getContainer();
   
     if (currentContainer && !isPrioritized) {
-      currentContainer.scheduleMicroTask(computation);
+      currentContainer.scheduleTask(computation);
     } else {
-      rethrowError(() => untrack(computation));
+      asyncRethrow(() => untrack(computation));
+    }
+  }
+
+  function scheduleTask(fn: Computation<void>) {
+    if (isPaused) {
+      tasksQueue.add(fn);
+    } else {
+      asyncRethrow(() => untrack(fn));
     }
   }
 
   function scheduleMicroTask(fn: Computation<void>) {
     if (isPaused) {
-      microQueue.add(fn);
+      microTasksQueue.add(fn);
     } else {
-      rethrowError(() => untrack(fn));
-    }
-  }
-
-  function scheduleMacroTask(fn: Computation<void>) {
-    if (isPaused) {
-      macroQueue.add(fn);
-    } else {
-      rethrowError(() => untrack(fn));
+      const currentContainer = getContainer();
+      queueMicrotask(() => runWithContainer(currentContainer, () => untrack(fn)));
     }
   }
 
@@ -117,14 +118,14 @@ export function createContainer(
 
     isPaused = false;
     
-    const micro = [...microQueue];
-    const macro = [...macroQueue];
+    const tasks = [...tasksQueue];
+    const microTasks = [...microTasksQueue];
     
-    microQueue.clear();
-    macroQueue.clear();
+    tasksQueue.clear();
+    microTasksQueue.clear();
     
-    micro.forEach((fn) => rethrowError(() => untrack(fn)));
-    macro.forEach((fn) => rethrowError(() => untrack(fn)));
+    tasks.forEach(scheduleTask);
+    microTasks.forEach(scheduleMicroTask);
   }
 
   function dispose() {
@@ -132,7 +133,7 @@ export function createContainer(
     
     disposers.clear();
     
-    tmpDisposers.forEach(async (disposer) => untrack(disposer));
+    tmpDisposers.forEach((disposer) => asyncRethrow(() => runWithContainer(undefined, () => untrack(disposer))));
   }
 
   function addDisposer(fn: Disposer) {
@@ -141,8 +142,8 @@ export function createContainer(
 
   return Object.freeze({
     recompute,
+    scheduleTask,
     scheduleMicroTask,
-    scheduleMacroTask,
     pause,
     resume,
     dispose,

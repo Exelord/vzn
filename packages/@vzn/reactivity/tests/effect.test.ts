@@ -94,7 +94,13 @@ describe('createEffect', () => {
         effectFn();
         cleanup(() => cleanupFn())
       });
+
     });
+
+    expect(effectFn.mock.calls.length).toBe(0);
+    expect(cleanupFn.mock.calls.length).toBe(0);
+
+    jest.runAllTimers();
 
     expect(effectFn.mock.calls.length).toBe(1);
     expect(cleanupFn.mock.calls.length).toBe(0);
@@ -110,7 +116,7 @@ describe('createEffect', () => {
     expect(cleanupFn.mock.calls.length).toBe(2);
   });
 
-  it('is called at the end of effects queue', () => {
+  it('is called in micro queue', () => {
     const [getSignal, setSignal] = createValue('start');
     
     expect(getSignal()).toBe('start');
@@ -125,7 +131,11 @@ describe('createEffect', () => {
       setSignal('order');
       
       expect(getSignal()).toBe('order');
-    })
+    });
+
+    expect(getSignal()).toBe('order');
+
+    jest.runAllTimers();
     
     expect(getSignal()).toBe('effect');
   });
@@ -175,6 +185,10 @@ describe('createSingleEffect', () => {
       });
     });
     
+    expect(effectFn.mock.calls.length).toBe(0);
+    
+    jest.runAllTimers();
+    
     expect(effectFn.mock.calls.length).toBe(1);
     expect(cleanupFn.mock.calls.length).toBe(0);
 
@@ -184,13 +198,13 @@ describe('createSingleEffect', () => {
     expect(cleanupFn.mock.calls.length).toBe(0);
   });
 
-  it('is called at the end of effects queue', () => {
+  it('is called at the end of micro queue', () => {
     const [getSignal, setSignal] = createValue('start');
     
     expect(getSignal()).toBe('start');
     
     batch(() => {
-      createEffect(() => {
+      createSingleEffect(() => {
         setSignal('effect');
       });
 
@@ -200,6 +214,10 @@ describe('createSingleEffect', () => {
       
       expect(getSignal()).toBe('order');
     })
+
+    expect(getSignal()).toBe('order');
+    
+    jest.runAllTimers();
     
     expect(getSignal()).toBe('effect');
   });
