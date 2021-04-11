@@ -53,12 +53,20 @@ export function untrack<T>(fn: () => T): T {
 }
 
 export function cleanup(fn: Disposer) {
-  const container = getContainer();
+  const currentContainer = getContainer();
 
-  if (container) {
-    container.addDisposer(fn);
+  if (currentContainer) {
+    currentContainer.addDisposer(fn);
   } else {
-    queueMicrotask(fn);
+    queueMicrotask(() => {
+      const container = createContainer();
+
+      try {
+        return runWithContainer(container, fn);
+      } finally {
+        container.dispose();
+      }
+    });
   }
 }
 
