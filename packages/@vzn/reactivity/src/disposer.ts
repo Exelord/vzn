@@ -1,25 +1,24 @@
 import { Queue, createQueue, runWith } from "./utils";
 
-export type Disposable = () => void;
 export type Disposer = Queue;
 
-let globalDisposerQueue: Disposer | undefined;
+let globalDisposer: Disposer | undefined;
 
 export function getDisposer() {
-  return globalDisposerQueue;
+  return globalDisposer;
 }
 
 export function setDisposer(disposer?: Disposer): void {
-  globalDisposerQueue = disposer;
+  globalDisposer = disposer;
 }
 
 export function createDisposer() {
   return createQueue();
 }
 
-export function cleanup(fn: Disposable) {
-  if (globalDisposerQueue) {
-    globalDisposerQueue.schedule(fn);
+export function cleanup(fn: () => void) {
+  if (globalDisposer) {
+    globalDisposer.schedule(fn);
     return;
   }
   

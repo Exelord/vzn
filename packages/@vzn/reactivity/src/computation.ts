@@ -1,4 +1,4 @@
-import { getBatchQueue } from "./batch";
+import { getBatcher } from "./batcher";
 import { asyncRethrow, untrack } from "./utils";
 
 export interface Computation {
@@ -22,7 +22,7 @@ export function createComputation(
   function recompute() {
     if (!fn) return;
     
-    const batchQueue = getBatchQueue();
+    const batchQueue = getBatcher();
 
     if (!isPrioritized && batchQueue) {
       batchQueue.schedule(fn);

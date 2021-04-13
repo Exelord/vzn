@@ -1,4 +1,4 @@
-import { batch } from '../src/batch';
+import { batch } from '../src/batcher';
 import { createComputation, getComputation } from '../src/computation';
 import { cleanup, createDisposer, getDisposer } from '../src/disposer';
 import { runWith, untrack } from '../src/utils';

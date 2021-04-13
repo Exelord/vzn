@@ -2,7 +2,7 @@ import { createComputation } from '../src/computation';
 import { createMemo } from '../src/memo';
 import { createInstantEffect } from '../src/effect';
 import { createValue } from '../src/value';
-import { batch } from '../src/batch';
+import { batch } from '../src/batcher';
 import { createDisposer } from '../src/disposer';
 import { runWith } from '../src/utils';
 

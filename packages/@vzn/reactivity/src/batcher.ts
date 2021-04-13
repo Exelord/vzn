@@ -2,25 +2,25 @@ import { Queue, createQueue } from "./utils";
 
 export type BatchQueue = Queue;
 
-let globalBatchQueue: BatchQueue | undefined;
+let globalBatcher: BatchQueue | undefined;
 
-export function getBatchQueue() {
-  return globalBatchQueue;
+export function getBatcher() {
+  return globalBatcher;
 }
 
 export function batch<T>(computation: () => T): T {
-  if (globalBatchQueue) {
+  if (globalBatcher) {
     return computation();
   }
 
   const queue = createQueue();
   
-  globalBatchQueue = queue;
+  globalBatcher = queue;
   
   try {
     return computation();
   } finally {
-    globalBatchQueue = undefined;
+    globalBatcher = undefined;
     queue.flush();
   }
 }

@@ -1,4 +1,4 @@
-import { batch } from "./batch";
+import { batch } from "./batcher";
 import { createDisposer } from "./disposer";
 import { runWith } from "./utils";
 
