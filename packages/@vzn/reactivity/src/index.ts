@@ -1,8 +1,8 @@
-export * from "./computation";
-export * from "./batch";
-export * from "./disposer";
+export { batch } from "./batch";
+export { createComputation, getComputation } from "./computation";
+export { cleanup, createDisposer, getDisposer } from "./disposer";
+export { runWith, untrack } from "./utils";
 export * from "./effect";
 export * from "./value";
 export * from "./memo";
 export * from "./root";
-export * from "./utils";
