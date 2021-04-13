@@ -1,6 +1,6 @@
 import {
-  createContainer
-} from "./container";
+  createComputation
+} from "./computation";
 import { cleanup, createDisposer } from "./disposer";
 import { runWith } from "./utils";
 import { createValue } from "./value";
@@ -11,10 +11,10 @@ export function createMemo<T>(fn: () => T): () => T {
 
   const [getResult, setResult] = createValue<T | undefined>(undefined, false);
   const memoDisposer = createDisposer();
-  const memoContainer = createContainer(() => setResult(memoValue));
-  const privilegedContainer = createContainer(() => {
+  const memoComputation = createComputation(() => setResult(memoValue));
+  const privilegedComputation = createComputation(() => {
     isDirty = true;
-    memoContainer.recompute();
+    memoComputation.recompute();
   }, true);
 
   cleanup(() => {
@@ -25,7 +25,7 @@ export function createMemo<T>(fn: () => T): () => T {
   function getter() {
     if (isDirty) {
       memoDisposer.flush();
-      runWith({ container: privilegedContainer, disposer: memoDisposer }, () => memoValue = fn());
+      runWith({ computation: privilegedComputation, disposer: memoDisposer }, () => memoValue = fn());
       isDirty = false;
     }
   

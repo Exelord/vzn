@@ -4,5 +4,5 @@ import { runWith } from "./utils";
 
 export function createRoot<T>(fn: (disposer: () => void) => T): T {
   const disposer = createDisposer();
-  return runWith({ disposer, container: undefined }, () => batch(() => fn(disposer.flush)));
+  return runWith({ disposer, computation: undefined }, () => batch(() => fn(disposer.flush)));
 }

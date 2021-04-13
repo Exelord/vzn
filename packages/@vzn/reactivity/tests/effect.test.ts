@@ -57,7 +57,7 @@ describe('createInstantEffect', () => {
     expect(getSignal()).toBe('order');
   });
 
-  it('is computes instantly if no container and does not watch changes', () => {
+  it('is computes instantly if no computation and does not watch changes', () => {
     const [getSignal, setSignal] = createValue('start');
     const effectFn = jest.fn();
     
@@ -141,7 +141,7 @@ describe('createEffect', () => {
     expect(getSignal()).toBe('effect');
   });
   
-  it('is computes in next micro queue if no container and does not watch changes', () => {
+  it('is computes in next micro queue if no computation and does not watch changes', () => {
     const [getSignal, setSignal] = createValue('start');
     const effectFn = jest.fn();
     

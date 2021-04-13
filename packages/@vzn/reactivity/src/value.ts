@@ -1,4 +1,4 @@
-import { Container, getContainer } from "./container";
+import { Computation, getComputation } from "./computation";
 import { cleanup } from "./disposer";
 
 export function createValue<T>(): [() => T | undefined, <U extends T | undefined>(value?: U) => void];
@@ -11,15 +11,15 @@ export function createValue<T>(
   compare?: boolean | ((prev: T | undefined, next: T) => boolean),
 ): [() => T | undefined, (value: T) => void] {
   let currentValue = defaultValue;
-  const containers = new Set<Container>();
+  const computations = new Set<Computation>();
   compare ??= true;
 
   function getter(): T | undefined {
-    const container = getContainer();
+    const computation = getComputation();
 
-    if (container && !containers.has(container)) {
-      containers.add(container);
-      cleanup(() => containers.delete(container));
+    if (computation && !computations.has(computation)) {
+      computations.add(computation);
+      cleanup(() => computations.delete(computation));
     }
 
     return currentValue;
@@ -30,7 +30,7 @@ export function createValue<T>(
     if (compare === true && currentValue === newValue) return;
 
     currentValue = newValue;
-    [...containers].forEach((container) => container.recompute());
+    [...computations].forEach((computation) => computation.recompute());
   }
 
   return [getter, setter];

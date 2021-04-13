@@ -1,4 +1,4 @@
-import { createContainer } from "./container";
+import { createComputation } from "./computation";
 import { cleanup, createDisposer, getDisposer } from "./disposer";
 import { runWith, untrack } from "./utils";
 
@@ -7,16 +7,16 @@ export function createInstantEffect<T>(fn: (v?: T) => T | undefined): void;
 export function createInstantEffect<T>(fn: (v?: T) => T, value?: T): void {
   let lastValue = value;
 
-  function computation(value?: T) { lastValue = fn(value) }
+  function computationFn(value?: T) { lastValue = fn(value) }
   
   const disposer = createDisposer();
-  const container = createContainer(() => {
+  const computation = createComputation(() => {
     disposer.flush();
-    runWith({ container, disposer }, () => computation(lastValue));
+    runWith({ computation, disposer }, () => computationFn(lastValue));
   });
   
   try {
-    runWith({ container, disposer }, () => computation(lastValue));
+    runWith({ computation, disposer }, () => computationFn(lastValue));
   } finally {
     cleanup(disposer.flush);
   }

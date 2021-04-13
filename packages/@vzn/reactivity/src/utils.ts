@@ -1,4 +1,4 @@
-import { Container, getContainer, setContainer } from "./container";
+import { Computation, getComputation, setComputation } from "./computation";
 import { Disposer, getDisposer, setDisposer } from "./disposer";
 
 export interface Queue {
@@ -18,7 +18,7 @@ export function createQueue() {
     
     queue.clear();
     
-    tasks.forEach((fn) => asyncRethrow(() => runWith({ disposer: undefined, container: undefined }, fn)));
+    tasks.forEach((fn) => asyncRethrow(() => runWith({ disposer: undefined, computation: undefined }, fn)));
   }
 
   return Object.freeze({
@@ -35,21 +35,21 @@ export function asyncRethrow<T>(fn: () => T): void {
   }
 }
 
-export function runWith<T>(owners: { disposer?: Disposer, container?: Container }, fn: () => T): T {
-  const currentContainer = getContainer();
+export function runWith<T>(owners: { disposer?: Disposer, computation?: Computation }, fn: () => T): T {
+  const currentComputation = getComputation();
   const currentDisposer = getDisposer();
 
-  setContainer('container' in owners ? owners.container : currentContainer);
+  setComputation('computation' in owners ? owners.computation : currentComputation);
   setDisposer('disposer' in owners ? owners.disposer : currentDisposer);
 
   try {
     return fn();
   } finally {
-    setContainer(currentContainer);
+    setComputation(currentComputation);
     setDisposer(currentDisposer);
   }
 }
 
 export function untrack<T>(fn: () => T): T {
-  return runWith({ container: undefined }, fn);
+  return runWith({ computation: undefined }, fn);
 }

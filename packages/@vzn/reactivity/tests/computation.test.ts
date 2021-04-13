@@ -1,27 +1,27 @@
 import { batch } from '../src/batch';
-import { createContainer, getContainer } from '../src/container';
+import { createComputation, getComputation } from '../src/computation';
 import { cleanup, createDisposer, getDisposer } from '../src/disposer';
 import { runWith, untrack } from '../src/utils';
 
 jest.useFakeTimers('modern');
 
 describe('untrack', () => {
-it('runs without any container', () => {
-    const container = createContainer();
+it('runs without any computation', () => {
+    const computation = createComputation();
     
-    expect(getContainer()).toBeUndefined();
+    expect(getComputation()).toBeUndefined();
     
-    runWith({ container }, () => {
-      expect(getContainer()).toBe(container);
+    runWith({ computation }, () => {
+      expect(getComputation()).toBe(computation);
       
       untrack(() => {
-        expect(getContainer()).not.toBe(container);
+        expect(getComputation()).not.toBe(computation);
       });
 
-      expect(getContainer()).toBe(container);
+      expect(getComputation()).toBe(computation);
     });
     
-    expect(getContainer()).toBeUndefined();
+    expect(getComputation()).toBeUndefined();
   });
 
   it('runs cleanups in effects correctly', () => {
@@ -60,7 +60,7 @@ it('registers disposer and calls it on dispose', () => {
     expect(cleanupMock.mock.calls.length).toBe(1);
   });
 
-it('runs cleanup if there is no container', () => {
+it('runs cleanup if there is no computation', () => {
     const cleanupMock = jest.fn();
     
     cleanup(cleanupMock);
@@ -76,68 +76,68 @@ it('runs cleanup if there is no container', () => {
 describe('batch', () => {
 it('batches operations', () => {
     const spy = jest.fn();
-    const container = createContainer(() => spy());
+    const computation = createComputation(() => spy());
 
     batch(() => {
-      container.recompute();
-      container.recompute();
+      computation.recompute();
+      computation.recompute();
     });
 
     expect(spy.mock.calls.length).toBe(1);
   });
 
-  it('uses parent container if available', () => {
-    const container = createContainer();
+  it('uses parent computation if available', () => {
+    const computation = createComputation();
 
-    runWith({ container }, () => {
+    runWith({ computation }, () => {
       batch(() => {
-        expect(getContainer()).toBe(container);
+        expect(getComputation()).toBe(computation);
       });
     });
   });
 
   it('supports nested batches', () => {
     const spy = jest.fn();
-    const container = createContainer(() => spy());
+    const computation = createComputation(() => spy());
 
     batch(() => {
-      batch(() => container.recompute());
-      container.recompute();
+      batch(() => computation.recompute());
+      computation.recompute();
     });
     
     expect(spy.mock.calls.length).toBe(1);
   });
 });
 
-describe('createContainer', () => {
+describe('createComputation', () => {
   describe('recompute', () => {
   it('recomputes', () => {
-      const container = createContainer(() => spy());
+      const computation = createComputation(() => spy());
       const spy = jest.fn();
   
-      container.recompute();
+      computation.recompute();
   
       expect(spy.mock.calls.length).toBe(1);
     });
       it('recomputes if parent is not paused', () => {
-      const parentContainer = createContainer();
-      const container = createContainer(() => spy());
+      const parentComputation = createComputation();
+      const computation = createComputation(() => spy());
       const spy = jest.fn();
       
-      runWith({ container: parentContainer }, () => {
-        container.recompute();
+      runWith({ computation: parentComputation }, () => {
+        computation.recompute();
       });
 
       expect(spy.mock.calls.length).toBe(1);
     });
     
     it('recomputes if it is prioritized and parent is paused', () => {
-      const parentContainer = createContainer();
-      const container = createContainer(() => spy(), true);
+      const parentComputation = createComputation();
+      const computation = createComputation(() => spy(), true);
       const spy = jest.fn();
       
-      runWith({ container: parentContainer }, () => {
-        container.recompute();
+      runWith({ computation: parentComputation }, () => {
+        computation.recompute();
       });
 
       expect(spy.mock.calls.length).toBe(1);

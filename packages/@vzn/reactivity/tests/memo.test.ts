@@ -1,4 +1,4 @@
-import { createContainer } from '../src/container';
+import { createComputation } from '../src/computation';
 import { createMemo } from '../src/memo';
 import { createInstantEffect } from '../src/effect';
 import { createValue } from '../src/value';
@@ -12,7 +12,7 @@ describe('createMemo', () => {
     
     expect(spy.mock.calls.length).toBe(0);
     
-    runWith({ container: createContainer() }, () => {
+    runWith({ computation: createComputation() }, () => {
       const getMemo = createMemo(() => {
         spy();
       });
