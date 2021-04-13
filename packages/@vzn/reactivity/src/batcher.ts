@@ -1,11 +1,17 @@
 import { Queue, createQueue } from "./utils";
 
-export type BatchQueue = Queue;
+export type Batcher = Queue;
 
-let globalBatcher: BatchQueue | undefined;
+let globalBatcher: Batcher | undefined;
+
+export const createBatcher = createQueue;
 
 export function getBatcher() {
   return globalBatcher;
+}
+
+export function setBatcher(batcher?: Batcher) {
+  globalBatcher = batcher;
 }
 
 export function batch<T>(computation: () => T): T {
@@ -13,14 +19,14 @@ export function batch<T>(computation: () => T): T {
     return computation();
   }
 
-  const queue = createQueue();
+  const queue = createBatcher();
   
-  globalBatcher = queue;
+  setBatcher(queue);
   
   try {
     return computation();
   } finally {
-    globalBatcher = undefined;
+    setBatcher(undefined);
     queue.flush();
   }
 }

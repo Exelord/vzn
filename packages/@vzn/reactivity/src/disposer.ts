@@ -4,16 +4,14 @@ export type Disposer = Queue;
 
 let globalDisposer: Disposer | undefined;
 
+export const createDisposer = createQueue;
+
 export function getDisposer() {
   return globalDisposer;
 }
 
 export function setDisposer(disposer?: Disposer): void {
   globalDisposer = disposer;
-}
-
-export function createDisposer() {
-  return createQueue();
 }
 
 export function cleanup(fn: () => void) {
