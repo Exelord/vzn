@@ -1,5 +1,5 @@
 import { getBatchQueue } from "./batch";
-import { asyncRethrow } from "./utils";
+import { asyncRethrow, untrack } from "./utils";
 
 export interface Container {
   recompute(): void;
@@ -11,23 +11,8 @@ export function getContainer(): Container | undefined {
   return globalContainer;
 }
 
-export function runWithContainer<T>(
-  container: Container | undefined,
-  computation: () => T
-): T {
-  const currentContainer = getContainer();
-
+export function setContainer(container?: Container): void {
   globalContainer = container;
-
-  try {
-    return computation();
-  } finally {
-    globalContainer = currentContainer;
-  }
-}
-
-export function untrack<T>(fn: () => T): T {
-  return runWithContainer(undefined, fn);
 }
 
 export function createContainer(

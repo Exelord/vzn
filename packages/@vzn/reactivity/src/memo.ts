@@ -1,8 +1,8 @@
 import {
-  createContainer,
-  runWithContainer
+  createContainer
 } from "./container";
-import { cleanup, createDisposer, runWithDisposer } from "./disposer";
+import { cleanup, createDisposer } from "./disposer";
+import { runWith } from "./utils";
 import { createValue } from "./value";
 
 export function createMemo<T>(fn: () => T): () => T {
@@ -25,7 +25,7 @@ export function createMemo<T>(fn: () => T): () => T {
   function getter() {
     if (isDirty) {
       memoDisposer.flush();
-      runWithContainer(privilegedContainer, () => memoValue = runWithDisposer(memoDisposer, fn));
+      runWith({ container: privilegedContainer, disposer: memoDisposer }, () => memoValue = fn());
       isDirty = false;
     }
   

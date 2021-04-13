@@ -1,7 +1,8 @@
 import { batch } from "./batch";
-import { createDisposer, runWithDisposer } from "./disposer";
+import { createDisposer } from "./disposer";
+import { runWith } from "./utils";
 
 export function createRoot<T>(fn: (disposer: () => void) => T): T {
   const disposer = createDisposer();
-  return runWithDisposer(disposer, () => batch(() => fn(disposer.flush)));
+  return runWith({ disposer, container: undefined }, () => batch(() => fn(disposer.flush)));
 }

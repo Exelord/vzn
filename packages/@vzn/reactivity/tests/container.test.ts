@@ -1,30 +1,9 @@
 import { batch } from '../src/batch';
-import { createContainer, getContainer, runWithContainer, untrack } from '../src/container';
-import { cleanup, createDisposer, getDisposer, runWithDisposer } from '../src/disposer';
+import { createContainer, getContainer } from '../src/container';
+import { cleanup, createDisposer, getDisposer } from '../src/disposer';
+import { runWith, untrack } from '../src/utils';
 
 jest.useFakeTimers('modern');
-
-describe('runWithContainer', () => {
-  it('sets correct container', () => {
-    const container = createContainer();
-    
-    expect(getContainer()).toBeUndefined();
-    
-    runWithContainer(container, () => {
-      const nestedContainer = createContainer();
-
-      expect(getContainer()).toBe(container);
-      
-      runWithContainer(nestedContainer, () => {
-        expect(getContainer()).toBe(nestedContainer);
-      });
-
-      expect(getContainer()).toBe(container);
-    });
-    
-    expect(getContainer()).toBeUndefined();
-  });
-});
 
 describe('untrack', () => {
 it('runs without any container', () => {
@@ -32,7 +11,7 @@ it('runs without any container', () => {
     
     expect(getContainer()).toBeUndefined();
     
-    runWithContainer(container, () => {
+    runWith({ container }, () => {
       expect(getContainer()).toBe(container);
       
       untrack(() => {
@@ -51,7 +30,7 @@ it('runs without any container', () => {
     
     expect(getDisposer()).toBeUndefined();
     
-    runWithDisposer(disposer, () => {
+    runWith({ disposer }, () => {
       untrack(() => {
         cleanup(cleanupMock)
       });
@@ -70,7 +49,7 @@ it('registers disposer and calls it on dispose', () => {
     const disposer = createDisposer();
     const cleanupMock = jest.fn();
     
-    runWithDisposer(disposer, () => {
+    runWith({ disposer }, () => {
       cleanup(cleanupMock)
     });
     
@@ -110,7 +89,7 @@ it('batches operations', () => {
   it('uses parent container if available', () => {
     const container = createContainer();
 
-    runWithContainer(container, () => {
+    runWith({ container }, () => {
       batch(() => {
         expect(getContainer()).toBe(container);
       });
@@ -145,7 +124,7 @@ describe('createContainer', () => {
       const container = createContainer(() => spy());
       const spy = jest.fn();
       
-      runWithContainer(parentContainer, () => {
+      runWith({ container: parentContainer }, () => {
         container.recompute();
       });
 
@@ -157,7 +136,7 @@ describe('createContainer', () => {
       const container = createContainer(() => spy(), true);
       const spy = jest.fn();
       
-      runWithContainer(parentContainer, () => {
+      runWith({ container: parentContainer }, () => {
         container.recompute();
       });
 

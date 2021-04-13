@@ -1,9 +1,10 @@
-import { createContainer, runWithContainer } from '../src/container';
+import { createContainer } from '../src/container';
 import { createMemo } from '../src/memo';
 import { createInstantEffect } from '../src/effect';
 import { createValue } from '../src/value';
 import { batch } from '../src/batch';
-import { createDisposer, runWithDisposer } from '../src/disposer';
+import { createDisposer } from '../src/disposer';
+import { runWith } from '../src/utils';
 
 describe('createMemo', () => {
   it('does not recompute if not changed', () => {
@@ -11,7 +12,7 @@ describe('createMemo', () => {
     
     expect(spy.mock.calls.length).toBe(0);
     
-    runWithContainer(createContainer(), () => {
+    runWith({ container: createContainer() }, () => {
       const getMemo = createMemo(() => {
         spy();
       });
@@ -87,7 +88,7 @@ describe('createMemo', () => {
     const disposer = createDisposer();
     const spy = jest.fn();
     
-    runWithDisposer(disposer, () => {
+    runWith({ disposer }, () => {
       expect(spy.mock.calls.length).toBe(0);
 
       const getMemo = createMemo(() => {

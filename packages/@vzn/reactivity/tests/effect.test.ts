@@ -1,7 +1,7 @@
 import { batch } from '../src/batch';
-import { createContainer, runWithContainer } from '../src/container';
-import { cleanup, createDisposer, runWithDisposer } from '../src/disposer';
+import { cleanup, createDisposer } from '../src/disposer';
 import { createEffect, createInstantEffect, createSingleEffect } from '../src/effect';
+import { runWith } from '../src/utils';
 import { createValue } from '../src/value';
 
 jest.useFakeTimers('modern');
@@ -15,7 +15,7 @@ describe('createInstantEffect', () => {
     expect(effectFn.mock.calls.length).toBe(0);
     expect(cleanupFn.mock.calls.length).toBe(0);
 
-    runWithDisposer(createDisposer(), () => {
+    runWith({ disposer: createDisposer() }, () => {
       createInstantEffect(() => {
         getSignal();
         effectFn();
@@ -90,7 +90,7 @@ describe('createEffect', () => {
     expect(effectFn.mock.calls.length).toBe(0);
     expect(cleanupFn.mock.calls.length).toBe(0);
 
-    runWithDisposer(createDisposer(), () => {
+    runWith({ disposer: createDisposer() }, () => {
       createEffect(() => {
         getSignal();
         effectFn();
@@ -178,7 +178,7 @@ describe('createSingleEffect', () => {
     expect(effectFn.mock.calls.length).toBe(0);
     expect(cleanupFn.mock.calls.length).toBe(0);
 
-    runWithDisposer(createDisposer(), () => {
+    runWith({ disposer: createDisposer() }, () => {
       createSingleEffect(() => {
         getSignal();
         effectFn();
