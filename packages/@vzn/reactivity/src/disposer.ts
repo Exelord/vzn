@@ -1,11 +1,11 @@
 import { Queue, createQueue } from "./utils";
 
 export type Disposable = () => void;
-export type DisposerQueue = Queue;
+export type Disposer = Queue;
 
-let globalDisposerQueue: DisposerQueue | undefined;
+let globalDisposerQueue: Disposer | undefined;
 
-export function getDisposerQueue() {
+export function getDisposer() {
   return globalDisposerQueue;
 }
 
@@ -13,8 +13,8 @@ export function createDisposer() {
   return createQueue();
 }
 
-export function runWithDisposerQueue<T>(
-  disposerQueue: DisposerQueue | undefined,
+export function runWithDisposer<T>(
+  disposerQueue: Disposer | undefined,
   computation: () => T
 ): T {
   const currentDisposer = globalDisposerQueue;
@@ -38,7 +38,7 @@ export function cleanup(fn: Disposable) {
     const disposer = createDisposer();
 
     try {
-      return runWithDisposerQueue(disposer, fn);
+      return runWithDisposer(disposer, fn);
     } finally {
       disposer.flush();
     }

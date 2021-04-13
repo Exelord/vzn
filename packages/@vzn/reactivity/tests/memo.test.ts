@@ -3,6 +3,7 @@ import { createMemo } from '../src/memo';
 import { createInstantEffect } from '../src/effect';
 import { createValue } from '../src/value';
 import { batch } from '../src/batch';
+import { createDisposer, runWithDisposer } from '../src/disposer';
 
 describe('createMemo', () => {
   it('does not recompute if not changed', () => {
@@ -83,10 +84,10 @@ describe('createMemo', () => {
   
   it('does recompute on change in effects', () => {
     const [getSignal, setSignal] = createValue(1);
-    const container = createContainer();
+    const disposer = createDisposer();
     const spy = jest.fn();
     
-    runWithContainer(container, () => {
+    runWithDisposer(disposer, () => {
       expect(spy.mock.calls.length).toBe(0);
 
       const getMemo = createMemo(() => {
@@ -111,7 +112,7 @@ describe('createMemo', () => {
   
       expect(spy.mock.calls.length).toBe(3);
       
-      container.dispose();
+      disposer.flush();
       
       setSignal(4);
   

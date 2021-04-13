@@ -1,4 +1,5 @@
-import { runWithContainer, untrack } from "./container";
+import { untrack } from "./container";
+import { runWithDisposer } from "./disposer";
 
 export interface Queue {
   schedule(fn: () => void): void;
@@ -25,7 +26,7 @@ export function createQueue() {
     
     queue.clear();
     
-    tasks.forEach((fn) => asyncRethrow(() => runWithContainer(undefined, () => untrack(fn))));
+    tasks.forEach((fn) => asyncRethrow(() => runWithDisposer(undefined, () => untrack(fn))));
   }
 
   return Object.freeze({

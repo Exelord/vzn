@@ -1,6 +1,6 @@
 import { batch } from '../src/batch';
 import { createContainer, runWithContainer } from '../src/container';
-import { cleanup } from '../src/disposer';
+import { cleanup, createDisposer, runWithDisposer } from '../src/disposer';
 import { createEffect, createInstantEffect, createSingleEffect } from '../src/effect';
 import { createValue } from '../src/value';
 
@@ -15,7 +15,7 @@ describe('createInstantEffect', () => {
     expect(effectFn.mock.calls.length).toBe(0);
     expect(cleanupFn.mock.calls.length).toBe(0);
 
-    runWithContainer(createContainer(), () => {
+    runWithDisposer(createDisposer(), () => {
       createInstantEffect(() => {
         getSignal();
         effectFn();
@@ -90,13 +90,12 @@ describe('createEffect', () => {
     expect(effectFn.mock.calls.length).toBe(0);
     expect(cleanupFn.mock.calls.length).toBe(0);
 
-    runWithContainer(createContainer(), () => {
+    runWithDisposer(createDisposer(), () => {
       createEffect(() => {
         getSignal();
         effectFn();
         cleanup(() => cleanupFn())
       });
-
     });
 
     expect(effectFn.mock.calls.length).toBe(0);
@@ -179,7 +178,7 @@ describe('createSingleEffect', () => {
     expect(effectFn.mock.calls.length).toBe(0);
     expect(cleanupFn.mock.calls.length).toBe(0);
 
-    runWithContainer(createContainer(), () => {
+    runWithDisposer(createDisposer(), () => {
       createSingleEffect(() => {
         getSignal();
         effectFn();

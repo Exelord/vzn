@@ -1,10 +1,9 @@
 import {
   createContainer,
-  getContainer,
   runWithContainer,
   untrack
 } from "./container";
-import { cleanup } from "./disposer";
+import { cleanup, createDisposer, getDisposer, runWithDisposer } from "./disposer";
 
 export function createInstantEffect<T>(fn: (v: T) => T, value: T): void;
 export function createInstantEffect<T>(fn: (v?: T) => T | undefined): void;
@@ -13,23 +12,24 @@ export function createInstantEffect<T>(fn: (v?: T) => T, value?: T): void {
 
   function computation(value?: T) { lastValue = fn(value) }
   
+  const disposer = createDisposer();
   const container = createContainer(() => {
-    container.dispose();
-    runWithContainer(container, () => computation(lastValue));
+    disposer.flush();
+    runWithDisposer(disposer, () => runWithContainer(container, () => computation(lastValue)));
   });
   
   try {
-    runWithContainer(container, () => computation(lastValue));
+    runWithDisposer(disposer, () => runWithContainer(container, () => computation(lastValue)));
   } finally {
-    cleanup(container.dispose);
+    cleanup(disposer.flush);
   }
 }
 
 export function createEffect<T>(fn: (v: T) => T, value: T): void;
 export function createEffect<T>(fn: (v?: T) => T | undefined): void;
 export function createEffect<T>(fn: (v?: T) => T, value?: T): void {
-  const container = getContainer();
-  queueMicrotask(() => runWithContainer(container, () => createInstantEffect(fn, value)))
+  const disposer = getDisposer();
+  queueMicrotask(() => runWithDisposer(disposer, () => createInstantEffect(fn, value)))
 }
 
 export function createSingleEffect<T>(fn: () => T) {

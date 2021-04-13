@@ -1,6 +1,6 @@
 import { batch } from '../src/batch';
 import { createContainer, getContainer, runWithContainer, untrack } from '../src/container';
-import { cleanup } from '../src/disposer';
+import { cleanup, createDisposer, getDisposer, runWithDisposer } from '../src/disposer';
 
 jest.useFakeTimers('modern');
 
@@ -46,12 +46,12 @@ it('runs without any container', () => {
   });
 
   it('runs cleanups in effects correctly', () => {
-    const container = createContainer();
+    const disposer = createDisposer();
     const cleanupMock = jest.fn();
     
-    expect(getContainer()).toBeUndefined();
+    expect(getDisposer()).toBeUndefined();
     
-    runWithContainer(container, () => {
+    runWithDisposer(disposer, () => {
       untrack(() => {
         cleanup(cleanupMock)
       });
@@ -59,7 +59,7 @@ it('runs without any container', () => {
     
     expect(cleanupMock.mock.calls.length).toBe(0);
 
-    container.dispose();
+    disposer.flush();
     
     expect(cleanupMock.mock.calls.length).toBe(1);
   });
@@ -67,16 +67,16 @@ it('runs without any container', () => {
 
 describe('cleanup', () => {
 it('registers disposer and calls it on dispose', () => {
-    const container = createContainer();
+    const disposer = createDisposer();
     const cleanupMock = jest.fn();
     
-    runWithContainer(container, () => {
+    runWithDisposer(disposer, () => {
       cleanup(cleanupMock)
     });
     
     expect(cleanupMock.mock.calls.length).toBe(0);
     
-    container.dispose();
+    disposer.flush();
     
     expect(cleanupMock.mock.calls.length).toBe(1);
   });
@@ -164,48 +164,5 @@ describe('createContainer', () => {
       expect(spy.mock.calls.length).toBe(1);
     });
   });
-
-  describe('dispose', () => {
-  it('disposes all disposers', () => {
-      const container = createContainer();
-      const spy = jest.fn();
-
-      runWithContainer(container, () => {
-        cleanup(() => spy())
-      });
-
-      expect(spy.mock.calls.length).toBe(0);
-      
-      container.dispose();
-
-      expect(spy.mock.calls.length).toBe(1);
-    });
-  
-    it('does work with nested disposers', () => {
-      const container = createContainer();
-      const spy1 = jest.fn();
-      const spy2 = jest.fn();
-
-      runWithContainer(container, () => {
-        cleanup(() => {
-          spy1();
-          cleanup(() => spy2());
-        })
-      });
-
-      expect(spy1.mock.calls.length).toBe(0);
-      expect(spy2.mock.calls.length).toBe(0);
-      
-      container.dispose();
-      
-      expect(spy1.mock.calls.length).toBe(1);
-      expect(spy2.mock.calls.length).toBe(0);
-      
-      jest.runAllTimers();
-      
-      expect(spy1.mock.calls.length).toBe(1);
-      expect(spy2.mock.calls.length).toBe(1);
-    });
-  });  
 });
   

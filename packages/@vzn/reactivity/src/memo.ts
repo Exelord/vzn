@@ -1,43 +1,31 @@
 import {
   createContainer,
-  getContainer,
-  runWithContainer,
-  untrack
+  runWithContainer
 } from "./container";
-import { cleanup } from "./disposer";
+import { cleanup, createDisposer, runWithDisposer } from "./disposer";
 import { createValue } from "./value";
 
 export function createMemo<T>(fn: () => T): () => T {
+  let memoValue: T;
+  let isDirty = true;
+
   const [getResult, setResult] = createValue<T | undefined>(undefined, false);
-  const currentContainer = getContainer();
+  const memoDisposer = createDisposer();
   const memoContainer = createContainer(() => setResult(memoValue));
   const privilegedContainer = createContainer(() => {
     isDirty = true;
-    runWithContainer(currentContainer, memoContainer.recompute);
+    memoContainer.recompute();
   }, true);
-  
-  let memoValue: T;
-  let isDirty = false;
-  let firstRun = true;
+
+  cleanup(() => {
+    memoDisposer.flush();
+    isDirty = true;
+  });
 
   function getter() {
-    if (firstRun) {
-      try {
-        runWithContainer(privilegedContainer, () => memoValue = fn());
-        firstRun = false;
-      } finally {
-        runWithContainer(currentContainer, () => {
-          cleanup(() => {
-            memoContainer.dispose();
-            privilegedContainer.dispose();
-            firstRun = true;
-          });
-        })
-      }
-    }
-  
     if (isDirty) {
-      memoValue = untrack(fn);
+      memoDisposer.flush();
+      runWithContainer(privilegedContainer, () => memoValue = runWithDisposer(memoDisposer, fn));
       isDirty = false;
     }
   

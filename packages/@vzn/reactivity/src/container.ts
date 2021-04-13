@@ -1,11 +1,8 @@
 import { getBatchQueue } from "./batch";
-import { cleanup, createDisposer, DisposerQueue, runWithDisposerQueue } from "./disposer";
 import { asyncRethrow } from "./utils";
 
 export interface Container {
-  disposer: DisposerQueue;
   recompute(): void;
-  dispose(): void;
 }
 
 let globalContainer: Container | undefined;
@@ -23,28 +20,20 @@ export function runWithContainer<T>(
   globalContainer = container;
 
   try {
-    return runWithDisposerQueue(container && container.disposer, computation);
+    return computation();
   } finally {
     globalContainer = currentContainer;
   }
 }
 
 export function untrack<T>(fn: () => T): T {
-  const container = createContainer();
-
-  try {
-    return runWithContainer(container, fn);
-  } finally {
-    cleanup(container.dispose);
-  }
+  return runWithContainer(undefined, fn);
 }
 
 export function createContainer(
   computation?: () => void,
   isPrioritized = false
 ): Container {
-  const disposer = createDisposer();
-
   function recompute() {
     if (!computation) return;
     
@@ -57,13 +46,5 @@ export function createContainer(
     }
   }
 
-  function dispose() {
-    disposer.flush();
-  }
-
-  return Object.freeze({
-    recompute,
-    dispose,
-    disposer
-  });
+  return Object.freeze({ recompute });
 }
