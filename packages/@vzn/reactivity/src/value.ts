@@ -1,4 +1,5 @@
-import { Container, cleanup, getContainer } from "./container";
+import { Container, getContainer } from "./container";
+import { cleanup } from "./disposer";
 
 export function createValue<T>(): [() => T | undefined, <U extends T | undefined>(value?: U) => void];
 export function createValue<T>(

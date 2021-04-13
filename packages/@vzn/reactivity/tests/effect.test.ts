@@ -1,4 +1,6 @@
-import { batch, createContainer, cleanup, runWithContainer } from '../src/container';
+import { batch } from '../src/batch';
+import { createContainer, runWithContainer } from '../src/container';
+import { cleanup } from '../src/disposer';
 import { createEffect, createInstantEffect, createSingleEffect } from '../src/effect';
 import { createValue } from '../src/value';
 

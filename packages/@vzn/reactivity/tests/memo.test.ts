@@ -1,7 +1,8 @@
-import { batch, createContainer, runWithContainer } from '../src/container';
+import { createContainer, runWithContainer } from '../src/container';
 import { createMemo } from '../src/memo';
 import { createInstantEffect } from '../src/effect';
 import { createValue } from '../src/value';
+import { batch } from '../src/batch';
 
 describe('createMemo', () => {
   it('does not recompute if not changed', () => {

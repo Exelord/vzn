@@ -1,11 +1,10 @@
 import {
-  Computation,
   createContainer,
   getContainer,
-  cleanup,
   runWithContainer,
   untrack
 } from "./container";
+import { cleanup } from "./disposer";
 
 export function createInstantEffect<T>(fn: (v: T) => T, value: T): void;
 export function createInstantEffect<T>(fn: (v?: T) => T | undefined): void;
@@ -30,16 +29,9 @@ export function createEffect<T>(fn: (v: T) => T, value: T): void;
 export function createEffect<T>(fn: (v?: T) => T | undefined): void;
 export function createEffect<T>(fn: (v?: T) => T, value?: T): void {
   const container = getContainer();
-
-  function computation() { runWithContainer(container, () => createInstantEffect(fn, value)); }
-
-  if (container) {
-    container.scheduleMicroTask(computation);
-  } else {
-    queueMicrotask(() => createInstantEffect(fn, value))
-  }
+  queueMicrotask(() => runWithContainer(container, () => createInstantEffect(fn, value)))
 }
 
-export function createSingleEffect<T>(fn: Computation<T>) {
+export function createSingleEffect<T>(fn: () => T) {
   createEffect(() => untrack(fn));
 }

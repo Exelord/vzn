@@ -1,14 +1,13 @@
 import {
-  Computation,
   createContainer,
   getContainer,
-  cleanup,
   runWithContainer,
   untrack
 } from "./container";
+import { cleanup } from "./disposer";
 import { createValue } from "./value";
 
-export function createMemo<T>(fn: Computation<T>): () => T {
+export function createMemo<T>(fn: () => T): () => T {
   const [getResult, setResult] = createValue<T | undefined>(undefined, false);
   const currentContainer = getContainer();
   const memoContainer = createContainer(() => setResult(memoValue));

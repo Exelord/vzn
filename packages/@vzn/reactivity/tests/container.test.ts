@@ -1,4 +1,6 @@
-import { batch, createContainer, getContainer, cleanup, runWithContainer, untrack } from '../src/container';
+import { batch } from '../src/batch';
+import { createContainer, getContainer, runWithContainer, untrack } from '../src/container';
+import { cleanup } from '../src/disposer';
 
 jest.useFakeTimers('modern');
 
@@ -138,26 +140,7 @@ describe('createContainer', () => {
   
       expect(spy.mock.calls.length).toBe(1);
     });
-
-  it('schedules recomputation if parent is paused', () => {
-      const parentContainer = createContainer();
-      const container = createContainer(() => spy());
-      const spy = jest.fn();
-      
-      parentContainer.pause();
-      
-      runWithContainer(parentContainer, () => {
-        container.recompute();
-      });
-
-      expect(spy.mock.calls.length).toBe(0);
-      
-      parentContainer.resume();
-      
-      expect(spy.mock.calls.length).toBe(1);
-    });
-  
-    it('recomputes if parent is not paused', () => {
+      it('recomputes if parent is not paused', () => {
       const parentContainer = createContainer();
       const container = createContainer(() => spy());
       const spy = jest.fn();
@@ -174,8 +157,6 @@ describe('createContainer', () => {
       const container = createContainer(() => spy(), true);
       const spy = jest.fn();
       
-      parentContainer.pause();
-      
       runWithContainer(parentContainer, () => {
         container.recompute();
       });
@@ -184,108 +165,6 @@ describe('createContainer', () => {
     });
   });
 
-  describe('scheduleTask', () => {
-  it('computes instantly if not paused', () => {
-      const container = createContainer();
-      const spy = jest.fn();
-  
-      container.scheduleTask(spy);
-  
-      expect(spy.mock.calls.length).toBe(1);
-    });
-  
-    it('schedules update if paused', () => {
-      const container = createContainer();
-      const spy = jest.fn();
-      
-      container.pause();
-      
-      container.scheduleTask(spy);
-      
-      expect(spy.mock.calls.length).toBe(0);
-      
-      container.resume();
-  
-      expect(spy.mock.calls.length).toBe(1);
-    });
-  });
-  
-  describe('scheduleMicroTask', () => {
-    it('computes in next micro queue if not paused', () => {
-      const container = createContainer();
-      const spy = jest.fn();
-  
-      container.scheduleMicroTask(spy);
-
-      jest.runAllTimers();
-  
-      expect(spy.mock.calls.length).toBe(1);
-    });
-  
-    it('schedules update if paused', () => {
-      const container = createContainer();
-      const spy = jest.fn();
-      
-      container.pause();
-      
-      container.scheduleMicroTask(spy);
-      
-      expect(spy.mock.calls.length).toBe(0);
-      
-      container.resume();
-
-      jest.runAllTimers();
-  
-      expect(spy.mock.calls.length).toBe(1);
-    });
-  });
-  
-  describe('pause', () => {
-  it('pauses', () => {
-      const container = createContainer();
-  
-      expect(container.isPaused).toBe(false);
-
-      container.pause();
-
-      expect(container.isPaused).toBe(true);
-    });
-  });
-  
-  describe('resume', () => {
-  it('resumes', () => {
-      const spy = jest.fn();
-      const container = createContainer();
-      
-      expect(container.isPaused).toBe(false);
-      
-      container.pause();
-      
-      container.scheduleTask(spy)
-      
-      expect(container.isPaused).toBe(true);
-      
-      container.resume();
-
-      expect(container.isPaused).toBe(false);
-      expect(spy.mock.calls.length).toBe(1);
-    });
-  
-    it('does nothing if not paused', () => {
-      const spy = jest.fn();
-      const container = createContainer();
-
-      container.scheduleTask(spy)
-      
-      expect(container.isPaused).toBe(false);
-      
-      container.resume();
-      
-      expect(container.isPaused).toBe(false);
-      expect(spy.mock.calls.length).toBe(1);
-    });
-  });
-  
   describe('dispose', () => {
   it('disposes all disposers', () => {
       const container = createContainer();
@@ -327,21 +206,6 @@ describe('createContainer', () => {
       expect(spy1.mock.calls.length).toBe(1);
       expect(spy2.mock.calls.length).toBe(1);
     });
-  });
-  
-  describe('addDisposer', () => {
-  it('add disposer', () => {
-      const container = createContainer();
-      const spy = jest.fn();
-
-      container.addDisposer(spy)
-
-      expect(spy.mock.calls.length).toBe(0);
-      
-      container.dispose();
-
-      expect(spy.mock.calls.length).toBe(1);
-    });
-});
+  });  
 });
   
