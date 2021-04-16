@@ -4,7 +4,9 @@ export type Batcher = Queue;
 
 let globalBatcher: Batcher | undefined;
 
-export const createBatcher = createQueue;
+export function createBatcher() {
+  return createQueue();
+}
 
 export function getBatcher() {
   return globalBatcher;

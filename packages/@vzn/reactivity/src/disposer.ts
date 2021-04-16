@@ -4,7 +4,9 @@ export type Disposer = Queue;
 
 let globalDisposer: Disposer | undefined;
 
-export const createDisposer = createQueue;
+export function createDisposer() {
+  return createQueue();
+}
 
 export function getDisposer() {
   return globalDisposer;

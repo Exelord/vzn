@@ -3,15 +3,17 @@ import { cleanup } from "./disposer";
 
 export function createValue<T>(): [() => T | undefined, <U extends T | undefined>(value?: U) => void];
 export function createValue<T>(
-  defaultValue: T,
+  value: T,
   compare?: boolean | ((prev: T, next: T) => boolean),
 ): [() => T, (value: T) => void];
 export function createValue<T>(
-  defaultValue?: T,
+  value?: T,
   compare?: boolean | ((prev: T | undefined, next: T) => boolean),
-): [() => T | undefined, (value: T) => void] {
-  let currentValue = defaultValue;
+): [() => T | undefined, (newValue: T) => void] {
   const computations = new Set<Computation>();
+  
+  let currentValue = value;
+  
   compare ??= true;
 
   function getter(): T | undefined {
