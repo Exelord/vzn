@@ -7,7 +7,7 @@ jest.useFakeTimers('modern');
 
 describe('untrack', () => {
 it('runs without any computation', () => {
-    const computation = createComputation();
+    const computation = createComputation(() => {});
     
     expect(getComputation()).toBeUndefined();
     
@@ -15,7 +15,7 @@ it('runs without any computation', () => {
       expect(getComputation()).toBe(computation);
       
       untrack(() => {
-        expect(getComputation()).not.toBe(computation);
+        expect(getComputation()).toBeUndefined();
       });
 
       expect(getComputation()).toBe(computation);
@@ -87,7 +87,7 @@ it('batches operations', () => {
   });
 
   it('uses parent computation if available', () => {
-    const computation = createComputation();
+    const computation = createComputation(() => {});
 
     runWith({ computation }, () => {
       batch(() => {
@@ -111,7 +111,7 @@ it('batches operations', () => {
 
 describe('createComputation', () => {
   describe('recompute', () => {
-  it('recomputes', () => {
+    it('recomputes', () => {
       const computation = createComputation(() => spy());
       const spy = jest.fn();
   
@@ -119,28 +119,27 @@ describe('createComputation', () => {
   
       expect(spy.mock.calls.length).toBe(1);
     });
-      it('recomputes if parent is not paused', () => {
-      const parentComputation = createComputation();
+
+    it('schedule recomputation if batching', () => {
       const computation = createComputation(() => spy());
       const spy = jest.fn();
       
-      runWith({ computation: parentComputation }, () => {
+      batch(() => {
         computation.recompute();
+        expect(spy.mock.calls.length).toBe(0);
       });
 
       expect(spy.mock.calls.length).toBe(1);
     });
     
-    it('recomputes if it is prioritized and parent is paused', () => {
-      const parentComputation = createComputation();
+    it('recomputes if it is prioritized and batching', () => {
       const computation = createComputation(() => spy(), true);
       const spy = jest.fn();
       
-      runWith({ computation: parentComputation }, () => {
-        computation.recompute();
+      batch(() => {
+        computation.recompute()
+        expect(spy.mock.calls.length).toBe(1);
       });
-
-      expect(spy.mock.calls.length).toBe(1);
     });
   });
 });

@@ -1,4 +1,3 @@
-import { createComputation } from '../src/computation';
 import { createMemo } from '../src/memo';
 import { createInstantEffect } from '../src/effect';
 import { createValue } from '../src/value';
@@ -12,21 +11,19 @@ describe('createMemo', () => {
     
     expect(spy.mock.calls.length).toBe(0);
     
-    runWith({ computation: createComputation() }, () => {
-      const getMemo = createMemo(() => {
-        spy();
-      });
+    const getMemo = createMemo(() => {
+      spy();
+    });
 
-      expect(spy.mock.calls.length).toBe(0);
-  
-      getMemo();
-      
-      expect(spy.mock.calls.length).toBe(1);
-      
-      getMemo();
-      
-      expect(spy.mock.calls.length).toBe(1);
-    })
+    expect(spy.mock.calls.length).toBe(0);
+
+    getMemo();
+    
+    expect(spy.mock.calls.length).toBe(1);
+    
+    getMemo();
+    
+    expect(spy.mock.calls.length).toBe(1);
   });
   
   it('does recompute if changed', () => {
@@ -67,23 +64,55 @@ describe('createMemo', () => {
         getSignal();
         spy();
       });
+
+      createInstantEffect(() => {
+        getMemo();
+      })
       
-      expect(spy.mock.calls.length).toBe(0);
+      expect(spy.mock.calls.length).toBe(1);
   
       setSignal(2);
       setSignal(3);
       
-      expect(spy.mock.calls.length).toBe(0);
+      expect(spy.mock.calls.length).toBe(1);
       
       getMemo();
 
+      expect(spy.mock.calls.length).toBe(2);
+    })
+
+    expect(spy.mock.calls.length).toBe(2);
+  });
+  
+
+  it('does recompute inside batch only once in effect', () => {
+    const [getSignal, setSignal] = createValue(1);
+    const spy = jest.fn();
+    
+    expect(spy.mock.calls.length).toBe(0);
+
+    batch(() => {
+      const getMemo = createMemo(() => {
+        getSignal();
+        spy();
+      });
+
+      createInstantEffect(() => {
+        getMemo();
+      })
+      
+      expect(spy.mock.calls.length).toBe(1);
+  
+      setSignal(2);
+      setSignal(3);
+      
       expect(spy.mock.calls.length).toBe(1);
     })
 
-    expect(spy.mock.calls.length).toBe(1);
+    expect(spy.mock.calls.length).toBe(2);
   });
   
-  it('does recompute on change in effects', () => {
+  it('does recompute on every change in effect', () => {
     const [getSignal, setSignal] = createValue(1);
     const disposer = createDisposer();
     const spy = jest.fn();

@@ -16,12 +16,10 @@ export function setComputation(computation?: Computation): void {
 }
 
 export function createComputation(
-  fn?: () => void,
+  fn: () => void,
   isPrioritized = false
 ): Computation {
   function recompute() {
-    if (!fn) return;
-    
     const batchQueue = getBatcher();
 
     if (!isPrioritized && batchQueue) {
