@@ -1,3 +1,4 @@
+import { batch } from "./batcher";
 import { Computation, getComputation, setComputation } from "./computation";
 import { Disposer, getDisposer, setDisposer } from "./disposer";
 
@@ -18,7 +19,7 @@ export function createQueue() {
     
     queue.clear();
     
-    tasks.forEach((fn) => asyncRethrow(() => runWith({ disposer: undefined, computation: undefined }, fn)));
+    tasks.forEach((fn) => asyncRethrow(() => runWith({ disposer: undefined, computation: undefined }, () => batch(fn))));
   }
 
   return Object.freeze({

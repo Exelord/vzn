@@ -1,5 +1,5 @@
-import { getBatcher } from "./batcher";
-import { asyncRethrow, untrack } from "./utils";
+import { batch, getBatcher } from "./batcher";
+import { asyncRethrow, runWith } from "./utils";
 
 export interface Computation {
   recompute(): void;
@@ -25,7 +25,7 @@ export function createComputation(
     if (!isPrioritized && batchQueue) {
       batchQueue.schedule(fn);
     } else {
-      asyncRethrow(() => untrack(fn));
+      asyncRethrow(() => runWith({ disposer: undefined, computation: undefined }, () => batch(fn)));
     }
   }
 

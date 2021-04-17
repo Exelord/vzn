@@ -8,7 +8,7 @@ export function createInstantEffect<T>(fn: (v?: T) => T | undefined): void;
 export function createInstantEffect<T>(fn: (v?: T) => T, value?: T): void {
   let lastValue = value;
 
-  function computationFn(value?: T) { lastValue = batch(() => fn(value)) }
+  function computationFn(value?: T) { lastValue = fn(value) }
   
   const disposer = createDisposer();
   const computation = createComputation(() => {
@@ -17,7 +17,7 @@ export function createInstantEffect<T>(fn: (v?: T) => T, value?: T): void {
   });
   
   try {
-    runWith({ computation, disposer }, () => computationFn(lastValue));
+    batch(() => runWith({ computation, disposer }, () => computationFn(lastValue)));
   } finally {
     onCleanup(disposer.flush);
   }
