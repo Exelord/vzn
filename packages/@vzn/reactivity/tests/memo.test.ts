@@ -2,7 +2,7 @@ import { createMemo } from '../src/memo';
 import { createInstantEffect } from '../src/effect';
 import { createValue } from '../src/value';
 import { batch } from '../src/batcher';
-import { cleanup, createDisposer } from '../src/disposer';
+import { onCleanup, createDisposer } from '../src/disposer';
 import { runWith } from '../src/utils';
 
 describe('createMemo', () => {  
@@ -109,7 +109,7 @@ describe('createMemo', () => {
     
     runWith({ disposer }, () => {
       const getMemo = createMemo(() => {
-        cleanup(spy);
+        onCleanup(spy);
         getSignal();
       });
 

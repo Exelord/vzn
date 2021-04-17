@@ -1,5 +1,5 @@
 import { batch } from '../src/batcher';
-import { cleanup, createDisposer } from '../src/disposer';
+import { onCleanup, createDisposer } from '../src/disposer';
 import { createEffect, createInstantEffect, createSingleEffect } from '../src/effect';
 import { runWith } from '../src/utils';
 import { createValue } from '../src/value';
@@ -19,7 +19,7 @@ describe('createInstantEffect', () => {
       createInstantEffect(() => {
         getSignal();
         effectFn();
-        cleanup(() => cleanupFn())
+        onCleanup(() => cleanupFn())
       });
     })
     
@@ -94,7 +94,7 @@ describe('createEffect', () => {
       createEffect(() => {
         getSignal();
         effectFn();
-        cleanup(() => cleanupFn())
+        onCleanup(() => cleanupFn())
       });
     });
 
@@ -182,7 +182,7 @@ describe('createSingleEffect', () => {
       createSingleEffect(() => {
         getSignal();
         effectFn();
-        cleanup(() => cleanupFn())
+        onCleanup(() => cleanupFn())
       });
     });
     

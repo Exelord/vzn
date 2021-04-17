@@ -16,7 +16,7 @@ export function setDisposer(disposer?: Disposer): void {
   globalDisposer = disposer;
 }
 
-export function cleanup(fn: () => void) {
+export function onCleanup(fn: () => void) {
   if (globalDisposer) {
     globalDisposer.schedule(fn);
     return;

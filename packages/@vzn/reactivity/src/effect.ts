@@ -1,5 +1,5 @@
 import { createComputation } from "./computation";
-import { cleanup, createDisposer, getDisposer } from "./disposer";
+import { onCleanup, createDisposer, getDisposer } from "./disposer";
 import { runWith, untrack } from "./utils";
 
 export function createInstantEffect<T>(fn: (v: T) => T, value: T): void;
@@ -18,7 +18,7 @@ export function createInstantEffect<T>(fn: (v?: T) => T, value?: T): void {
   try {
     runWith({ computation, disposer }, () => computationFn(lastValue));
   } finally {
-    cleanup(disposer.flush);
+    onCleanup(disposer.flush);
   }
 }
 

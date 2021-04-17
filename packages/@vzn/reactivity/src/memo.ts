@@ -1,7 +1,7 @@
 import {
   createComputation
 } from "./computation";
-import { cleanup, createDisposer } from "./disposer";
+import { onCleanup, createDisposer } from "./disposer";
 import { runWith } from "./utils";
 import { createValue } from "./value";
 
@@ -17,7 +17,7 @@ export function createMemo<T>(fn: () => T): () => T {
     memoComputation.recompute();
   }, true);
 
-  cleanup(() => {
+  onCleanup(() => {
     memoDisposer.flush();
     isDirty = true;
   });

@@ -5,7 +5,7 @@ import { configure, render } from '@vzn/dom';
 import {
   batch,
   untrack,
-  cleanup,
+  onCleanup,
   createRoot,
   createMemo,
   createValue,
@@ -16,7 +16,7 @@ import {
 configure({
   batch,
   untrack,
-  cleanup,
+  cleanup: onCleanup,
   createRoot,
   createMemo,
   createValue,

@@ -1,5 +1,5 @@
 import { Computation, getComputation } from "./computation";
-import { cleanup } from "./disposer";
+import { onCleanup } from "./disposer";
 
 export function createValue<T>(): [() => T | undefined, <U extends T | undefined>(value?: U) => void];
 export function createValue<T>(
@@ -21,7 +21,7 @@ export function createValue<T>(
 
     if (computation && !computations.has(computation)) {
       computations.add(computation);
-      cleanup(() => computations.delete(computation));
+      onCleanup(() => computations.delete(computation));
     }
 
     return currentValue;

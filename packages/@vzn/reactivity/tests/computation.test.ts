@@ -1,6 +1,6 @@
 import { batch } from '../src/batcher';
 import { createComputation, getComputation } from '../src/computation';
-import { cleanup, createDisposer, getDisposer } from '../src/disposer';
+import { onCleanup, createDisposer, getDisposer } from '../src/disposer';
 import { runWith, untrack } from '../src/utils';
 
 jest.useFakeTimers('modern');
@@ -32,7 +32,7 @@ it('runs without any computation', () => {
     
     runWith({ disposer }, () => {
       untrack(() => {
-        cleanup(cleanupMock)
+        onCleanup(cleanupMock)
       });
     });
     
@@ -44,13 +44,13 @@ it('runs without any computation', () => {
   });
 });
 
-describe('cleanup', () => {
+describe('onCleanup', () => {
 it('registers disposer and calls it on dispose', () => {
     const disposer = createDisposer();
     const cleanupMock = jest.fn();
     
     runWith({ disposer }, () => {
-      cleanup(cleanupMock)
+      onCleanup(cleanupMock)
     });
     
     expect(cleanupMock.mock.calls.length).toBe(0);
@@ -60,10 +60,10 @@ it('registers disposer and calls it on dispose', () => {
     expect(cleanupMock.mock.calls.length).toBe(1);
   });
 
-it('runs cleanup if there is no computation', () => {
+it('runs onCleanup if there is no computation', () => {
     const cleanupMock = jest.fn();
     
-    cleanup(cleanupMock);
+    onCleanup(cleanupMock);
     
     expect(cleanupMock.mock.calls.length).toBe(0);
     
