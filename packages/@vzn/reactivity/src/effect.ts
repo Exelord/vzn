@@ -1,3 +1,4 @@
+import { batch } from "./batcher";
 import { createComputation } from "./computation";
 import { onCleanup, createDisposer, getDisposer } from "./disposer";
 import { runWith, untrack } from "./utils";
@@ -7,7 +8,7 @@ export function createInstantEffect<T>(fn: (v?: T) => T | undefined): void;
 export function createInstantEffect<T>(fn: (v?: T) => T, value?: T): void {
   let lastValue = value;
 
-  function computationFn(value?: T) { lastValue = fn(value) }
+  function computationFn(value?: T) { lastValue = batch(() => fn(value)) }
   
   const disposer = createDisposer();
   const computation = createComputation(() => {

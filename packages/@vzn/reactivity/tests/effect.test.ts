@@ -1,4 +1,5 @@
 import { batch } from '../src/batcher';
+import { createComputation } from '../src/computation';
 import { onCleanup, createDisposer } from '../src/disposer';
 import { createEffect, createInstantEffect, createSingleEffect } from '../src/effect';
 import { runWith } from '../src/utils';
@@ -8,43 +9,50 @@ jest.useFakeTimers('modern');
 
 describe('createInstantEffect', () => {
   it('reruns and cleanups on change', () => {
-    const [getSignal, setSignal] = createValue('value');
-    const effectFn = jest.fn();
-    const cleanupFn = jest.fn();
-    
-    expect(effectFn.mock.calls.length).toBe(0);
-    expect(cleanupFn.mock.calls.length).toBe(0);
+    const [getSignal, setSignal] = createValue(1);
+    const disposer = createDisposer();
+    const effectSpy = jest.fn();
+    const cleanupSpy = jest.fn();
 
-    runWith({ disposer: createDisposer() }, () => {
+    runWith({ disposer }, () => {
       createInstantEffect(() => {
+        onCleanup(cleanupSpy);
+        effectSpy();
         getSignal();
-        effectFn();
-        onCleanup(() => cleanupFn())
       });
     })
     
-    expect(effectFn.mock.calls.length).toBe(1);
-    expect(cleanupFn.mock.calls.length).toBe(0);
+    expect(effectSpy.mock.calls.length).toBe(1);
+    expect(cleanupSpy.mock.calls.length).toBe(0);
 
-    setSignal('value2');
+    setSignal(2);
 
-    expect(effectFn.mock.calls.length).toBe(2);
-    expect(cleanupFn.mock.calls.length).toBe(1);
+    expect(effectSpy.mock.calls.length).toBe(2);
+    expect(cleanupSpy.mock.calls.length).toBe(1);
     
-    setSignal('value3');
+    setSignal(3);
 
-    expect(effectFn.mock.calls.length).toBe(3);
-    expect(cleanupFn.mock.calls.length).toBe(2);
+    expect(effectSpy.mock.calls.length).toBe(3);
+    expect(cleanupSpy.mock.calls.length).toBe(2);
+    
+    disposer.flush();
+    
+    expect(effectSpy.mock.calls.length).toBe(3);
+    expect(cleanupSpy.mock.calls.length).toBe(3);
+    
+    setSignal(4);
+    
+    expect(effectSpy.mock.calls.length).toBe(3);
+    expect(cleanupSpy.mock.calls.length).toBe(3);
   });
 
-  it('is called instantly', () => {
+  it('works with batching', () => {
     const [getSignal, setSignal] = createValue('start');
-    
-    expect(getSignal()).toBe('start');
     
     batch(() => {
       createInstantEffect(() => {
         setSignal('effect');
+        getSignal();
       });
       
       expect(getSignal()).toBe('effect');
@@ -54,79 +62,94 @@ describe('createInstantEffect', () => {
       expect(getSignal()).toBe('order');
     });
 
-    expect(getSignal()).toBe('order');
+    expect(getSignal()).toBe('effect');
   });
 
-  it('is computes instantly if no computation and does not watch changes', () => {
+  it('is batching computation', () => {
     const [getSignal, setSignal] = createValue('start');
-    const effectFn = jest.fn();
-    
-    expect(getSignal()).toBe('start');
-
-    expect(effectFn.mock.calls.length).toBe(0);
-    
-    createInstantEffect(() => {
-      setSignal('effect');
-      effectFn();
+    const spy = jest.fn();
+    const compSpy = jest.fn();
+    const computation = createComputation(() => {
+      compSpy();
     });
 
-    expect(effectFn.mock.calls.length).toBe(1);
+    runWith({ computation }, () => {
+      getSignal();
+
+      createInstantEffect(() => {
+        setSignal('effect1');
+        setSignal('effect2');
+        getSignal();
+        spy();
+      });
+    })
+
+    expect(spy.mock.calls.length).toBe(1);
+    expect(compSpy.mock.calls.length).toBe(1);
     
-    expect(getSignal()).toBe('effect');
+    expect(getSignal()).toBe('effect2');
     
     setSignal('order');
     
-    expect(getSignal()).toBe('order');
-    expect(effectFn.mock.calls.length).toBe(1);
+    expect(getSignal()).toBe('effect2');
+    expect(compSpy.mock.calls.length).toBe(3);
+    expect(spy.mock.calls.length).toBe(2);
   });
 });
 
 describe('createEffect', () => {
   it('reruns and cleanups on change', () => {
-    const [getSignal, setSignal] = createValue('value');
-    const effectFn = jest.fn();
-    const cleanupFn = jest.fn();
-    
-    expect(effectFn.mock.calls.length).toBe(0);
-    expect(cleanupFn.mock.calls.length).toBe(0);
+    const [getSignal, setSignal] = createValue(1);
+    const disposer = createDisposer();
+    const effectSpy = jest.fn();
+    const cleanupSpy = jest.fn();
 
-    runWith({ disposer: createDisposer() }, () => {
+    runWith({ disposer }, () => {
       createEffect(() => {
+        onCleanup(cleanupSpy);
+        effectSpy();
         getSignal();
-        effectFn();
-        onCleanup(() => cleanupFn())
       });
-    });
-
-    expect(effectFn.mock.calls.length).toBe(0);
-    expect(cleanupFn.mock.calls.length).toBe(0);
+    })
+    
+    expect(effectSpy.mock.calls.length).toBe(0);
+    expect(cleanupSpy.mock.calls.length).toBe(0);
 
     jest.runAllTimers();
-
-    expect(effectFn.mock.calls.length).toBe(1);
-    expect(cleanupFn.mock.calls.length).toBe(0);
-
-    setSignal('value2');
-
-    expect(effectFn.mock.calls.length).toBe(2);
-    expect(cleanupFn.mock.calls.length).toBe(1);
     
-    setSignal('value3');
+    expect(effectSpy.mock.calls.length).toBe(1);
+    expect(cleanupSpy.mock.calls.length).toBe(0);
 
-    expect(effectFn.mock.calls.length).toBe(3);
-    expect(cleanupFn.mock.calls.length).toBe(2);
+    setSignal(2);
+
+    expect(effectSpy.mock.calls.length).toBe(2);
+    expect(cleanupSpy.mock.calls.length).toBe(1);
+    
+    setSignal(3);
+
+    expect(effectSpy.mock.calls.length).toBe(3);
+    expect(cleanupSpy.mock.calls.length).toBe(2);
+    
+    disposer.flush();
+    
+    expect(effectSpy.mock.calls.length).toBe(3);
+    expect(cleanupSpy.mock.calls.length).toBe(3);
+    
+    setSignal(4);
+    
+    expect(effectSpy.mock.calls.length).toBe(3);
+    expect(cleanupSpy.mock.calls.length).toBe(3);
   });
 
-  it('is called in micro queue', () => {
+  it('works with batching', () => {
     const [getSignal, setSignal] = createValue('start');
-    
-    expect(getSignal()).toBe('start');
     
     batch(() => {
       createEffect(() => {
         setSignal('effect');
+        getSignal();
       });
-
+      
       expect(getSignal()).toBe('start');
       
       setSignal('order');
@@ -137,89 +160,133 @@ describe('createEffect', () => {
     expect(getSignal()).toBe('order');
 
     jest.runAllTimers();
-    
+
     expect(getSignal()).toBe('effect');
   });
-  
-  it('is computes in next micro queue if no computation and does not watch changes', () => {
-    const [getSignal, setSignal] = createValue('start');
-    const effectFn = jest.fn();
-    
-    expect(getSignal()).toBe('start');
 
-    expect(effectFn.mock.calls.length).toBe(0);
-    
-    createEffect(() => {
-      setSignal('effect');
-      effectFn();
+  it('is batching computation', () => {
+    const [getSignal, setSignal] = createValue('start');
+    const spy = jest.fn();
+    const compSpy = jest.fn();
+    const disposer = createDisposer();
+    const computation = createComputation(() => {
+      compSpy();
     });
 
-    expect(effectFn.mock.calls.length).toBe(0);
+    runWith({ disposer, computation }, () => {
+      getSignal();
+
+      createEffect(() => {
+        setSignal('effect1');
+        setSignal('effect2');
+        getSignal();
+        spy();
+      });
+    })
 
     jest.runAllTimers();
 
-    expect(effectFn.mock.calls.length).toBe(1);
+    expect(spy.mock.calls.length).toBe(1);
+    expect(compSpy.mock.calls.length).toBe(1);
     
-    expect(getSignal()).toBe('effect');
+    expect(getSignal()).toBe('effect2');
     
     setSignal('order');
     
-    expect(getSignal()).toBe('order');
-    expect(effectFn.mock.calls.length).toBe(1);
+    expect(getSignal()).toBe('effect2');
+    expect(compSpy.mock.calls.length).toBe(3);
+    expect(spy.mock.calls.length).toBe(2);
   });
 });
 
 describe('createSingleEffect', () => {
-  it('runs only once', () => {
-    const [getSignal, setSignal] = createValue('value');
-    const effectFn = jest.fn();
-    const cleanupFn = jest.fn();
-    
-    expect(effectFn.mock.calls.length).toBe(0);
-    expect(cleanupFn.mock.calls.length).toBe(0);
+  it('reruns and cleanups on change', () => {
+    const [getSignal, setSignal] = createValue(1);
+    const disposer = createDisposer();
+    const effectSpy = jest.fn();
+    const cleanupSpy = jest.fn();
 
-    runWith({ disposer: createDisposer() }, () => {
+    runWith({ disposer }, () => {
       createSingleEffect(() => {
+        onCleanup(cleanupSpy);
+        effectSpy();
         getSignal();
-        effectFn();
-        onCleanup(() => cleanupFn())
       });
-    });
+    })
     
-    expect(effectFn.mock.calls.length).toBe(0);
-    
+    expect(effectSpy.mock.calls.length).toBe(0);
+    expect(cleanupSpy.mock.calls.length).toBe(0);
+
     jest.runAllTimers();
     
-    expect(effectFn.mock.calls.length).toBe(1);
-    expect(cleanupFn.mock.calls.length).toBe(0);
+    expect(effectSpy.mock.calls.length).toBe(1);
+    expect(cleanupSpy.mock.calls.length).toBe(0);
 
-    setSignal('value2');
+    setSignal(2);
 
-    expect(effectFn.mock.calls.length).toBe(1);
-    expect(cleanupFn.mock.calls.length).toBe(0);
+    expect(effectSpy.mock.calls.length).toBe(1);
+    expect(cleanupSpy.mock.calls.length).toBe(0);
+    
+    disposer.flush();
+    
+    expect(effectSpy.mock.calls.length).toBe(1);
+    expect(cleanupSpy.mock.calls.length).toBe(1);
   });
 
-  it('is called at the end of micro queue', () => {
+  it('works with batching', () => {
     const [getSignal, setSignal] = createValue('start');
-    
-    expect(getSignal()).toBe('start');
     
     batch(() => {
       createSingleEffect(() => {
         setSignal('effect');
+        getSignal();
       });
-
+      
       expect(getSignal()).toBe('start');
       
       setSignal('order');
       
       expect(getSignal()).toBe('order');
-    })
+    });
 
     expect(getSignal()).toBe('order');
-    
+
     jest.runAllTimers();
-    
+
     expect(getSignal()).toBe('effect');
+  });
+
+  it('is batching computation', () => {
+    const [getSignal, setSignal] = createValue('start');
+    const spy = jest.fn();
+    const compSpy = jest.fn();
+    const disposer = createDisposer();
+    const computation = createComputation(() => {
+      compSpy();
+    });
+
+    runWith({ disposer, computation }, () => {
+      getSignal();
+
+      createSingleEffect(() => {
+        setSignal('effect1');
+        setSignal('effect2');
+        getSignal();
+        spy();
+      });
+    })
+
+    jest.runAllTimers();
+
+    expect(spy.mock.calls.length).toBe(1);
+    expect(compSpy.mock.calls.length).toBe(1);
+    
+    expect(getSignal()).toBe('effect2');
+    
+    setSignal('order');
+    
+    expect(getSignal()).toBe('order');
+    expect(compSpy.mock.calls.length).toBe(2);
+    expect(spy.mock.calls.length).toBe(1);
   });
 });
