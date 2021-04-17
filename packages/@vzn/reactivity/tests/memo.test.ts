@@ -2,35 +2,13 @@ import { createMemo } from '../src/memo';
 import { createInstantEffect } from '../src/effect';
 import { createValue } from '../src/value';
 import { batch } from '../src/batcher';
-import { createDisposer } from '../src/disposer';
+import { cleanup, createDisposer } from '../src/disposer';
 import { runWith } from '../src/utils';
 
-describe('createMemo', () => {
-  it('does not recompute if not changed', () => {
-    const spy = jest.fn();
-    
-    expect(spy.mock.calls.length).toBe(0);
-    
-    const getMemo = createMemo(() => {
-      spy();
-    });
-
-    expect(spy.mock.calls.length).toBe(0);
-
-    getMemo();
-    
-    expect(spy.mock.calls.length).toBe(1);
-    
-    getMemo();
-    
-    expect(spy.mock.calls.length).toBe(1);
-  });
-  
-  it('does recompute if changed', () => {
+describe('createMemo', () => {  
+  it('does recompute once only if changed', () => {
     const [getSignal, setSignal] = createValue(1);
     const spy = jest.fn();
-    
-    expect(spy.mock.calls.length).toBe(0);
     
     const getMemo = createMemo(() => {
       getSignal();
@@ -41,6 +19,7 @@ describe('createMemo', () => {
     
     expect(spy.mock.calls.length).toBe(0);
     
+    getMemo();
     getMemo();
     
     expect(spy.mock.calls.length).toBe(1);
@@ -53,50 +32,18 @@ describe('createMemo', () => {
     expect(spy.mock.calls.length).toBe(2);
   });
   
-  it('does recompute inside batch only once', () => {
+  it('schedules only one recomputation inside batch', () => {
     const [getSignal, setSignal] = createValue(1);
     const spy = jest.fn();
     
     expect(spy.mock.calls.length).toBe(0);
 
-    batch(() => {
-      const getMemo = createMemo(() => {
-        getSignal();
-        spy();
-      });
-
-      createInstantEffect(() => {
-        getMemo();
-      })
-      
-      expect(spy.mock.calls.length).toBe(1);
-  
-      setSignal(2);
-      setSignal(3);
-      
-      expect(spy.mock.calls.length).toBe(1);
-      
-      getMemo();
-
-      expect(spy.mock.calls.length).toBe(2);
-    })
-
-    expect(spy.mock.calls.length).toBe(2);
-  });
-  
-
-  it('does recompute inside batch only once in effect', () => {
-    const [getSignal, setSignal] = createValue(1);
-    const spy = jest.fn();
-    
-    expect(spy.mock.calls.length).toBe(0);
+    const getMemo = createMemo(() => {
+      getSignal();
+      spy();
+    });
 
     batch(() => {
-      const getMemo = createMemo(() => {
-        getSignal();
-        spy();
-      });
-
       createInstantEffect(() => {
         getMemo();
       })
@@ -151,6 +98,36 @@ describe('createMemo', () => {
       getMemo();
   
       expect(spy.mock.calls.length).toBe(4);
+    })
+  });
+  
+  it('cleanups with each recomputation', () => {
+    const spy = jest.fn();
+    
+    const [getSignal, setSignal] = createValue(1);
+    const disposer = createDisposer();
+    
+    runWith({ disposer }, () => {
+      const getMemo = createMemo(() => {
+        cleanup(spy);
+        getSignal();
+      });
+
+      getMemo();
+
+      expect(spy.mock.calls.length).toBe(0);
+      
+      disposer.flush();
+      
+      expect(spy.mock.calls.length).toBe(1);
+      
+      getMemo();
+      
+      setSignal(2);
+      
+      getMemo();
+
+      expect(spy.mock.calls.length).toBe(2);
     })
   });
 });
