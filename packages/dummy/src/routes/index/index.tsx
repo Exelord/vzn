@@ -101,7 +101,7 @@ const IndexRoute = () => {
             return <tr class={rowId === selected() ? "danger": ""}>
               <td class="col-md-1" textContent={`${rowId}`} />
               <td class="col-md-4"><a onClick={[setSelected, rowId]} textContent={row.label} /></td>
-              <td class="col-md-1"><a onClick={[remove, rowId]}><span class="glyphicon glyphicon-remove" aria-hidden="true" /></a></td>
+              <td class="col-md-1"><a onClick={[remove, rowId]}>X</a></td>
               <td class="col-md-6"/>
             </tr>
           }}</For>
