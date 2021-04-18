@@ -37,9 +37,15 @@ export function createValue<T>(
     if (compare === true && currentValue === newValue) return;
     
     currentValue = newValue;
-
+    
+    const currentComputation = getComputation();
+    
     tempComputations = new Set<Computation>(computations);
-    tempComputations.forEach((computation) => computation.recompute());
+    
+    tempComputations.forEach((computation) => {
+      if (currentComputation !== computation) computation.recompute();
+    });
+
     tempComputations.clear();
   }
 

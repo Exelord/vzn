@@ -40,4 +40,21 @@ describe('createValue', () => {
     expect(spy.mock.calls.length).toBe(1);
     expect(getSignal()).toBe(false);
   });
+
+  it('ignores recomputation with circular dependencies', () => {
+    const spy = jest.fn();
+    const [getSignal, setSignal] = createValue(0);
+    const computation = createComputation(spy);
+    const disposer = createDisposer();
+
+    runWith({ disposer, computation }, () => setSignal(getSignal() + 1));
+    
+    expect(spy.mock.calls.length).toBe(0);
+    expect(getSignal()).toBe(1);
+
+    setSignal(getSignal() + 1);
+
+    expect(spy.mock.calls.length).toBe(1);
+    expect(getSignal()).toBe(2);
+  });
 });
