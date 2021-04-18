@@ -1,4 +1,5 @@
-import { Queue, createQueue, runWith } from "./utils";
+import { runWith } from "./utils";
+import { Queue, createQueue } from "./-queue";
 
 export type Disposer = Queue;
 

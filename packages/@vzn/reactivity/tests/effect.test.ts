@@ -95,6 +95,26 @@ describe('createInstantEffect', () => {
     expect(compSpy.mock.calls.length).toBe(3);
     expect(spy.mock.calls.length).toBe(2);
   });
+
+  it('works with nested effects', () => {
+    const spy = jest.fn();
+    const [getSignal, setSignal] = createValue();
+    
+    createInstantEffect(() => {
+      if (!getSignal()) return;
+      createInstantEffect(() => spy(getSignal()));
+    });
+
+    expect(spy.mock.calls.length).toBe(0);
+    
+    setSignal(true);
+    
+    expect(spy.mock.calls.length).toBe(1);
+    
+    setSignal(false);
+    
+    expect(spy.mock.calls.length).toBe(1);
+  });
 });
 
 describe('createEffect', () => {

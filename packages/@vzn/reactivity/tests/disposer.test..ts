@@ -1,5 +1,5 @@
 import { createDisposer, getDisposer, onCleanup, setDisposer } from '../src/disposer';
-import { runWith } from '../src/utils';
+import { runWith } from '../src/core';
 
 jest.useFakeTimers('modern');
 

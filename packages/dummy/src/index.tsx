@@ -3,10 +3,10 @@ import App from './app';
 import { configure, render } from '@vzn/dom';
 
 import {
+  root,
   batch,
   untrack,
   onCleanup,
-  createRoot,
   createMemo,
   createValue,
   createEffect,
@@ -17,7 +17,7 @@ configure({
   batch,
   untrack,
   cleanup: onCleanup,
-  createRoot,
+  createRoot: root,
   createMemo,
   createValue,
   createEffect,
