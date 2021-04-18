@@ -1,6 +1,5 @@
 import { batch, getBatcher } from "./batcher";
-import { runWith } from "./utils";
-import { asyncRethrow } from "./-queue";
+import { asyncRethrow, runWith } from "./utils";
 
 export interface Computation {
   recompute(): void;

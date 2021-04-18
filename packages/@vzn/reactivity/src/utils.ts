@@ -1,6 +1,14 @@
 import { Computation, getComputation, setComputation } from "./computation";
 import { createDisposer, Disposer, getDisposer, setDisposer } from "./disposer";
 
+export function asyncRethrow<T>(fn: () => T): void {
+  try {
+    fn();
+  } catch (error) {
+    setTimeout(() => { throw error; })
+  }
+}
+
 export function runWith<T>(owners: { disposer?: Disposer, computation?: Computation }, fn: () => T): T {
   const currentComputation = getComputation();
   const currentDisposer = getDisposer();

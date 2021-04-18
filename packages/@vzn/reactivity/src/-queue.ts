@@ -1,5 +1,5 @@
 import { batch } from "./batcher";
-import { runWith } from "./utils";
+import { asyncRethrow, runWith } from "./utils";
 
 export interface Queue {
   schedule(fn: () => void): void;
@@ -26,12 +26,3 @@ export function createQueue() {
     flush
   });
 }
-
-export function asyncRethrow<T>(fn: () => T): void {
-  try {
-    fn();
-  } catch (error) {
-    setTimeout(() => { throw error; })
-  }
-}
-
