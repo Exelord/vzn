@@ -12,9 +12,7 @@ export function createQueue() {
 
   function flush(): void {
     const tasks = [...queue];
-    
     queue.clear();
-    
     tasks.forEach((fn) => fn());
   }
 

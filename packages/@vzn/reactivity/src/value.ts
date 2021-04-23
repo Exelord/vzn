@@ -1,7 +1,6 @@
 import { Computation, getComputation } from "./computation";
 import { onCleanup } from "./disposer";
 
-
 /**
  * Values are the foundation of reactive system.
  * By using them, you are creating implicit dependencies for computations.
@@ -30,7 +29,7 @@ export function createValue<T>(
   const computations = new Set<Computation>();
 
   // Buffer for current update
-  let tempComputations = new Set<Computation>();
+  let currentComputations = new Set<Computation>();
 
   let currentValue = value;
   
@@ -45,7 +44,7 @@ export function createValue<T>(
       onCleanup(() => {
         // In case there was a cleanup we want to stop any further updates of computations
         // This means nested computations will be cancelled as well
-        tempComputations.delete(computation)
+        currentComputations.delete(computation)
         computations.delete(computation)
       });
     }
@@ -63,16 +62,16 @@ export function createValue<T>(
     const currentComputation = getComputation();
     
     // We take a snapshot to prevent infinite iteration in case of using getter() in called computations
-    tempComputations = new Set<Computation>(computations);
+    currentComputations = new Set<Computation>(computations);
     
-    tempComputations.forEach((computation) => {
+    currentComputations.forEach((computation) => {
       // ? This condition will prevent circular dependencies
-      // Updating value will never cause recalculation of current computation | forbidden recursion
+      // ! Updating value will never cause recalculation of current computation | forbidden recursion
       if (currentComputation !== computation) computation.recompute();
     });
 
     // Garbage collection
-    tempComputations.clear();
+    currentComputations.clear();
   }
 
   return [getter, setter];
