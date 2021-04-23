@@ -1,7 +1,3 @@
-import { batch } from "./batcher";
-import { runWith } from "./context";
-import { asyncRethrow } from "./utils";
-
 export interface Queue {
   schedule(fn: () => void): void;
   flush(): void;
@@ -19,7 +15,7 @@ export function createQueue() {
     
     queue.clear();
     
-    tasks.forEach((fn) => asyncRethrow(() => runWith({ disposer: undefined, computation: undefined }, () => batch(fn))));
+    tasks.forEach((fn) => fn());
   }
 
   return Object.freeze({

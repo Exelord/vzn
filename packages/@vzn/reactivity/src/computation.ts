@@ -20,13 +20,17 @@ export function createComputation(
   fn: () => void,
   isPrioritized = false
 ): Computation {
+  function compute() {
+    return asyncRethrow(() => runWith({ disposer: undefined, computation: undefined }, () => batch(fn)));
+  }
+
   function recompute() {
     const batchQueue = getBatcher();
 
     if (!isPrioritized && batchQueue) {
-      batchQueue.schedule(fn);
+      batchQueue.schedule(compute);
     } else {
-      asyncRethrow(() => runWith({ disposer: undefined, computation: undefined }, () => batch(fn)));
+      compute();
     }
   }
 

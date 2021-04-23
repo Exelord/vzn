@@ -1,5 +1,7 @@
+import { batch } from "./batcher";
 import { runWith } from "./context";
 import { Queue, createQueue } from "./queue";
+import { asyncRethrow } from "./utils";
 
 export type Disposer = Queue;
 
@@ -18,18 +20,9 @@ export function setDisposer(disposer?: Disposer): void {
 }
 
 export function onCleanup(fn: () => void) {
-  if (globalDisposer) {
-    globalDisposer.schedule(fn);
-    return;
+  function cleanup() {
+    return asyncRethrow(() => runWith({ disposer: undefined, computation: undefined }, () => batch(fn)));
   }
-  
-  queueMicrotask(() => {
-    const disposer = createDisposer();
 
-    try {
-      return runWith({ disposer }, fn);
-    } finally {
-      disposer.flush();
-    }
-  });
+  globalDisposer ? globalDisposer.schedule(cleanup) : queueMicrotask(() => cleanup());
 }

@@ -9,9 +9,9 @@ export function createMemo<T>(fn: () => T): () => T {
   let memoValue: T;
   let isDirty = true;
 
-  const [getResult, setResult] = createValue<T | undefined>(undefined, false);
+  const [getResult, setResult] = createValue(true, false);
   const memoDisposer = createDisposer();
-  const memoComputation = createComputation(() => setResult(memoValue));
+  const memoComputation = createComputation(() => setResult(true));
   const privilegedComputation = createComputation(() => {
     isDirty = true;
     memoComputation.recompute();
