@@ -2,7 +2,7 @@ import {
   createComputation
 } from "./computation";
 import { onCleanup, createDisposer } from "./disposer";
-import { runWith } from "./utils";
+import { runWith } from "./context";
 import { createValue } from "./value";
 
 export function createMemo<T>(fn: () => T): () => T {

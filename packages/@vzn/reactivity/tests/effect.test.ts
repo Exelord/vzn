@@ -2,7 +2,7 @@ import { batch } from '../src/batcher';
 import { createComputation } from '../src/computation';
 import { onCleanup, createDisposer } from '../src/disposer';
 import { createEffect, createInstantEffect, createSingleEffect } from '../src/effect';
-import { runWith } from '../src/utils';
+import { runWith } from '../src/context';
 import { createValue } from '../src/value';
 
 jest.useFakeTimers('modern');

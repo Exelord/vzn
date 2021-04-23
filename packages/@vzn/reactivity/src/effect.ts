@@ -1,7 +1,7 @@
 import { batch } from "./batcher";
 import { createComputation } from "./computation";
 import { onCleanup, createDisposer, getDisposer } from "./disposer";
-import { runWith, untrack } from "./utils";
+import { runWith, untrack } from "./context";
 
 export function createInstantEffect<T>(fn: (v: T) => T, value: T): void;
 export function createInstantEffect<T>(fn: (v?: T) => T | undefined): void;

@@ -1,5 +1,6 @@
 import { batch } from "./batcher";
-import { asyncRethrow, runWith } from "./utils";
+import { runWith } from "./context";
+import { asyncRethrow } from "./utils";
 
 export interface Queue {
   schedule(fn: () => void): void;

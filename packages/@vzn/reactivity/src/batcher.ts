@@ -1,4 +1,4 @@
-import { Queue, createQueue } from "./-queue";
+import { Queue, createQueue } from "./queue";
 
 export type Batcher = Queue;
 

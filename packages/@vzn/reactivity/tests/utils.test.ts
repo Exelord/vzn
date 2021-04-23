@@ -1,6 +1,6 @@
 import { createComputation, getComputation } from '../src/computation';
 import { onCleanup, createDisposer, getDisposer } from '../src/disposer';
-import { runWith, untrack } from '../src/utils';
+import { runWith, untrack } from '../src/context';
 
 describe('untrack', () => {
   it('runs without any computation', () => {

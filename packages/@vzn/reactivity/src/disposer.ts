@@ -1,5 +1,5 @@
-import { runWith } from "./utils";
-import { Queue, createQueue } from "./-queue";
+import { runWith } from "./context";
+import { Queue, createQueue } from "./queue";
 
 export type Disposer = Queue;
 
