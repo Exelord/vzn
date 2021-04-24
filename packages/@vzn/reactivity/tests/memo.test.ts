@@ -3,7 +3,7 @@ import { createInstantEffect } from '../src/effect';
 import { createValue } from '../src/value';
 import { batch } from '../src/batcher';
 import { onCleanup, createDisposer } from '../src/disposer';
-import { runWith } from '../src/owner';
+import { runWithOwner } from '../src/owner';
 
 describe('createMemo', () => {  
   it('does recompute once only if changed', () => {
@@ -64,7 +64,7 @@ describe('createMemo', () => {
     const disposer = createDisposer();
     const spy = jest.fn();
     
-    runWith({ disposer }, () => {
+    runWithOwner({ disposer }, () => {
       expect(spy.mock.calls.length).toBe(0);
 
       const getMemo = createMemo(() => {
@@ -107,7 +107,7 @@ describe('createMemo', () => {
     const [getSignal, setSignal] = createValue(1);
     const disposer = createDisposer();
     
-    runWith({ disposer }, () => {
+    runWithOwner({ disposer }, () => {
       const getMemo = createMemo(() => {
         onCleanup(spy);
         getSignal();

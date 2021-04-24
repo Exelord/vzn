@@ -1,4 +1,4 @@
-import { getOwner, runWith } from "./owner";
+import { getOwner, runWithOwner } from "./owner";
 import { createQueue, Queue } from "./queue";
 
 export function createBatcher(): Queue {
@@ -15,7 +15,7 @@ export function batch<T>(computation: () => T): T {
   const batcher = createQueue();
   
   try {
-    return runWith({ batcher }, computation);
+    return runWithOwner({ batcher }, computation);
   } finally {
     batcher.flush();
   }

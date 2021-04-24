@@ -1,5 +1,5 @@
 import { createDisposer, onCleanup } from '../src/disposer';
-import { runWith } from '../src/owner';
+import { runWithOwner } from '../src/owner';
 
 jest.useFakeTimers('modern');
 
@@ -23,7 +23,7 @@ describe('onCleanup', () => {
     const disposer = createDisposer();
     const cleanupMock = jest.fn();
     
-    runWith({ disposer }, () => {
+    runWithOwner({ disposer }, () => {
       onCleanup(cleanupMock)
     });
     

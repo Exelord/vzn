@@ -2,7 +2,7 @@ import { batch } from '../src/batcher';
 import { createComputation } from '../src/computation';
 import { onCleanup, createDisposer } from '../src/disposer';
 import { createEffect, createInstantEffect, createSingleEffect } from '../src/effect';
-import { runWith } from '../src/owner';
+import { runWithOwner } from '../src/owner';
 import { createValue } from '../src/value';
 
 jest.useFakeTimers('modern');
@@ -14,7 +14,7 @@ describe('createInstantEffect', () => {
     const effectSpy = jest.fn();
     const cleanupSpy = jest.fn();
 
-    runWith({ disposer }, () => {
+    runWithOwner({ disposer }, () => {
       createInstantEffect(() => {
         onCleanup(cleanupSpy);
         effectSpy();
@@ -73,7 +73,7 @@ describe('createInstantEffect', () => {
       compSpy();
     });
 
-    runWith({ computation }, () => {
+    runWithOwner({ computation }, () => {
       getSignal();
 
       createInstantEffect(() => {
@@ -124,7 +124,7 @@ describe('createEffect', () => {
     const effectSpy = jest.fn();
     const cleanupSpy = jest.fn();
 
-    runWith({ disposer }, () => {
+    runWithOwner({ disposer }, () => {
       createEffect(() => {
         onCleanup(cleanupSpy);
         effectSpy();
@@ -193,7 +193,7 @@ describe('createEffect', () => {
       compSpy();
     });
 
-    runWith({ disposer, computation }, () => {
+    runWithOwner({ disposer, computation }, () => {
       getSignal();
 
       createEffect(() => {
@@ -226,7 +226,7 @@ describe('createSingleEffect', () => {
     const effectSpy = jest.fn();
     const cleanupSpy = jest.fn();
 
-    runWith({ disposer }, () => {
+    runWithOwner({ disposer }, () => {
       createSingleEffect(() => {
         onCleanup(cleanupSpy);
         effectSpy();
@@ -285,7 +285,7 @@ describe('createSingleEffect', () => {
       compSpy();
     });
 
-    runWith({ disposer, computation }, () => {
+    runWithOwner({ disposer, computation }, () => {
       getSignal();
 
       createSingleEffect(() => {

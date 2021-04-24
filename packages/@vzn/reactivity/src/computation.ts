@@ -1,5 +1,5 @@
 import { batch, getBatcher } from "./batcher";
-import { getOwner, runWith } from "./owner";
+import { getOwner, runWithOwner } from "./owner";
 import { asyncRethrow } from "./utils";
 
 export interface Computation {
@@ -15,7 +15,7 @@ export function createComputation(
   isPrioritized = false
 ): Computation {
   function compute() {
-    return asyncRethrow(() => runWith({ disposer: undefined, computation: undefined }, () => batch(fn)));
+    return asyncRethrow(() => runWithOwner({ disposer: undefined, computation: undefined }, () => batch(fn)));
   }
 
   function recompute() {

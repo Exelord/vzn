@@ -1,5 +1,5 @@
 import { batch } from "./batcher";
-import { getOwner, runWith } from "./owner";
+import { getOwner, runWithOwner } from "./owner";
 import { Queue, createQueue } from "./queue";
 import { asyncRethrow } from "./utils";
 
@@ -13,7 +13,7 @@ export function getDisposer() {
 
 export function onCleanup(fn: () => void) {
   function cleanup() {
-    return asyncRethrow(() => runWith({ disposer: undefined, computation: undefined }, () => batch(fn)));
+    return asyncRethrow(() => runWithOwner({ disposer: undefined, computation: undefined }, () => batch(fn)));
   }
 
   const disposer = getOwner().disposer;

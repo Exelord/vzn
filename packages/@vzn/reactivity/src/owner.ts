@@ -14,7 +14,7 @@ export function getOwner(): Owner {
   return owner || {};
 }
 
-export function runWith<T>(newOwner: Owner, fn: () => T): T {
+export function runWithOwner<T>(newOwner: Owner, fn: () => T): T {
   const currentOwner = owner;
 
   owner = Object.freeze({ ...getOwner(), ...newOwner });
@@ -27,10 +27,10 @@ export function runWith<T>(newOwner: Owner, fn: () => T): T {
 }
 
 export function untrack<T>(fn: () => T): T {
-  return runWith({ computation: undefined }, fn);
+  return runWithOwner({ computation: undefined }, fn);
 }
 
 export function root<T>(fn: (disposer: () => void) => T): T {
   const disposer = createDisposer();
-  return runWith({ disposer, computation: undefined }, () => fn(disposer.flush));
+  return runWithOwner({ disposer, computation: undefined }, () => fn(disposer.flush));
 }

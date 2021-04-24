@@ -1,6 +1,6 @@
 import { createValue } from "../src/value";
 import { createComputation } from "../src/computation";
-import { runWith } from "../src/owner";
+import { runWithOwner } from "../src/owner";
 import { createDisposer } from "../src/disposer";
 
 describe('createValue', () => {
@@ -9,7 +9,7 @@ describe('createValue', () => {
     const [getSignal, setSignal] = createValue(false);
     const computation = createComputation(spy);
 
-    runWith({ computation }, () => getSignal());
+    runWithOwner({ computation }, () => getSignal());
 
     expect(spy.mock.calls.length).toBe(0);
     expect(getSignal()).toBe(false);
@@ -26,7 +26,7 @@ describe('createValue', () => {
     const computation = createComputation(spy);
     const disposer = createDisposer();
 
-    runWith({ disposer, computation }, () => getSignal());
+    runWithOwner({ disposer, computation }, () => getSignal());
 
     setSignal(true);
     
@@ -47,7 +47,7 @@ describe('createValue', () => {
     const computation = createComputation(spy);
     const disposer = createDisposer();
 
-    runWith({ disposer, computation }, () => setSignal(getSignal() + 1));
+    runWithOwner({ disposer, computation }, () => setSignal(getSignal() + 1));
     
     expect(spy.mock.calls.length).toBe(0);
     expect(getSignal()).toBe(1);

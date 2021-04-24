@@ -1,6 +1,6 @@
 import { createComputation, getComputation } from '../src/computation';
 import { onCleanup, createDisposer, getDisposer } from '../src/disposer';
-import { runWith, untrack } from '../src/owner';
+import { runWithOwner, untrack } from '../src/owner';
 
 describe('untrack', () => {
   it('runs without any computation', () => {
@@ -8,7 +8,7 @@ describe('untrack', () => {
     
     expect(getComputation()).toBeUndefined();
     
-    runWith({ computation }, () => {
+    runWithOwner({ computation }, () => {
       expect(getComputation()).toBe(computation);
       
       untrack(() => {
@@ -27,7 +27,7 @@ describe('untrack', () => {
     
     expect(getDisposer()).toBeUndefined();
     
-    runWith({ disposer }, () => {
+    runWithOwner({ disposer }, () => {
       untrack(() => {
         onCleanup(cleanupMock)
       });

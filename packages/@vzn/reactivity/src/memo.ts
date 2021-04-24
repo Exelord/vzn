@@ -2,7 +2,7 @@ import {
   createComputation
 } from "./computation";
 import { onCleanup, createDisposer } from "./disposer";
-import { runWith } from "./owner";
+import { runWithOwner } from "./owner";
 import { createValue } from "./value";
 import { batch } from "./batcher";
 
@@ -34,7 +34,7 @@ export function createMemo<T>(fn: () => T): () => T {
     if (isDirty) {
       // ? Flushing the disposer before new computation will ensure we won't have detached dependencies
       memoDisposer.flush();
-      runWith({ computation: privilegedComputation, disposer: memoDisposer }, () => memoValue = batch(fn));
+      runWithOwner({ computation: privilegedComputation, disposer: memoDisposer }, () => memoValue = batch(fn));
       isDirty = false;
     }
   
