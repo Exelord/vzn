@@ -56,12 +56,10 @@ const IndexRoute = () => {
 
   function swapRows() {
     const d = data();
-    if (d.length > 998) {
-      let tmp = d[1];
-      d[1] = d[998];
-      d[998] = tmp;
-      setData(d);
-    }
+    let tmp = d[1];
+    d[1] = d[d.length - 1];
+    d[d.length - 1] = tmp;
+    setData(d);
   }
 
   function clear() {
