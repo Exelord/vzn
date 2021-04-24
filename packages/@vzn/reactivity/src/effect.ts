@@ -33,6 +33,6 @@ export function createEffect<T>(fn: (v?: T) => T, value?: T): void {
   queueMicrotask(() => runWithOwner({ disposer }, () => createInstantEffect(fn, value)))
 }
 
-export function createSingleEffect<T>(fn: () => T) {
+export function createSingleEffect<T>(fn: () => T): void {
   createEffect(() => untrack(fn));
 }

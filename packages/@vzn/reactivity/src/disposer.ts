@@ -5,7 +5,7 @@ import { asyncRethrow } from "./utils";
 
 export { createQueue as createDisposer }
 
-export function onCleanup(fn: () => void) {
+export function onCleanup(fn: () => void): void {
   function cleanup() {
     return asyncRethrow(() => runWithOwner({ disposer: undefined, computation: undefined }, () => batch(fn)));
   }

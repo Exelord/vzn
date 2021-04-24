@@ -3,7 +3,7 @@ export interface Queue {
   flush(): void;
 }
 
-export function createQueue() {
+export function createQueue(): Queue {
   const queue = new Set<() => void>();
 
   function schedule(fn: () => void): void {
