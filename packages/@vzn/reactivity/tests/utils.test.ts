@@ -1,31 +1,31 @@
-import { createComputation, getComputation } from '../src/computation';
-import { onCleanup, createDisposer, getDisposer } from '../src/disposer';
-import { runWithOwner, untrack } from '../src/owner';
+import { createComputation } from '../src/computation';
+import { onCleanup, createDisposer } from '../src/disposer';
+import { getOwner, runWithOwner, untrack } from '../src/owner';
 
 describe('untrack', () => {
   it('runs without any computation', () => {
     const computation = createComputation(() => {});
     
-    expect(getComputation()).toBeUndefined();
+    expect(getOwner().computation).toBeUndefined();
     
     runWithOwner({ computation }, () => {
-      expect(getComputation()).toBe(computation);
+      expect(getOwner().computation).toBe(computation);
       
       untrack(() => {
-        expect(getComputation()).toBeUndefined();
+        expect(getOwner().computation).toBeUndefined();
       });
 
-      expect(getComputation()).toBe(computation);
+      expect(getOwner().computation).toBe(computation);
     });
     
-    expect(getComputation()).toBeUndefined();
+    expect(getOwner().computation).toBeUndefined();
   });
 
   it('runs cleanups in computation correctly', () => {
     const disposer = createDisposer();
     const cleanupMock = jest.fn();
     
-    expect(getDisposer()).toBeUndefined();
+    expect(getOwner().disposer).toBeUndefined();
     
     runWithOwner({ disposer }, () => {
       untrack(() => {

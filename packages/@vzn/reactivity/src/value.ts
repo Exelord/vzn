@@ -1,5 +1,6 @@
-import { Computation, getComputation } from "./computation";
+import { Computation } from "./computation";
 import { onCleanup } from "./disposer";
+import { getOwner } from "./owner";
 
 /**
  * Values are the foundation of reactive system.
@@ -36,7 +37,7 @@ export function createValue<T>(
   compare ??= true;
 
   function getter(): T | undefined {
-    const computation = getComputation();
+    const computation = getOwner().computation;
 
     if (computation && !computations.has(computation)) {
       computations.add(computation);
@@ -59,7 +60,7 @@ export function createValue<T>(
     // The new value is set ASAP in order to be usable in further called computations
     currentValue = newValue;
     
-    const currentComputation = getComputation();
+    const currentComputation = getOwner().computation;
     
     // We take a snapshot to prevent infinite iteration in case of using getter() in called computations
     currentComputations = new Set<Computation>(computations);

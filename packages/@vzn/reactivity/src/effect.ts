@@ -1,7 +1,7 @@
 import { batch } from "./batcher";
 import { createComputation } from "./computation";
-import { onCleanup, createDisposer, getDisposer } from "./disposer";
-import { runWithOwner, untrack } from "./owner";
+import { onCleanup, createDisposer } from "./disposer";
+import { getOwner, runWithOwner, untrack } from "./owner";
 
 export function createInstantEffect<T>(fn: (v: T) => T, value: T): void;
 export function createInstantEffect<T>(fn: (v?: T) => T | undefined): void;
@@ -28,7 +28,7 @@ export function createInstantEffect<T>(fn: (v?: T) => T, value?: T): void {
 export function createEffect<T>(fn: (v: T) => T, value: T): void;
 export function createEffect<T>(fn: (v?: T) => T | undefined): void;
 export function createEffect<T>(fn: (v?: T) => T, value?: T): void {
-  const disposer = getDisposer();
+  const disposer = getOwner().disposer;
   // ? Effects are run "async" to not block current computations
   queueMicrotask(() => runWithOwner({ disposer }, () => createInstantEffect(fn, value)))
 }

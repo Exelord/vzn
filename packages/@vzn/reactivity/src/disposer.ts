@@ -7,10 +7,6 @@ export function createDisposer(): Queue {
   return createQueue();
 }
 
-export function getDisposer() {
-  return getOwner().disposer;
-}
-
 export function onCleanup(fn: () => void) {
   function cleanup() {
     return asyncRethrow(() => runWithOwner({ disposer: undefined, computation: undefined }, () => batch(fn)));
