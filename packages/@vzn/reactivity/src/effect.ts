@@ -1,7 +1,7 @@
 import { batch } from "./batcher";
-import { createComputation } from "./computation";
+import { createComputation, untrack } from "./computation";
 import { onCleanup, createDisposer } from "./disposer";
-import { getOwner, runWithOwner, untrack } from "./owner";
+import { getOwner, runWithOwner } from "./owner";
 
 export function createInstantEffect<T>(fn: (v: T) => T, value: T): void;
 export function createInstantEffect<T>(fn: (v?: T) => T | undefined): void;

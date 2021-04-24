@@ -1,6 +1,6 @@
-import { createComputation } from '../src/computation';
+import { createComputation, untrack } from '../src/computation';
 import { onCleanup, createDisposer } from '../src/disposer';
-import { getOwner, runWithOwner, untrack } from '../src/owner';
+import { getOwner, runWithOwner } from '../src/owner';
 
 describe('untrack', () => {
   it('runs without any computation', () => {

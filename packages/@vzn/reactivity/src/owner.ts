@@ -24,7 +24,3 @@ export function runWithOwner<T>(newOwner: Owner, fn: () => T): T {
     owner = currentOwner;
   }
 }
-
-export function untrack<T>(fn: () => T): T {
-  return runWithOwner({ computation: undefined }, fn);
-}
