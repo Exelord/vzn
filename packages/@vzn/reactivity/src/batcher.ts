@@ -1,9 +1,7 @@
 import { getOwner, runWithOwner } from "./owner";
-import { createQueue, Queue } from "./queue";
+import { createQueue } from "./queue";
 
-export function createBatcher(): Queue {
-  return createQueue();
-}
+export { createQueue as createBatcher }
 
 export function batch<T>(computation: () => T): T {
   if (getOwner().batcher) return computation();

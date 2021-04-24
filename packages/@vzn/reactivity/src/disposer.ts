@@ -1,11 +1,9 @@
 import { batch } from "./batcher";
 import { getOwner, runWithOwner } from "./owner";
-import { Queue, createQueue } from "./queue";
+import { createQueue } from "./queue";
 import { asyncRethrow } from "./utils";
 
-export function createDisposer(): Queue {
-  return createQueue();
-}
+export { createQueue as createDisposer }
 
 export function onCleanup(fn: () => void) {
   function cleanup() {
