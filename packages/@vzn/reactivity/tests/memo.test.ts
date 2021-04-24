@@ -3,7 +3,7 @@ import { createInstantEffect } from '../src/effect';
 import { createValue } from '../src/value';
 import { batch } from '../src/batcher';
 import { onCleanup, createDisposer } from '../src/disposer';
-import { runWith } from '../src/context';
+import { runWith } from '../src/owner';
 
 describe('createMemo', () => {  
   it('does recompute once only if changed', () => {

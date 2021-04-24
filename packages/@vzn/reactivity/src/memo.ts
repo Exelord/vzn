@@ -2,7 +2,7 @@ import {
   createComputation
 } from "./computation";
 import { onCleanup, createDisposer } from "./disposer";
-import { runWith } from "./context";
+import { runWith } from "./owner";
 import { createValue } from "./value";
 import { batch } from "./batcher";
 

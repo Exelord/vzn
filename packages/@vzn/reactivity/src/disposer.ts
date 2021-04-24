@@ -1,5 +1,5 @@
 import { batch } from "./batcher";
-import { getOwner, runWith } from "./context";
+import { getOwner, runWith } from "./owner";
 import { Queue, createQueue } from "./queue";
 import { asyncRethrow } from "./utils";
 

@@ -1,6 +1,6 @@
 import { createValue } from "../src/value";
 import { createComputation } from "../src/computation";
-import { runWith } from "../src/context";
+import { runWith } from "../src/owner";
 import { createDisposer } from "../src/disposer";
 
 describe('createValue', () => {

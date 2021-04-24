@@ -1,5 +1,5 @@
 import { batch, getBatcher } from "./batcher";
-import { getOwner, runWith } from "./context";
+import { getOwner, runWith } from "./owner";
 import { asyncRethrow } from "./utils";
 
 export interface Computation {
