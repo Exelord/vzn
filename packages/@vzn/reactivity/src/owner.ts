@@ -1,5 +1,4 @@
 import { Computation } from "./computation";
-import { createDisposer } from "./disposer";
 import { Queue } from "./queue";
 
 export interface Owner {
@@ -28,9 +27,4 @@ export function runWithOwner<T>(newOwner: Owner, fn: () => T): T {
 
 export function untrack<T>(fn: () => T): T {
   return runWithOwner({ computation: undefined }, fn);
-}
-
-export function root<T>(fn: (disposer: () => void) => T): T {
-  const disposer = createDisposer();
-  return runWithOwner({ disposer, computation: undefined }, () => fn(disposer.flush));
 }
