@@ -30,7 +30,6 @@ export function createEffect<T>(fn: (v?: T) => T | undefined): void;
 export function createEffect<T>(fn: (v?: T) => T, value?: T): void {
   const disposer = getDisposer();
   // ? Effects are run "async" to not block current computations
-  // ? and be able to interact with settled state of DOM
   queueMicrotask(() => runWith({ disposer }, () => createInstantEffect(fn, value)))
 }
 

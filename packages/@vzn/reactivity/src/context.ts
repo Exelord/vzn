@@ -1,18 +1,22 @@
+import { Batcher, getBatcher, setBatcher } from "./batcher";
 import { Computation, getComputation, setComputation } from "./computation";
 import { createDisposer, Disposer, getDisposer, setDisposer } from "./disposer";
 
-export function runWith<T>(owners: { disposer?: Disposer, computation?: Computation }, fn: () => T): T {
-  const currentComputation = getComputation();
+export function runWith<T>(owners: { disposer?: Disposer, computation?: Computation, batcher?: Batcher }, fn: () => T): T {
+  const currentBatcher = getBatcher();
   const currentDisposer = getDisposer();
+  const currentComputation = getComputation();
 
-  setComputation('computation' in owners ? owners.computation : currentComputation);
+  setBatcher('batcher' in owners ? owners.batcher : currentBatcher);
   setDisposer('disposer' in owners ? owners.disposer : currentDisposer);
+  setComputation('computation' in owners ? owners.computation : currentComputation);
 
   try {
     return fn();
   } finally {
     setComputation(currentComputation);
     setDisposer(currentDisposer);
+    setBatcher(currentBatcher);
   }
 }
 

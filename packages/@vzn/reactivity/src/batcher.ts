@@ -4,15 +4,15 @@ export type Batcher = Queue;
 
 let globalBatcher: Batcher | undefined;
 
-export function createBatcher() {
+export function createBatcher(): Batcher {
   return createQueue();
 }
 
-export function getBatcher() {
+export function getBatcher(): Batcher | undefined {
   return globalBatcher;
 }
 
-export function setBatcher(batcher?: Batcher) {
+export function setBatcher(batcher?: Batcher): void {
   globalBatcher = batcher;
 }
 
@@ -21,14 +21,14 @@ export function batch<T>(computation: () => T): T {
     return computation();
   }
 
-  const queue = createBatcher();
+  const batcher = createBatcher();
   
-  setBatcher(queue);
+  setBatcher(batcher);
   
   try {
     return computation();
   } finally {
     setBatcher(undefined);
-    queue.flush();
+    batcher.flush();
   }
 }
