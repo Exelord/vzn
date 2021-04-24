@@ -1,19 +1,13 @@
 import { batch, getBatcher } from "./batcher";
-import { runWith } from "./context";
+import { getOwner, runWith } from "./context";
 import { asyncRethrow } from "./utils";
 
 export interface Computation {
   recompute(): void;
 }
 
-let globalComputation: Computation | undefined;
-
 export function getComputation(): Computation | undefined {
-  return globalComputation;
-}
-
-export function setComputation(computation?: Computation): void {
-  globalComputation = computation;
+  return getOwner().computation;
 }
 
 export function createComputation(

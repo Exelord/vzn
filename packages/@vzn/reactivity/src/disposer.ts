@@ -1,22 +1,14 @@
 import { batch } from "./batcher";
-import { runWith } from "./context";
+import { getOwner, runWith } from "./context";
 import { Queue, createQueue } from "./queue";
 import { asyncRethrow } from "./utils";
 
-export type Disposer = Queue;
-
-let globalDisposer: Disposer | undefined;
-
-export function createDisposer() {
+export function createDisposer(): Queue {
   return createQueue();
 }
 
 export function getDisposer() {
-  return globalDisposer;
-}
-
-export function setDisposer(disposer?: Disposer): void {
-  globalDisposer = disposer;
+  return getOwner().disposer;
 }
 
 export function onCleanup(fn: () => void) {
@@ -24,5 +16,7 @@ export function onCleanup(fn: () => void) {
     return asyncRethrow(() => runWith({ disposer: undefined, computation: undefined }, () => batch(fn)));
   }
 
-  globalDisposer ? globalDisposer.schedule(cleanup) : queueMicrotask(() => cleanup());
+  const disposer = getOwner().disposer;
+
+  disposer ? disposer.schedule(cleanup) : queueMicrotask(() => cleanup());
 }

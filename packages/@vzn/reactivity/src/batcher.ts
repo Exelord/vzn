@@ -1,34 +1,22 @@
-import { Queue, createQueue } from "./queue";
+import { getOwner, runWith } from "./context";
+import { createQueue, Queue } from "./queue";
 
-export type Batcher = Queue;
-
-let globalBatcher: Batcher | undefined;
-
-export function createBatcher(): Batcher {
+export function createBatcher(): Queue {
   return createQueue();
 }
 
-export function getBatcher(): Batcher | undefined {
-  return globalBatcher;
-}
-
-export function setBatcher(batcher?: Batcher): void {
-  globalBatcher = batcher;
+export function getBatcher() {
+  return getOwner().batcher;
 }
 
 export function batch<T>(computation: () => T): T {
-  if (globalBatcher) {
-    return computation();
-  }
+  if (getOwner().batcher) return computation();
 
-  const batcher = createBatcher();
-  
-  setBatcher(batcher);
+  const batcher = createQueue();
   
   try {
-    return computation();
+    return runWith({ batcher }, computation);
   } finally {
-    setBatcher(undefined);
     batcher.flush();
   }
 }

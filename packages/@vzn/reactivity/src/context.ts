@@ -1,22 +1,28 @@
-import { Batcher, getBatcher, setBatcher } from "./batcher";
-import { Computation, getComputation, setComputation } from "./computation";
-import { createDisposer, Disposer, getDisposer, setDisposer } from "./disposer";
+import { Computation } from "./computation";
+import { createDisposer } from "./disposer";
+import { Queue } from "./queue";
 
-export function runWith<T>(owners: { disposer?: Disposer, computation?: Computation, batcher?: Batcher }, fn: () => T): T {
-  const currentBatcher = getBatcher();
-  const currentDisposer = getDisposer();
-  const currentComputation = getComputation();
+export interface Owner {
+  batcher?: Queue
+  disposer?: Queue
+  computation?: Computation
+}
 
-  setBatcher('batcher' in owners ? owners.batcher : currentBatcher);
-  setDisposer('disposer' in owners ? owners.disposer : currentDisposer);
-  setComputation('computation' in owners ? owners.computation : currentComputation);
+let owner: Owner | undefined;
+
+export function getOwner(): Owner {
+  return owner || {};
+}
+
+export function runWith<T>(newOwner: Owner, fn: () => T): T {
+  const currentOwner = owner;
+
+  owner = Object.freeze({ ...getOwner(), ...newOwner });
 
   try {
     return fn();
   } finally {
-    setComputation(currentComputation);
-    setDisposer(currentDisposer);
-    setBatcher(currentBatcher);
+    owner = currentOwner;
   }
 }
 

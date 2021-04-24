@@ -1,19 +1,5 @@
-import { batch, createBatcher, getBatcher, setBatcher } from '../src/batcher';
+import { batch, createBatcher } from '../src/batcher';
 import { createComputation } from '../src/computation';
-
-describe('getBatcher and setBatcher', () => {
-  it('gets and sets global computation', () => {
-    const batcher = createBatcher();
-    
-    expect(getBatcher()).toBeUndefined();
-    
-    setBatcher(batcher);
-    
-    expect(getBatcher()).toBe(batcher);
-
-    setBatcher(undefined);
-  });
-});
 
 describe('createBatcher', () => {
   it('schedules and flushes', () => {

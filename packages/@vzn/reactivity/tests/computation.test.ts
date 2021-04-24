@@ -1,21 +1,7 @@
 import { batch } from '../src/batcher';
-import { createComputation, getComputation, setComputation } from '../src/computation';
+import { createComputation } from '../src/computation';
 
 jest.useFakeTimers('modern');
-
-describe('getComputation and setComputation', () => {
-  it('gets and sets global computation', () => {
-    const computation = createComputation(() => {});
-    
-    expect(getComputation()).toBeUndefined();
-    
-    setComputation(computation)
-    
-    expect(getComputation()).toBe(computation);
-    
-    setComputation(undefined);
-  });
-});
 
 describe('createComputation', () => {
   it('recomputes', () => {

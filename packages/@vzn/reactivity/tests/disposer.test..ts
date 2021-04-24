@@ -1,21 +1,7 @@
-import { createDisposer, getDisposer, onCleanup, setDisposer } from '../src/disposer';
+import { createDisposer, onCleanup } from '../src/disposer';
 import { runWith } from '../src/context';
 
 jest.useFakeTimers('modern');
-
-describe('getDisposer and setDisposer', () => {
-  it('gets and sets global computation', () => {
-    const disposer = createDisposer();
-    
-    expect(getDisposer()).toBeUndefined();
-    
-    setDisposer(disposer);
-    
-    expect(getDisposer()).toBe(disposer);
-
-    setDisposer(undefined);
-  });
-});
 
 describe('createDisposer', () => {
   it('schedules and flushes', () => {
@@ -31,7 +17,6 @@ describe('createDisposer', () => {
     expect(spy.mock.calls.length).toBe(1);
   });
 });
-
 
 describe('onCleanup', () => {
   it('schedules disposer and calls it on flush', () => {
