@@ -12,7 +12,7 @@ export function onCleanup(fn: () => void) {
     return asyncRethrow(() => runWithOwner({ disposer: undefined, computation: undefined }, () => batch(fn)));
   }
 
-  const disposer = getOwner().disposer;
+  const { disposer } = getOwner();
 
   disposer ? disposer.schedule(cleanup) : queueMicrotask(() => cleanup());
 }

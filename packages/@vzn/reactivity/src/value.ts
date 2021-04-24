@@ -37,7 +37,7 @@ export function createValue<T>(
   compare ??= true;
 
   function getter(): T | undefined {
-    const computation = getOwner().computation;
+    const { computation } = getOwner();
 
     if (computation && !computations.has(computation)) {
       computations.add(computation);

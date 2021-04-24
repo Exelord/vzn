@@ -28,7 +28,7 @@ export function createInstantEffect<T>(fn: (v?: T) => T, value?: T): void {
 export function createEffect<T>(fn: (v: T) => T, value: T): void;
 export function createEffect<T>(fn: (v?: T) => T | undefined): void;
 export function createEffect<T>(fn: (v?: T) => T, value?: T): void {
-  const disposer = getOwner().disposer;
+  const { disposer } = getOwner();
   // ? Effects are run "async" to not block current computations
   queueMicrotask(() => runWithOwner({ disposer }, () => createInstantEffect(fn, value)))
 }

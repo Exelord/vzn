@@ -15,10 +15,10 @@ export function createComputation(
   }
 
   function recompute() {
-    const batchQueue = getOwner().batcher;
+    const { batcher } = getOwner();
 
-    if (!isPrioritized && batchQueue) {
-      batchQueue.schedule(compute);
+    if (!isPrioritized && batcher) {
+      batcher.schedule(compute);
     } else {
       compute();
     }
