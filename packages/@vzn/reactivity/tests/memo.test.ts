@@ -1,7 +1,7 @@
 import { createMemo } from '../src/memo';
 import { createInstantEffect } from '../src/effect';
 import { createValue } from '../src/value';
-import { batch } from '../src/batcher';
+import { batch } from '../src/batch';
 import { onCleanup, createDisposer } from '../src/disposer';
 import { runWithOwner } from '../src/owner';
 

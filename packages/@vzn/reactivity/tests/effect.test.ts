@@ -1,4 +1,4 @@
-import { batch } from '../src/batcher';
+import { batch } from '../src/batch';
 import { createComputation } from '../src/computation';
 import { onCleanup, createDisposer } from '../src/disposer';
 import { createEffect, createInstantEffect, createSingleEffect } from '../src/effect';

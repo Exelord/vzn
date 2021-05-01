@@ -1,5 +1,5 @@
 export * from "./owner";
-export * from "./batcher";
+export * from "./batch";
 export * from "./disposer";
 export * from "./computation";
 export * from "./value";

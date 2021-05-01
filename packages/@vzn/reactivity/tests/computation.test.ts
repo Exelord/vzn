@@ -1,4 +1,4 @@
-import { batch } from '../src/batcher';
+import { batch } from '../src/batch';
 import { createComputation } from '../src/computation';
 
 jest.useFakeTimers('modern');

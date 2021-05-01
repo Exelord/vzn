@@ -4,7 +4,7 @@ import {
 import { onCleanup, createDisposer } from "./disposer";
 import { runWithOwner } from "./owner";
 import { createValue } from "./value";
-import { batch } from "./batcher";
+import { batch } from "./batch";
 
 export function createMemo<T>(fn: () => T): () => T {
   let memoValue: T;

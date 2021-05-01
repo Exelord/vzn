@@ -1,4 +1,4 @@
-import { batch } from "./batcher";
+import { batch } from "./batch";
 import { createComputation, untrack } from "./computation";
 import { onCleanup, createDisposer } from "./disposer";
 import { getOwner, runWithOwner } from "./owner";
