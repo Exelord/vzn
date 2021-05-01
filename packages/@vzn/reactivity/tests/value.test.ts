@@ -7,9 +7,8 @@ describe('createValue', () => {
   it('triggers computation', () => {
     const spy = jest.fn();
     const [getSignal, setSignal] = createValue(false);
-    const computation = createComputation(spy);
 
-    runWithOwner({ computation }, () => getSignal());
+    runWithOwner({ computation: spy }, () => getSignal());
 
     expect(spy.mock.calls.length).toBe(0);
     expect(getSignal()).toBe(false);
@@ -23,10 +22,9 @@ describe('createValue', () => {
   it('removes subscriptions on cleanup', () => {
     const spy = jest.fn();
     const [getSignal, setSignal] = createValue(false);
-    const computation = createComputation(spy);
     const disposer = createQueue();
 
-    runWithOwner({ disposer, computation }, () => getSignal());
+    runWithOwner({ disposer, computation: spy }, () => getSignal());
 
     setSignal(true);
     
@@ -44,10 +42,9 @@ describe('createValue', () => {
   it('ignores recomputation with circular dependencies', () => {
     const spy = jest.fn();
     const [getSignal, setSignal] = createValue(0);
-    const computation = createComputation(spy);
     const disposer = createQueue();
 
-    runWithOwner({ disposer, computation }, () => setSignal(getSignal() + 1));
+    runWithOwner({ disposer, computation: spy }, () => setSignal(getSignal() + 1));
     
     expect(spy.mock.calls.length).toBe(0);
     expect(getSignal()).toBe(1);

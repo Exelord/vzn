@@ -1,10 +1,9 @@
-import { Computation } from "./computation";
 import { Queue } from "./queue";
 
 export interface Owner {
-  batcher?: Queue
-  disposer?: Queue
-  computation?: Computation
+  batcher?: Queue;
+  disposer?: Queue;
+  computation?: () => void;
 }
 
 let owner: Owner | undefined;
@@ -23,4 +22,8 @@ export function runWithOwner<T>(newOwner: Owner, fn: () => T): T {
   } finally {
     owner = currentOwner;
   }
+}
+
+export function untrack<T>(fn: () => T): T {
+  return runWithOwner({ computation: undefined }, fn);
 }

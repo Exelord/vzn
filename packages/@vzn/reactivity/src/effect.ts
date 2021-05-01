@@ -1,5 +1,5 @@
 import { batch } from "./batch";
-import { createComputation, untrack } from "./computation";
+import { untrack } from "./owner";
 import { onCleanup } from "./disposer";
 import { getOwner, runWithOwner } from "./owner";
 import { createQueue } from "./queue";
@@ -8,18 +8,29 @@ export function createInstantEffect<T>(fn: (v: T) => T, value: T): void;
 export function createInstantEffect<T>(fn: (v?: T) => T | undefined): void;
 export function createInstantEffect<T>(fn: (v?: T) => T, value?: T): void {
   let lastValue = value;
-
-  function computationFn(value?: T) { runWithOwner({ computation, disposer }, () => lastValue = batch(() => fn(value))) }
-  
   const disposer = createQueue();
 
-  const computation = createComputation(() => {
+  function compute(value?: T) {
+    runWithOwner({ computation, disposer }, () => lastValue = batch(() => fn(value)))
+  }
+
+  function recompute() {
     disposer.flush();
-    computationFn(lastValue);
-  });
-  
+    compute(lastValue);
+  }
+
+  function computation() {
+    const { batcher } = getOwner();
+
+    if (batcher) {
+      batcher.schedule(recompute);
+    } else {
+      recompute();
+    }
+  };
+
   try {
-    computationFn(lastValue);
+    compute(lastValue);
   } finally {
     onCleanup(disposer.flush);
   }

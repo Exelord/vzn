@@ -1,28 +1,39 @@
 import { batch } from '../src/batch';
-import { createComputation } from '../src/computation';
+import { createValue } from '../src/value';
+import { createInstantEffect } from '../src/effect';
 
 describe('batch', () => {
-  it('batches computations', () => {
+  it('batches updates', () => {
     const spy = jest.fn();
-    const computation = createComputation(spy);
+    const [getSignal, setSignal] = createValue(0);
 
-    batch(() => {
-      computation.recompute();
-      computation.recompute();
+    createInstantEffect(() => {
+      getSignal();
+      spy();
     });
 
-    expect(spy.mock.calls.length).toBe(1);
+    batch(() => {
+      setSignal(1);
+      setSignal(2);
+    });
+
+    expect(spy.mock.calls.length).toBe(2);
   });
 
   it('supports nested batches', () => {
     const spy = jest.fn();
-    const computation = createComputation(spy);
+    const [getSignal, setSignal] = createValue(0);
+
+    createInstantEffect(() => {
+      getSignal();
+      spy();
+    });
 
     batch(() => {
-      batch(() => computation.recompute());
-      computation.recompute();
+      batch(() => setSignal(1));
+      setSignal(2);
     });
-    
-    expect(spy.mock.calls.length).toBe(1);
+
+    expect(spy.mock.calls.length).toBe(2);
   });
 });

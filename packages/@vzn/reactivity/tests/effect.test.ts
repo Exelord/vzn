@@ -1,5 +1,4 @@
 import { batch } from '../src/batch';
-import { createComputation } from '../src/computation';
 import { onCleanup } from '../src/disposer';
 import { createEffect, createInstantEffect, createSingleEffect } from '../src/effect';
 import { runWithOwner } from '../src/owner';
@@ -66,34 +65,24 @@ describe('createInstantEffect', () => {
     expect(getSignal()).toBe('effect');
   });
 
-  it('is batching computation', () => {
+  it('is batching updates', () => {
     const [getSignal, setSignal] = createValue('start');
     const spy = jest.fn();
-    const compSpy = jest.fn();
-    const computation = createComputation(() => {
-      compSpy();
+
+    createInstantEffect(() => {
+      setSignal('effect1');
+      setSignal('effect2');
+      getSignal();
+      spy();
     });
 
-    runWithOwner({ computation }, () => {
-      getSignal();
-
-      createInstantEffect(() => {
-        setSignal('effect1');
-        setSignal('effect2');
-        getSignal();
-        spy();
-      });
-    })
-
     expect(spy.mock.calls.length).toBe(1);
-    expect(compSpy.mock.calls.length).toBe(1);
     
     expect(getSignal()).toBe('effect2');
     
     setSignal('order');
     
     expect(getSignal()).toBe('effect2');
-    expect(compSpy.mock.calls.length).toBe(3);
     expect(spy.mock.calls.length).toBe(2);
   });
 
@@ -185,18 +174,11 @@ describe('createEffect', () => {
     expect(getSignal()).toBe('effect');
   });
 
-  it('is batching computation', () => {
+  it('is batching updates', () => {
     const [getSignal, setSignal] = createValue('start');
     const spy = jest.fn();
-    const compSpy = jest.fn();
-    const disposer = createQueue();
-    const computation = createComputation(() => {
-      compSpy();
-    });
 
-    runWithOwner({ disposer, computation }, () => {
-      getSignal();
-
+    runWithOwner({ disposer: createQueue() }, () => {
       createEffect(() => {
         setSignal('effect1');
         setSignal('effect2');
@@ -208,14 +190,11 @@ describe('createEffect', () => {
     jest.runAllTimers();
 
     expect(spy.mock.calls.length).toBe(1);
-    expect(compSpy.mock.calls.length).toBe(1);
-    
     expect(getSignal()).toBe('effect2');
     
     setSignal('order');
     
     expect(getSignal()).toBe('effect2');
-    expect(compSpy.mock.calls.length).toBe(3);
     expect(spy.mock.calls.length).toBe(2);
   });
 });
@@ -277,18 +256,11 @@ describe('createSingleEffect', () => {
     expect(getSignal()).toBe('effect');
   });
 
-  it('is batching computation', () => {
+  it('is batching updates', () => {
     const [getSignal, setSignal] = createValue('start');
     const spy = jest.fn();
-    const compSpy = jest.fn();
-    const disposer = createQueue();
-    const computation = createComputation(() => {
-      compSpy();
-    });
 
-    runWithOwner({ disposer, computation }, () => {
-      getSignal();
-
+    runWithOwner({ disposer: createQueue() }, () => {
       createSingleEffect(() => {
         setSignal('effect1');
         setSignal('effect2');
@@ -300,14 +272,12 @@ describe('createSingleEffect', () => {
     jest.runAllTimers();
 
     expect(spy.mock.calls.length).toBe(1);
-    expect(compSpy.mock.calls.length).toBe(1);
     
     expect(getSignal()).toBe('effect2');
     
     setSignal('order');
     
     expect(getSignal()).toBe('order');
-    expect(compSpy.mock.calls.length).toBe(2);
     expect(spy.mock.calls.length).toBe(1);
   });
 });

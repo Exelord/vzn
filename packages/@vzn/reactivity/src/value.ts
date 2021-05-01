@@ -1,6 +1,8 @@
-import { Computation } from "./computation";
 import { onCleanup } from "./disposer";
-import { getOwner } from "./owner";
+import { getOwner, runWithOwner } from "./owner";
+
+type Computation = () => void;
+
 
 /**
  * Values are the foundation of reactive system.
