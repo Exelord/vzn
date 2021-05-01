@@ -1,8 +1,9 @@
 import { batch } from '../src/batch';
 import { createComputation } from '../src/computation';
-import { onCleanup, createDisposer } from '../src/disposer';
+import { onCleanup } from '../src/disposer';
 import { createEffect, createInstantEffect, createSingleEffect } from '../src/effect';
 import { runWithOwner } from '../src/owner';
+import { createQueue } from '../src/queue';
 import { createValue } from '../src/value';
 
 jest.useFakeTimers('modern');
@@ -10,7 +11,7 @@ jest.useFakeTimers('modern');
 describe('createInstantEffect', () => {
   it('reruns and cleanups on change', () => {
     const [getSignal, setSignal] = createValue(1);
-    const disposer = createDisposer();
+    const disposer = createQueue();
     const effectSpy = jest.fn();
     const cleanupSpy = jest.fn();
 
@@ -120,7 +121,7 @@ describe('createInstantEffect', () => {
 describe('createEffect', () => {
   it('reruns and cleanups on change', () => {
     const [getSignal, setSignal] = createValue(1);
-    const disposer = createDisposer();
+    const disposer = createQueue();
     const effectSpy = jest.fn();
     const cleanupSpy = jest.fn();
 
@@ -188,7 +189,7 @@ describe('createEffect', () => {
     const [getSignal, setSignal] = createValue('start');
     const spy = jest.fn();
     const compSpy = jest.fn();
-    const disposer = createDisposer();
+    const disposer = createQueue();
     const computation = createComputation(() => {
       compSpy();
     });
@@ -222,7 +223,7 @@ describe('createEffect', () => {
 describe('createSingleEffect', () => {
   it('reruns and cleanups on change', () => {
     const [getSignal, setSignal] = createValue(1);
-    const disposer = createDisposer();
+    const disposer = createQueue();
     const effectSpy = jest.fn();
     const cleanupSpy = jest.fn();
 
@@ -280,7 +281,7 @@ describe('createSingleEffect', () => {
     const [getSignal, setSignal] = createValue('start');
     const spy = jest.fn();
     const compSpy = jest.fn();
-    const disposer = createDisposer();
+    const disposer = createQueue();
     const computation = createComputation(() => {
       compSpy();
     });

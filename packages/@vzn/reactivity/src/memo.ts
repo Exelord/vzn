@@ -1,10 +1,11 @@
 import {
   createComputation
 } from "./computation";
-import { onCleanup, createDisposer } from "./disposer";
+import { onCleanup } from "./disposer";
 import { runWithOwner } from "./owner";
 import { createValue } from "./value";
 import { batch } from "./batch";
+import { createQueue } from "./queue";
 
 export function createMemo<T>(fn: () => T): () => T {
   let memoValue: T;
@@ -14,7 +15,7 @@ export function createMemo<T>(fn: () => T): () => T {
   const [getResult, setResult] = createValue(true, false);
 
   // Custom disposer will hold all memo's cleanups
-  const memoDisposer = createDisposer();
+  const memoDisposer = createQueue();
 
   // This computation will used for scheduling an update that can be suspended by batching
   const memoComputation = createComputation(() => setResult(true));

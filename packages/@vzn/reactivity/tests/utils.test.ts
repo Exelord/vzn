@@ -1,6 +1,7 @@
 import { createComputation, untrack } from '../src/computation';
-import { onCleanup, createDisposer } from '../src/disposer';
+import { onCleanup } from '../src/disposer';
 import { getOwner, runWithOwner } from '../src/owner';
+import { createQueue } from '../src/queue';
 
 describe('untrack', () => {
   it('runs without any computation', () => {
@@ -22,7 +23,7 @@ describe('untrack', () => {
   });
 
   it('runs cleanups in computation correctly', () => {
-    const disposer = createDisposer();
+    const disposer = createQueue();
     const cleanupMock = jest.fn();
     
     expect(getOwner().disposer).toBeUndefined();

@@ -1,26 +1,12 @@
-import { createDisposer, onCleanup } from '../src/disposer';
+import { onCleanup } from '../src/disposer';
 import { runWithOwner } from '../src/owner';
+import { createQueue } from '../src/queue';
 
 jest.useFakeTimers('modern');
 
-describe('createDisposer', () => {
-  it('schedules and flushes', () => {
-    const spy = jest.fn();
-    const disposer = createDisposer();
-
-    disposer.schedule(spy);
-    
-    expect(spy.mock.calls.length).toBe(0);
-    
-    disposer.flush();
-
-    expect(spy.mock.calls.length).toBe(1);
-  });
-});
-
 describe('onCleanup', () => {
   it('schedules disposer and calls it on flush', () => {
-    const disposer = createDisposer();
+    const disposer = createQueue();
     const cleanupMock = jest.fn();
     
     runWithOwner({ disposer }, () => {

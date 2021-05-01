@@ -1,7 +1,7 @@
 import { createValue } from "../src/value";
 import { createComputation } from "../src/computation";
 import { runWithOwner } from "../src/owner";
-import { createDisposer } from "../src/disposer";
+import { createQueue } from "../src/queue";
 
 describe('createValue', () => {
   it('triggers computation', () => {
@@ -24,7 +24,7 @@ describe('createValue', () => {
     const spy = jest.fn();
     const [getSignal, setSignal] = createValue(false);
     const computation = createComputation(spy);
-    const disposer = createDisposer();
+    const disposer = createQueue();
 
     runWithOwner({ disposer, computation }, () => getSignal());
 
@@ -45,7 +45,7 @@ describe('createValue', () => {
     const spy = jest.fn();
     const [getSignal, setSignal] = createValue(0);
     const computation = createComputation(spy);
-    const disposer = createDisposer();
+    const disposer = createQueue();
 
     runWithOwner({ disposer, computation }, () => setSignal(getSignal() + 1));
     

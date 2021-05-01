@@ -2,8 +2,9 @@ import { createMemo } from '../src/memo';
 import { createInstantEffect } from '../src/effect';
 import { createValue } from '../src/value';
 import { batch } from '../src/batch';
-import { onCleanup, createDisposer } from '../src/disposer';
+import { onCleanup } from '../src/disposer';
 import { runWithOwner } from '../src/owner';
+import { createQueue } from '../src/queue';
 
 describe('createMemo', () => {  
   it('does recompute once only if changed', () => {
@@ -61,7 +62,7 @@ describe('createMemo', () => {
   
   it('does recompute on every change in effect', () => {
     const [getSignal, setSignal] = createValue(1);
-    const disposer = createDisposer();
+    const disposer = createQueue();
     const spy = jest.fn();
     
     runWithOwner({ disposer }, () => {
@@ -105,7 +106,7 @@ describe('createMemo', () => {
     const spy = jest.fn();
     
     const [getSignal, setSignal] = createValue(1);
-    const disposer = createDisposer();
+    const disposer = createQueue();
     
     runWithOwner({ disposer }, () => {
       const getMemo = createMemo(() => {
