@@ -1,10 +1,9 @@
 import { batch } from "./batch";
-import { getOwner, runWithOwner } from "./owner";
-import { asyncRethrow } from "./utils";
+import { getOwner } from "./owner";
 
 export function onCleanup(fn: () => void): void {
   function cleanup() {
-    return asyncRethrow(() => runWithOwner({ disposer: undefined, computation: undefined }, () => batch(fn)));
+    return batch(fn);
   }
 
   const { disposer } = getOwner();

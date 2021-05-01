@@ -1,3 +1,5 @@
+import { runWithOwner } from "./owner";
+
 export interface Queue {
   schedule(fn: () => void): void;
   flush(): void;
@@ -13,7 +15,16 @@ export function createQueue(): Queue {
   function flush(): void {
     const tasks = [...queue];
     queue.clear();
-    tasks.forEach((fn) => fn());
+    
+    runWithOwner({ disposer: undefined, computation: undefined }, () => {
+      tasks.forEach((fn) => {
+        try {
+          fn();
+        } catch (error) {
+          setTimeout(() => { throw error; })
+        }
+      });
+    })
   }
 
   return Object.freeze({

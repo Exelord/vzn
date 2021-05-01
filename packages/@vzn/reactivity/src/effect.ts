@@ -9,18 +9,17 @@ export function createInstantEffect<T>(fn: (v?: T) => T | undefined): void;
 export function createInstantEffect<T>(fn: (v?: T) => T, value?: T): void {
   let lastValue = value;
 
-  function computationFn(value?: T) { runWithOwner({ computation, disposer }, () => lastValue = fn(value)) }
+  function computationFn(value?: T) { runWithOwner({ computation, disposer }, () => lastValue = batch(() => fn(value))) }
   
   const disposer = createQueue();
+
   const computation = createComputation(() => {
     disposer.flush();
-
-    // ? No need for batching here as every recomputation is always batched
     computationFn(lastValue);
   });
   
   try {
-    batch(() => computationFn(lastValue));
+    computationFn(lastValue);
   } finally {
     onCleanup(disposer.flush);
   }
