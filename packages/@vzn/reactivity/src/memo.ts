@@ -8,22 +8,18 @@ export function createMemo<T>(fn: () => T): () => T {
   let memoValue: T;
   let isDirty = true;
 
-  // This value will serve as a signal for all consumers to recompute
-  const [trackMemo, updateMemo] = createValue(true, false);
-
-  // Custom disposer will hold all memo's cleanups
+  const [trackMemo, notifyChange] = createValue(true, false);
   const disposer = createQueue();
 
-  // The role of this computation is to update the state of memo omitting the batching status
   const computation = () => {
     isDirty = true;
 
     const { batcher } = getOwner();
 
     if (batcher) {
-      batcher.schedule(() => updateMemo(true));
+      batcher.schedule(() => notifyChange(true));
     } else {
-      updateMemo(true);
+      notifyChange(true);
     }
   };
 
@@ -34,7 +30,6 @@ export function createMemo<T>(fn: () => T): () => T {
 
   function getter() {
     if (isDirty) {
-      // ? Flushing the disposer before new computation will ensure we won't have detached dependencies
       disposer.flush();
       runWithOwner({ computation, disposer }, () => memoValue = batch(fn));
       isDirty = false;
@@ -42,8 +37,6 @@ export function createMemo<T>(fn: () => T): () => T {
   
     trackMemo();
   
-    // ? Although we use computations for updates, we still return "not tracked" value
-    // ? to be able to see instant and up-to-date result
     return memoValue;
   }
 

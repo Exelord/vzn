@@ -1,5 +1,5 @@
 import { batch } from "./batch";
-import { untrack } from "./owner";
+import { untrack } from "./untrack";
 import { onCleanup } from "./disposer";
 import { getOwner, runWithOwner } from "./owner";
 import { createQueue } from "./queue";

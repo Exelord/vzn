@@ -1,4 +1,4 @@
-import { untrack } from '../src/owner';
+import { untrack } from '../src/untrack';
 import { onCleanup } from '../src/disposer';
 import { getOwner, runWithOwner } from '../src/owner';
 import { createQueue } from '../src/queue';
