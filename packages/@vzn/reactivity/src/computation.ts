@@ -10,7 +10,7 @@ export function createComputation(
   fn: () => void,
   isPrioritized = false
 ): Computation {
-  function compute() {
+  function computation() {
     return asyncRethrow(() => runWithOwner({ disposer: undefined, computation: undefined }, () => batch(fn)));
   }
 
@@ -18,9 +18,9 @@ export function createComputation(
     const { batcher } = getOwner();
 
     if (!isPrioritized && batcher) {
-      batcher.schedule(compute);
+      batcher.schedule(computation);
     } else {
-      compute();
+      computation();
     }
   }
 

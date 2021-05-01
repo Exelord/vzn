@@ -9,7 +9,7 @@ import { createQueue } from "./queue";
  * @param {(disposer: () => void) => T} fn
  * @returns {T}
  */
-export function createRoot<T>(fn: (disposer: () => void) => T): T {
+export function root<T>(fn: (disposer: () => void) => T): T {
   const disposer = createQueue();
   return runWithOwner({ disposer, computation: undefined }, () => fn(disposer.flush));
 }

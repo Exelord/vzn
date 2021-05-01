@@ -1,10 +1,10 @@
-import { createRoot } from "../src/root";
+import { root } from "../src/root";
 import { createValue } from "../src/value";
 import { createInstantEffect } from "../src/effect";
 
-describe('createRoot', () => {
+describe('root', () => {
   it("allows subcomputations to escape their parents", () => {
-    createRoot(() => {
+    root(() => {
       const [getOuterSignal, setOuterSignal] = createValue(0);
       const [getInnerSignal, setInnerSignal] = createValue(0);
       const outerSpy = jest.fn();
@@ -14,7 +14,7 @@ describe('createRoot', () => {
         getOuterSignal();
         outerSpy();
 
-        createRoot(() => {
+        root(() => {
           createInstantEffect(() => {
             getInnerSignal();
             innerSpy();
@@ -42,7 +42,7 @@ describe('createRoot', () => {
   it("does not batch updates when used at top level", () => {
     const spy = jest.fn();
 
-    createRoot(() => {
+    root(() => {
       const [getSignal, setSignal] = createValue(1);
       
       createInstantEffect(() => {
@@ -65,7 +65,7 @@ describe('createRoot', () => {
   it("allows to dispose all nested computations", () => {
     const spy = jest.fn();
 
-    createRoot((dispose) => {
+    root((dispose) => {
       const [getSignal, setSignal] = createValue(1);
       
       createInstantEffect(() => {
