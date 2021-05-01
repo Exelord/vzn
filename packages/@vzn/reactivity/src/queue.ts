@@ -8,8 +8,8 @@ export interface Queue {
 export function createQueue(): Queue {
   const queue = new Set<() => void>();
 
-  function schedule(fn: () => void): void {
-    queue.add(fn);
+  function schedule(task: () => void): void {
+    queue.add(task);
   }
 
   function flush(): void {
@@ -17,13 +17,13 @@ export function createQueue(): Queue {
     queue.clear();
     
     runWithOwner({ disposer: undefined, computation: undefined }, () => {
-      tasks.forEach((fn) => {
+      for (const task of tasks) {
         try {
-          fn();
+          task();
         } catch (error) {
           setTimeout(() => { throw error; })
         }
-      });
+      }
     })
   }
 
