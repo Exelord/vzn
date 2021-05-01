@@ -28,8 +28,6 @@ describe('onCleanup', () => {
       spy()
     });
     
-    expect(spy.mock.calls.length).toBe(1);
-    
     jest.runAllTimers();
     
     expect(spy.mock.calls.length).toBe(2);

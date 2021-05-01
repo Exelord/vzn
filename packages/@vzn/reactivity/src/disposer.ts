@@ -9,5 +9,5 @@ export function onCleanup(fn: () => void): void {
 
   const { disposer } = getOwner();
 
-  disposer ? disposer.schedule(cleanup) : queueMicrotask(() => cleanup());
+  disposer ? disposer.schedule(cleanup) : queueMicrotask(cleanup);
 }
