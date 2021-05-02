@@ -35,15 +35,3 @@ export function createInstantEffect<T>(fn: (v?: T) => T, value?: T): void {
     onCleanup(disposer.flush);
   }
 }
-
-export function createEffect<T>(fn: (v: T) => T, value: T): void;
-export function createEffect<T>(fn: (v?: T) => T | undefined): void;
-export function createEffect<T>(fn: (v?: T) => T, value?: T): void {
-  const { disposer } = getOwner();
-  // ? Effects are run "async" to not block current computations
-  queueMicrotask(() => runWithOwner({ disposer }, () => createInstantEffect(fn, value)))
-}
-
-export function createSingleEffect<T>(fn: () => T): void {
-  createEffect(() => untrack(fn));
-}

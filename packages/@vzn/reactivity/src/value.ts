@@ -13,7 +13,7 @@ type Computation = () => void;
  * const [getCount, setCount] = createValue(0),
  * const handle = setInterval(() => setCount(getCount() + 1), 1000);
  * onCleanup(() => clearInterval(handle));
- * createEffect(() => console.log(getCount()))
+ * createReaction(() => console.log(getCount()))
  *
  * @export
  * @template T
