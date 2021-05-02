@@ -1,6 +1,6 @@
 import { root } from "../src/root";
 import { createValue } from "../src/value";
-import { createInstantEffect } from "../src/effect";
+import { createReaction } from "../src/reaction";
 
 describe('root', () => {
   it("allows subcomputations to escape their parents", () => {
@@ -10,12 +10,12 @@ describe('root', () => {
       const outerSpy = jest.fn();
       const innerSpy = jest.fn();
       
-      createInstantEffect(() => {
+      createReaction(() => {
         getOuterSignal();
         outerSpy();
 
         root(() => {
-          createInstantEffect(() => {
+          createReaction(() => {
             getInnerSignal();
             innerSpy();
           });
@@ -45,7 +45,7 @@ describe('root', () => {
     root(() => {
       const [getSignal, setSignal] = createValue(1);
       
-      createInstantEffect(() => {
+      createReaction(() => {
         getSignal();
         spy();
       });
@@ -68,7 +68,7 @@ describe('root', () => {
     root((dispose) => {
       const [getSignal, setSignal] = createValue(1);
       
-      createInstantEffect(() => {
+      createReaction(() => {
         getSignal();
         spy();
       });

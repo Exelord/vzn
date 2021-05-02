@@ -1,5 +1,5 @@
 import { createMemo } from '../src/memo';
-import { createInstantEffect } from '../src/effect';
+import { createReaction } from '../src/reaction';
 import { createValue } from '../src/value';
 import { batch } from '../src/batch';
 import { onCleanup } from '../src/disposer';
@@ -45,7 +45,7 @@ describe('createMemo', () => {
     });
 
     batch(() => {
-      createInstantEffect(() => {
+      createReaction(() => {
         getMemo();
       })
       
@@ -60,7 +60,7 @@ describe('createMemo', () => {
     expect(spy.mock.calls.length).toBe(2);
   });
   
-  it('does recompute on every change in effect', () => {
+  it('does recompute on every change in reaction', () => {
     const [getSignal, setSignal] = createValue(1);
     const disposer = createQueue();
     const spy = jest.fn();
@@ -75,7 +75,7 @@ describe('createMemo', () => {
   
       expect(spy.mock.calls.length).toBe(0);
 
-      createInstantEffect(() => {
+      createReaction(() => {
         getMemo();
       })
       

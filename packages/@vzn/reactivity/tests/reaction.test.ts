@@ -1,48 +1,48 @@
 import { batch } from '../src/batch';
 import { onCleanup } from '../src/disposer';
-import { createInstantEffect } from '../src/effect';
+import { createReaction } from '../src/reaction';
 import { runWithOwner } from '../src/owner';
 import { createQueue } from '../src/queue';
 import { createValue } from '../src/value';
 
 jest.useFakeTimers('modern');
 
-describe('createInstantEffect', () => {
+describe('createReaction', () => {
   it('reruns and cleanups on change', () => {
     const [getSignal, setSignal] = createValue(1);
     const disposer = createQueue();
-    const effectSpy = jest.fn();
+    const reactionSpy = jest.fn();
     const cleanupSpy = jest.fn();
 
     runWithOwner({ disposer }, () => {
-      createInstantEffect(() => {
+      createReaction(() => {
         onCleanup(cleanupSpy);
-        effectSpy();
+        reactionSpy();
         getSignal();
       });
     })
     
-    expect(effectSpy.mock.calls.length).toBe(1);
+    expect(reactionSpy.mock.calls.length).toBe(1);
     expect(cleanupSpy.mock.calls.length).toBe(0);
 
     setSignal(2);
 
-    expect(effectSpy.mock.calls.length).toBe(2);
+    expect(reactionSpy.mock.calls.length).toBe(2);
     expect(cleanupSpy.mock.calls.length).toBe(1);
     
     setSignal(3);
 
-    expect(effectSpy.mock.calls.length).toBe(3);
+    expect(reactionSpy.mock.calls.length).toBe(3);
     expect(cleanupSpy.mock.calls.length).toBe(2);
     
     disposer.flush();
     
-    expect(effectSpy.mock.calls.length).toBe(3);
+    expect(reactionSpy.mock.calls.length).toBe(3);
     expect(cleanupSpy.mock.calls.length).toBe(3);
     
     setSignal(4);
     
-    expect(effectSpy.mock.calls.length).toBe(3);
+    expect(reactionSpy.mock.calls.length).toBe(3);
     expect(cleanupSpy.mock.calls.length).toBe(3);
   });
 
@@ -50,49 +50,49 @@ describe('createInstantEffect', () => {
     const [getSignal, setSignal] = createValue('start');
     
     batch(() => {
-      createInstantEffect(() => {
-        setSignal('effect');
+      createReaction(() => {
+        setSignal('reaction');
         getSignal();
       });
       
-      expect(getSignal()).toBe('effect');
+      expect(getSignal()).toBe('reaction');
       
       setSignal('order');
       
       expect(getSignal()).toBe('order');
     });
 
-    expect(getSignal()).toBe('effect');
+    expect(getSignal()).toBe('reaction');
   });
 
   it('is batching updates', () => {
     const [getSignal, setSignal] = createValue('start');
     const spy = jest.fn();
 
-    createInstantEffect(() => {
-      setSignal('effect1');
-      setSignal('effect2');
+    createReaction(() => {
+      setSignal('reaction1');
+      setSignal('reaction2');
       getSignal();
       spy();
     });
 
     expect(spy.mock.calls.length).toBe(1);
     
-    expect(getSignal()).toBe('effect2');
+    expect(getSignal()).toBe('reaction2');
     
     setSignal('order');
     
-    expect(getSignal()).toBe('effect2');
+    expect(getSignal()).toBe('reaction2');
     expect(spy.mock.calls.length).toBe(2);
   });
 
-  it('works with nested effects', () => {
+  it('works with nested reactions', () => {
     const spy = jest.fn();
     const [getSignal, setSignal] = createValue();
     
-    createInstantEffect(() => {
+    createReaction(() => {
       if (!getSignal()) return;
-      createInstantEffect(() => spy(getSignal()));
+      createReaction(() => spy(getSignal()));
     });
 
     expect(spy.mock.calls.length).toBe(0);

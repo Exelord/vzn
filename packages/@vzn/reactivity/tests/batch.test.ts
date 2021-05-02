@@ -1,13 +1,13 @@
 import { batch } from '../src/batch';
 import { createValue } from '../src/value';
-import { createInstantEffect } from '../src/effect';
+import { createReaction } from '../src/reaction';
 
 describe('batch', () => {
   it('batches updates', () => {
     const spy = jest.fn();
     const [getSignal, setSignal] = createValue(0);
 
-    createInstantEffect(() => {
+    createReaction(() => {
       getSignal();
       spy();
     });
@@ -24,7 +24,7 @@ describe('batch', () => {
     const spy = jest.fn();
     const [getSignal, setSignal] = createValue(0);
 
-    createInstantEffect(() => {
+    createReaction(() => {
       getSignal();
       spy();
     });

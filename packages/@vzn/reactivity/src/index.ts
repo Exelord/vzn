@@ -1,6 +1,6 @@
 export * from "./batch";
 export * from "./disposer";
-export * from "./effect";
+export * from "./reaction";
 export * from "./memo";
 export * from "./owner";
 export * from "./queue";

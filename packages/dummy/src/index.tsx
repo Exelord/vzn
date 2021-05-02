@@ -6,12 +6,20 @@ import {
   root,
   batch,
   untrack,
+  getOwner,
   onCleanup,
   createMemo,
   createValue,
-  createEffect,
-  createInstantEffect
+  runWithOwner,
+  createReaction
 } from "@vzn/reactivity";
+
+export function createEffect<T>(fn: (v: T) => T, value: T): void;
+export function createEffect<T>(fn: (v?: T) => T | undefined): void;
+export function createEffect<T>(fn: (v?: T) => T, value?: T): void {
+  const { disposer } = getOwner();
+  queueMicrotask(() => runWithOwner({ disposer }, () => createReaction(fn, value)))
+}
 
 configure({
   batch,
@@ -21,7 +29,7 @@ configure({
   createMemo,
   createValue,
   createEffect,
-  createRenderEffect: createInstantEffect
+  createRenderEffect: createReaction
 })
 
 render(App, document.querySelector('#app')!);

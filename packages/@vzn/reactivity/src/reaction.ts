@@ -4,9 +4,9 @@ import { onCleanup } from "./disposer";
 import { getOwner, runWithOwner } from "./owner";
 import { createQueue } from "./queue";
 
-export function createInstantEffect<T>(fn: (v: T) => T, value: T): void;
-export function createInstantEffect<T>(fn: (v?: T) => T | undefined): void;
-export function createInstantEffect<T>(fn: (v?: T) => T, value?: T): void {
+export function createReaction<T>(fn: (v: T) => T, value: T): void;
+export function createReaction<T>(fn: (v?: T) => T | undefined): void;
+export function createReaction<T>(fn: (v?: T) => T, value?: T): void {
   let lastValue = value;
   const disposer = createQueue();
 
