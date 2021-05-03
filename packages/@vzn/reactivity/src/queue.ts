@@ -13,9 +13,11 @@ export function createQueue(): Queue {
   }
 
   function flush(): void {
+    if (!queue.size) return;
+
     const tasks = [...queue];
     queue.clear();
-    
+
     runWithOwner({ disposer: undefined, computation: undefined }, () => {
       for (const task of tasks) {
         try {

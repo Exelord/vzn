@@ -10,17 +10,15 @@ export function createMemo<T>(fn: () => T): () => T {
 
   const [trackMemo, notifyChange] = createValue(true, false);
   const disposer = createQueue();
+  
+  function update() {
+    notifyChange(true)
+  }
 
   const computation = () => {
-    isDirty = true;
-
     const { batcher } = getOwner();
-
-    if (batcher) {
-      batcher.schedule(() => notifyChange(true));
-    } else {
-      notifyChange(true);
-    }
+    isDirty = true;
+    batcher ? batcher.schedule(update) : update();
   };
 
   onCleanup(() => {
