@@ -3,7 +3,6 @@ import { getOwner, runWithOwner } from "./owner";
 
 type Computation = () => void;
 
-
 /**
  * Values are the foundation of reactive system.
  * By using them, you are creating implicit dependencies for computations.
@@ -66,12 +65,14 @@ export function createValue<T>(
     
     // We take a snapshot to prevent infinite iteration in case of using getter() in called computations
     currentComputations = new Set<Computation>(computations);
-    
-    currentComputations.forEach((computation) => {
+
+    for (const computation of currentComputations) {
       // ? This condition will prevent circular dependencies
-      // ! Updating value will never cause recalculation of current computation | forbidden recursion
-      if (currentComputation !== computation) computation.recompute();
-    });
+      // ! Updating value will never cause recalculation of current computation
+      if (currentComputation == computation) return;
+      
+      runWithOwner({ disposer: undefined, computation: undefined }, computation);
+    };
 
     // Garbage collection
     currentComputations.clear();

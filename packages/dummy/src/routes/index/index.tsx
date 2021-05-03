@@ -17,7 +17,7 @@ const Button = ({ id, text, fn }: { id: string, text: string, fn: () => void}) =
 
 const IndexRoute = () => {
   const [data, setData] = createValue<Todo[]>([], false);
-  const [selected, setSelected] = createValue(null);
+  const [getSelected, setSelected] = createValue<number>();
 
   function remove(id: number) {
     const d = data();
@@ -29,7 +29,7 @@ const IndexRoute = () => {
     benchmark('run', () => {
       batch(() => {
         setData(buildData(1000));
-        setSelected(null);
+        setSelected(undefined);
       });
     })
   }
@@ -38,7 +38,7 @@ const IndexRoute = () => {
     benchmark('runLots', () => {
       batch(() => {
         setData(buildData(10000));
-        setSelected(null);
+        setSelected(undefined);
       });
     });
   }
@@ -91,7 +91,7 @@ const IndexRoute = () => {
         <tbody>
           <For each={data()}>{(row) => {
             let rowId = row.id;
-            return <tr class={rowId === selected() ? "danger": ""}>
+            return <tr class={getSelected() === rowId ? "danger": ""}>
               <td class="col-md-1" textContent={`${rowId}`} />
               <td class="col-md-4"><a onClick={[setSelected, rowId]} textContent={row.label} /></td>
               <td class="col-md-1"><a onClick={[remove, rowId]}>X</a></td>

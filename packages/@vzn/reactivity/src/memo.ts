@@ -11,14 +11,14 @@ export function createMemo<T>(fn: () => T): () => T {
   const [trackMemo, notifyChange] = createValue(true, false);
   const disposer = createQueue();
   
-  function update() {
+  function notifyMemoChange() {
     notifyChange(true)
   }
 
   const computation = () => {
     const { batcher } = getOwner();
     isDirty = true;
-    batcher ? batcher.schedule(update) : update();
+    batcher ? batcher.schedule(notifyMemoChange) : notifyMemoChange();
   };
 
   onCleanup(() => {
