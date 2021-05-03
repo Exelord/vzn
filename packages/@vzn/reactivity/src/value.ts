@@ -64,15 +64,16 @@ export function createValue<T>(
     const currentComputation = getOwner().computation;
     
     // We take a snapshot to prevent infinite iteration in case of using getter() in called computations
-    currentComputations = new Set<Computation>(computations);
+    currentComputations = new Set<Computation>([...computations]);
 
-    for (const computation of currentComputations) {
-      // ? This condition will prevent circular dependencies
-      // ! Updating value will never cause recalculation of current computation
-      if (currentComputation == computation) return;
-      
-      runWithOwner({ disposer: undefined, computation: undefined }, computation);
-    };
+    runWithOwner({ disposer: undefined, computation: undefined }, () => {
+      for (const computation of currentComputations) {
+        // ? This condition will prevent circular dependencies
+        // ! Updating value will never cause recalculation of current computation
+        if (currentComputation == computation) return;
+        computation();
+      };
+    });
 
     // Garbage collection
     currentComputations.clear();

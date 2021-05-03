@@ -19,9 +19,9 @@ export function createQueue(): Queue {
     queue.clear();
 
     runWithOwner({ disposer: undefined, computation: undefined }, () => {
-      for (const task of tasks) {
+      for (let index = 0; index < tasks.length; index++) {
         try {
-          task();
+          tasks[index]();
         } catch (error) {
           setTimeout(() => { throw error; })
         }
