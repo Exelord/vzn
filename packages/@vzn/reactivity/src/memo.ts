@@ -15,11 +15,15 @@ export function createMemo<T>(fn: () => T): () => T {
     notifyChange(true)
   }
 
-  const computation = () => {
+  function computation() {
     const { batcher } = getOwner();
     isDirty = true;
     batcher ? batcher.schedule(notifyMemoChange) : notifyMemoChange();
   };
+
+  function recomputeMemo() {
+    memoValue = batch(fn)
+  }
 
   onCleanup(() => {
     disposer.flush();
@@ -29,7 +33,7 @@ export function createMemo<T>(fn: () => T): () => T {
   function getter() {
     if (isDirty) {
       disposer.flush();
-      runWithOwner({ computation, disposer }, () => memoValue = batch(fn));
+      runWithOwner({ computation, disposer }, recomputeMemo);
       isDirty = false;
     }
   
