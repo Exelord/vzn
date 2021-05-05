@@ -1,14 +1,21 @@
-import { getOwner, runWithOwner } from "./owner";
-import { createQueue } from "./queue";
+import { createQueue, Queue } from "./queue";
+
+let batcher: Queue | undefined;
+
+export function getBatcher() {
+  return batcher;
+}
 
 export function batch<T>(computation: () => T): T {
-  if (getOwner().batcher) return computation();
+  if (batcher) return computation();
 
-  const batcher = createQueue();
+  const queue = createQueue();
   
   try {
-    return runWithOwner({ batcher }, computation);
+    batcher = queue;
+    return computation();
   } finally {
-    batcher.flush();
+    batcher = undefined;
+    queue.flush();
   }
 }

@@ -1,7 +1,6 @@
 import { Queue } from "./queue";
 
 export interface Owner {
-  batcher?: Queue;
   disposer?: Queue;
   computation?: () => void;
 }

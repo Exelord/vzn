@@ -1,7 +1,7 @@
 import { onCleanup } from "./disposer";
-import { getOwner, runWithOwner } from "./owner";
+import { runWithOwner } from "./owner";
 import { createValue } from "./value";
-import { batch } from "./batch";
+import { batch, getBatcher } from "./batch";
 import { createQueue } from "./queue";
 
 export function createMemo<T>(fn: () => T): () => T {
@@ -16,7 +16,7 @@ export function createMemo<T>(fn: () => T): () => T {
   }
 
   function computation() {
-    const { batcher } = getOwner();
+    const batcher = getBatcher();
     isDirty = true;
     batcher ? batcher.schedule(notifyMemoChange) : notifyMemoChange();
   };
