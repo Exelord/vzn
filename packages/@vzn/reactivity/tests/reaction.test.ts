@@ -1,4 +1,4 @@
-import { batch } from '../src/batch';
+import { batch } from '../src/scheduler';
 import { onCleanup } from '../src/disposer';
 import { createReaction } from '../src/reaction';
 import { runWithOwner } from '../src/owner';
@@ -26,11 +26,13 @@ describe('createReaction', () => {
     expect(cleanupSpy.mock.calls.length).toBe(0);
 
     setSignal(2);
+    jest.runAllTimers();
 
     expect(reactionSpy.mock.calls.length).toBe(2);
     expect(cleanupSpy.mock.calls.length).toBe(1);
     
     setSignal(3);
+    jest.runAllTimers();
 
     expect(reactionSpy.mock.calls.length).toBe(3);
     expect(cleanupSpy.mock.calls.length).toBe(2);
@@ -41,26 +43,27 @@ describe('createReaction', () => {
     expect(cleanupSpy.mock.calls.length).toBe(3);
     
     setSignal(4);
+    jest.runAllTimers();
     
     expect(reactionSpy.mock.calls.length).toBe(3);
     expect(cleanupSpy.mock.calls.length).toBe(3);
   });
 
-  it('works with batching', () => {
+  it('works with built-in async batching', () => {
     const [getSignal, setSignal] = createValue('start');
     
-    batch(() => {
-      createReaction(() => {
-        setSignal('reaction');
-        getSignal();
-      });
-      
-      expect(getSignal()).toBe('reaction');
-      
-      setSignal('order');
-      
-      expect(getSignal()).toBe('order');
+    createReaction(() => {
+      setSignal('reaction');
+      getSignal();
     });
+    
+    expect(getSignal()).toBe('reaction');
+    
+    setSignal('order');
+    
+    expect(getSignal()).toBe('order');
+
+    jest.runAllTimers();
 
     expect(getSignal()).toBe('reaction');
   });
@@ -82,6 +85,10 @@ describe('createReaction', () => {
     
     setSignal('order');
     
+    expect(getSignal()).toBe('order');
+
+    jest.runAllTimers();
+
     expect(getSignal()).toBe('reaction2');
     expect(spy.mock.calls.length).toBe(2);
   });
@@ -98,10 +105,14 @@ describe('createReaction', () => {
     expect(spy.mock.calls.length).toBe(0);
     
     setSignal(true);
+
+    jest.runAllTimers();
     
     expect(spy.mock.calls.length).toBe(1);
     
     setSignal(false);
+
+    jest.runAllTimers();
     
     expect(spy.mock.calls.length).toBe(1);
   });

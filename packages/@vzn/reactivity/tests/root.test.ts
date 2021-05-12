@@ -2,6 +2,8 @@ import { root } from "../src/root";
 import { createValue } from "../src/value";
 import { createReaction } from "../src/reaction";
 
+jest.useFakeTimers('modern');
+
 describe('root', () => {
   it("allows subcomputations to escape their parents", () => {
     root(() => {
@@ -28,37 +30,18 @@ describe('root', () => {
       // trigger the outer computation, making more inners
       setOuterSignal(1);
       setOuterSignal(2);
+
+      jest.runAllTimers();
       
-      expect(outerSpy.mock.calls.length).toBe(3);
-      expect(innerSpy.mock.calls.length).toBe(3);
+      expect(outerSpy.mock.calls.length).toBe(2);
+      expect(innerSpy.mock.calls.length).toBe(2);
       
       setInnerSignal(1);
       
-      expect(outerSpy.mock.calls.length).toBe(3);
-      expect(innerSpy.mock.calls.length).toBe(6);
-    });
-  });
-  
-  it("does not batch updates when used at top level", () => {
-    const spy = jest.fn();
-
-    root(() => {
-      const [getSignal, setSignal] = createValue(1);
+      jest.runAllTimers();
       
-      createReaction(() => {
-        getSignal();
-        spy();
-      });
-      
-      expect(spy.mock.calls.length).toBe(1);
-      
-      setSignal(2);
-      
-      expect(spy.mock.calls.length).toBe(2);
-      
-      setSignal(3);
-      
-      expect(spy.mock.calls.length).toBe(3);
+      expect(outerSpy.mock.calls.length).toBe(2);
+      expect(innerSpy.mock.calls.length).toBe(4);
     });
   });
   
@@ -76,12 +59,16 @@ describe('root', () => {
       expect(spy.mock.calls.length).toBe(1);
       
       setSignal(2);
+
+      jest.runAllTimers();
       
       expect(spy.mock.calls.length).toBe(2);
 
       dispose();
       
       setSignal(3);
+
+      jest.runAllTimers();
       
       expect(spy.mock.calls.length).toBe(2);
     });

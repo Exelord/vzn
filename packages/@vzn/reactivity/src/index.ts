@@ -1,4 +1,4 @@
-export * from "./batch";
+export * from "./scheduler";
 export * from "./disposer";
 export * from "./reaction";
 export * from "./memo";

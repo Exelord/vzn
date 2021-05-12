@@ -1,4 +1,4 @@
-import { batch } from "./batch";
+import { batch } from "./scheduler";
 import { getOwner } from "./owner";
 
 export function onCleanup(fn: () => void): void {

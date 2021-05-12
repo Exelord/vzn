@@ -1,10 +1,23 @@
 import { createValue } from "../src/value";
-import { createComputation } from "../src/computation";
+import { createReaction } from "../src/reaction";
 import { runWithOwner } from "../src/owner";
 import { createQueue } from "../src/queue";
 
+jest.useFakeTimers('modern');
+
 describe('createValue', () => {
-  it('triggers computation', () => {
+  it("takes and returns an initial value", () => {
+    const [getValue] = createValue(1);
+    expect(getValue()).toBe(1);
+  });
+  
+  it("can be set by passing in a new value", () => {
+    const [getValue, setValue] = createValue(1);
+    setValue(2);
+    expect(getValue()).toBe(2);
+  });
+
+  it('triggers computation if values are not equal', () => {
     const spy = jest.fn();
     const [getSignal, setSignal] = createValue(false);
 
@@ -17,6 +30,51 @@ describe('createValue', () => {
     
     expect(spy.mock.calls.length).toBe(1);
     expect(getSignal()).toBe(true);
+  });
+
+  it("triggers computation if compare option is false and values are equal", () => {
+    const spy = jest.fn();
+    const [getSignal, setSignal] = createValue(true, false);
+
+    runWithOwner({ computation: spy }, () => getSignal());
+
+    expect(spy.mock.calls.length).toBe(0);
+    
+    setSignal(true);
+
+    expect(spy.mock.calls.length).toBe(1);
+  });
+  
+  it('does not trigger computation if set to equal value', () => {
+    const spy = jest.fn();
+    const [getSignal, setSignal] = createValue(false);
+
+    runWithOwner({ computation: spy }, () => getSignal());
+
+    expect(spy.mock.calls.length).toBe(0);
+    expect(getSignal()).toBe(false);
+    
+    setSignal(false);
+    
+    expect(spy.mock.calls.length).toBe(0);
+    expect(getSignal()).toBe(false);
+  });
+
+  it("can take an equality predicate", () => {
+    const spy = jest.fn();
+    const [getSignal, setSignal] = createValue([1], (a, b) => a[0] === b[0]);
+
+    runWithOwner({ computation: spy }, () => getSignal());
+
+    expect(spy.mock.calls.length).toBe(0);
+    
+    setSignal([1]);
+    
+    expect(spy.mock.calls.length).toBe(0);
+    
+    setSignal([2]);
+    
+    expect(spy.mock.calls.length).toBe(1);
   });
   
   it('removes subscriptions on cleanup', () => {
@@ -53,5 +111,25 @@ describe('createValue', () => {
 
     expect(spy.mock.calls.length).toBe(1);
     expect(getSignal()).toBe(2);
+  });
+
+  it('uses global queue of updates (aka S.js subclocks)', () => {
+    const spy = jest.fn();
+    const [getSignal, setSignal] = createValue(20);
+    
+    createReaction(() => {
+      while (getSignal() <= 10) {
+        setSignal(getSignal() + 1);
+      }
+    });
+    
+    createReaction(() => spy(getSignal()));
+
+    expect(spy.mock.calls.length).toBe(1);
+    
+    setSignal(5);
+    jest.runAllTimers();
+
+    expect(spy.mock.calls.length).toBe(2);
   });
 });
