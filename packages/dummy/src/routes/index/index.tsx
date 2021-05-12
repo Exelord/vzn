@@ -27,19 +27,15 @@ const IndexRoute = () => {
 
   function run() {
     benchmark('run', () => {
-      batch(() => {
-        setData(buildData(1000));
-        setSelected(undefined);
-      });
+      setData(buildData(1000));
+      setSelected(undefined);
     })
   }
 
   function runLots() {
     benchmark('runLots', () => {
-      batch(() => {
-        setData(buildData(10000));
-        setSelected(undefined);
-      });
+      setData(buildData(10000));
+      setSelected(undefined);
     });
   }
 
@@ -63,10 +59,8 @@ const IndexRoute = () => {
   }
 
   function clear() {
-    batch(() => {
-      setData([]);
-      setSelected(null);
-    });
+    setData([]);
+    setSelected(null);
   }
 
   return (
