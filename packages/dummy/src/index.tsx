@@ -12,9 +12,9 @@ import {
 } from "@vzn/reactivity";
 
 configure({
-  root,
   untrack,
   onCleanup,
+  createRoot: root,
   createMemo,
   createValue,
   createReaction
