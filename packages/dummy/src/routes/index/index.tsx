@@ -2,14 +2,6 @@ import { createValue } from "@vzn/reactivity";
 import { buildData, Todo } from "./data";
 import { For } from '@vzn/dom';
 
-function benchmark<T>(name: string, fn: (...args: any[]) => T) {
-  const startTime = performance.now();
-  fn();
-  const stop = performance.now();
-
-  setTimeout(() => console.log(name+" took "+(stop-startTime)), 0);
-}
-
 const Button = ({ id, text, fn }: { id: string, text: string, fn: () => void}) =>
   <div class="col-sm-6 smallpad">
     <button id={id} class="btn btn-primary btn-block" type="button" onClick={fn}>{text}</button>
@@ -26,17 +18,13 @@ const IndexRoute = () => {
   }
 
   function run() {
-    benchmark('run', () => {
-      setData(buildData(1000));
-      unselect();
-    })
+    setData(buildData(1000));
+    unselect();
   }
 
   function runLots() {
-    benchmark('runLots', () => {
-      setData(buildData(10000));
-      unselect();
-    });
+    setData(buildData(10000));
+    unselect();
   }
 
   function add() { setData(data().concat(buildData(1000))); }
