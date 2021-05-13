@@ -1,18 +1,11 @@
-import { createQueue, Queue } from "./queue";
+import { createQueue } from "./queue";
 
-let scheduler: Queue | undefined;
-
-function flushScheduler() {
-  const queue = scheduler;
-  scheduler = undefined;
-  queue?.flush();
-}
+const scheduler = createQueue();
 
 export function schedule<T>(computation: () => T) {
-  if (!scheduler) {
-    scheduler = createQueue();
-    queueMicrotask(flushScheduler);
-  }
-
   scheduler.schedule(computation);
+
+  if (scheduler.size === 1) {
+    queueMicrotask(scheduler.flush);
+  }
 }

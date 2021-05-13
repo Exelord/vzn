@@ -1,6 +1,7 @@
 import { runWithOwner } from "./owner";
 
 export interface Queue {
+  size: number;
   schedule(fn: () => void): void;
   flush(): void;
 }
@@ -31,6 +32,10 @@ export function createQueue(): Queue {
 
   return Object.freeze({
     schedule,
-    flush
+    flush,
+    
+    get size(): number {
+      return queue.size;
+    }
   });
 }
