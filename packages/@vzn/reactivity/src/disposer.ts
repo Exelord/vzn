@@ -1,11 +1,7 @@
 import { getOwner } from "./owner";
+import { schedule } from "./scheduler";
 
 export function onCleanup(fn: () => void): void {
-  function cleanup() {
-    return fn();
-  }
-
   const { disposer } = getOwner();
-
-  disposer ? disposer.schedule(cleanup) : queueMicrotask(cleanup);
+  disposer ? disposer.schedule(fn) : schedule(fn);
 }
