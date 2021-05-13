@@ -1,4 +1,4 @@
-import { batch, scheduleAsync, schedule } from "./scheduler";
+import { schedule } from "./scheduler";
 import { onCleanup } from "./disposer";
 import { runWithOwner } from "./owner";
 import { createQueue } from "./queue";
@@ -11,12 +11,12 @@ export function createReaction<T>(fn: (v?: T) => T, value?: T): void {
   const disposer = createQueue();
 
   function computation() {
-    schedule(disposer.flush);
-    scheduleAsync(recompute);
+    disposer.flush();
+    schedule(recompute);
   }
   
   function recompute() {
-    runWithOwner({ computation, disposer }, () => lastValue = batch(() => fn(lastValue)))
+    runWithOwner({ computation, disposer }, () => lastValue = fn(lastValue))
   }
 
   try {

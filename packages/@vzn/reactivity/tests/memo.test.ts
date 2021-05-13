@@ -1,7 +1,6 @@
 import { createMemo } from '../src/memo';
 import { createReaction } from '../src/reaction';
 import { createValue } from '../src/value';
-import { batch } from '../src/scheduler';
 import { onCleanup } from '../src/disposer';
 import { runWithOwner } from '../src/owner';
 import { createQueue } from '../src/queue';
@@ -35,7 +34,7 @@ describe('createMemo', () => {
     expect(spy.mock.calls.length).toBe(2);
   });
   
-  it('schedules only one recomputation inside batch', () => {
+  it('schedules only one recomputation', () => {
     const [getSignal, setSignal] = createValue(1);
     const spy = jest.fn();
     
@@ -46,18 +45,16 @@ describe('createMemo', () => {
       spy();
     });
 
-    batch(() => {
-      createReaction(() => {
-        getMemo();
-      })
-      
-      expect(spy.mock.calls.length).toBe(1);
-  
-      setSignal(2);
-      setSignal(3);
-      
-      expect(spy.mock.calls.length).toBe(1);
+    createReaction(() => {
+      getMemo();
     })
+    
+    expect(spy.mock.calls.length).toBe(1);
+
+    setSignal(2);
+    setSignal(3);
+    
+    expect(spy.mock.calls.length).toBe(1);
 
     jest.runAllTimers();
 

@@ -1,45 +1,18 @@
-import { batch } from '../src/scheduler';
-import { createValue } from '../src/value';
-import { createReaction } from '../src/reaction';
+import { schedule } from '../src/scheduler';
 
 jest.useFakeTimers('modern');
 
-describe('batch', () => {
+describe('schedule', () => {
   it('batches updates', () => {
     const spy = jest.fn();
-    const [getSignal, setSignal] = createValue(0);
-
-    createReaction(() => {
-      getSignal();
-      spy();
-    });
-
-    batch(() => {
-      setSignal(1);
-      setSignal(2);
-    });
-
+    
+    schedule(spy);
+    schedule(spy);
+    
+    expect(spy.mock.calls.length).toBe(0);
+    
     jest.runAllTimers();
-
-    expect(spy.mock.calls.length).toBe(2);
-  });
-
-  it('supports nested batches', () => {
-    const spy = jest.fn();
-    const [getSignal, setSignal] = createValue(0);
-
-    createReaction(() => {
-      getSignal();
-      spy();
-    });
-
-    batch(() => {
-      batch(() => setSignal(1));
-      setSignal(2);
-    });
-
-    jest.runAllTimers();
-
-    expect(spy.mock.calls.length).toBe(2);
+    
+    expect(spy.mock.calls.length).toBe(1);
   });
 });

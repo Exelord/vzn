@@ -1,4 +1,3 @@
-import { batch } from '../src/scheduler';
 import { onCleanup } from '../src/disposer';
 import { createReaction } from '../src/reaction';
 import { runWithOwner } from '../src/owner';

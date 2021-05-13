@@ -1,7 +1,6 @@
 import { onCleanup } from "./disposer";
 import { runWithOwner } from "./owner";
 import { createValue } from "./value";
-import { batch, schedule } from "./scheduler";
 import { createQueue } from "./queue";
 
 export function createMemo<T>(fn: () => T): () => T {
@@ -11,17 +10,13 @@ export function createMemo<T>(fn: () => T): () => T {
   const [trackMemo, notifyChange] = createValue(true, false);
   const disposer = createQueue();
   
-  function notifyMemoChange() {
-    notifyChange(true)
-  }
-
   function computation() {
     isDirty = true;
-    schedule(notifyMemoChange);
+    notifyChange(true);
   };
 
   function recomputeMemo() {
-    memoValue = batch(fn)
+    memoValue = fn();
   }
 
   onCleanup(() => {
