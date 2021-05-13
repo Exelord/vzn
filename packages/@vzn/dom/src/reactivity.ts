@@ -1,6 +1,6 @@
 export type Config = {
   untrack<T>(fn: () => T): T;
-  cleanup(fn: () => void): void;
+  onCleanup(fn: () => void): void;
   createRoot<T>(fn: (dispose: () => void) => T): T;
   createMemo<T>(fn: () => T, equal?: boolean): () => T;
   
@@ -14,13 +14,9 @@ export type Config = {
     compare?: boolean | ((prev: T | undefined, next: T) => boolean),
   ): [() => T | undefined, (value: T) => void]
 
-  createEffect<T>(fn: (v: T) => T, value: T): void;
-  createEffect<T>(fn: (v?: T) => T | undefined): void;
-  createEffect<T>(fn: (v?: T) => T, value?: T): void
-
-  createRenderEffect<T>(fn: (v: T) => T, value: T): void;
-  createRenderEffect<T>(fn: (v?: T) => T | undefined): void;
-  createRenderEffect<T>(fn: (v?: T) => T, value?: T): void
+  createReaction<T>(fn: (v: T) => T, value: T): void;
+  createReaction<T>(fn: (v?: T) => T | undefined): void;
+  createReaction<T>(fn: (v?: T) => T, value?: T): void
 }
 
 let configuration: Config | null = null;
@@ -37,8 +33,8 @@ export function untrack<T>(fn: () => T): T {
   return configuration.untrack(fn);
 }
 
-export function cleanup(fn: () => void): void {
-  return configuration.cleanup(fn);
+export function onCleanup(fn: () => void): void {
+  return configuration.onCleanup(fn);
 }
 
 export function createRoot<T>(fn: (dispose: () => void) => T): T {
@@ -61,14 +57,8 @@ export function createValue<T>(
   return configuration.createValue(value, compare);
 }
 
-export function createEffect<T>(fn: (v: T) => T, value: T): void;
-export function createEffect<T>(fn: (v?: T) => T | undefined): void;
-export function createEffect<T>(fn: (v?: T) => T, value?: T): void {
-  configuration.createEffect(fn, value);
-}
-
-export function createRenderEffect<T>(fn: (v: T) => T, value: T): void;
-export function createRenderEffect<T>(fn: (v?: T) => T | undefined): void;
-export function createRenderEffect<T>(fn: (v?: T) => T, value?: T): void {
-  configuration.createRenderEffect(fn, value);
+export function createReaction<T>(fn: (v: T) => T, value: T): void;
+export function createReaction<T>(fn: (v?: T) => T | undefined): void;
+export function createReaction<T>(fn: (v?: T) => T, value?: T): void {
+  configuration.createReaction(fn, value);
 }
