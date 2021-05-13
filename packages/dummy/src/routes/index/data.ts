@@ -18,11 +18,11 @@ export function buildData(count: number): Todo[] {
   for (let i = 0; i < count; i++) {
     const [getLabel, setLabel] = createValue(adjectives[_random(adjectives.length)] + " " + colours[_random(colours.length)] + " " + nouns[_random(nouns.length)]);
     
-    data.push({
+    data.push(Object.freeze({
       id: ID++,
       get label() { return getLabel() },
       set label(value) { setLabel(value) }
-    });
+    }));
   }
 
   return data;

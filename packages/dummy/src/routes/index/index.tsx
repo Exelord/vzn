@@ -16,8 +16,8 @@ const Button = ({ id, text, fn }: { id: string, text: string, fn: () => void}) =
   </div>
 
 const IndexRoute = () => {
+  let selectedItem: any;
   const [data, setData] = createValue<Todo[]>([], false);
-  const [getSelected, setSelected] = createValue<number>();
 
   function remove(id: number) {
     const d = data();
@@ -28,14 +28,14 @@ const IndexRoute = () => {
   function run() {
     benchmark('run', () => {
       setData(buildData(1000));
-      setSelected(undefined);
+      unselect();
     })
   }
 
   function runLots() {
     benchmark('runLots', () => {
       setData(buildData(10000));
-      setSelected(undefined);
+      unselect();
     });
   }
 
@@ -58,7 +58,17 @@ const IndexRoute = () => {
 
   function clear() {
     setData([]);
-    setSelected(null);
+    unselect();
+  }
+
+  function select(item: any) {
+    unselect();
+    item.isSelected = true;
+    selectedItem = item;
+  }
+
+  function unselect() {
+    if (selectedItem) selectedItem.isSelected = false;
   }
 
   return (
@@ -81,12 +91,23 @@ const IndexRoute = () => {
 
       <table class="table table-hover table-striped test-data">
         <tbody>
-          <For each={data()}>{(row) => {
-            let rowId = row.id;
-            return <tr class={getSelected() === rowId ? "danger": ""}>
-              <td class="col-md-1" textContent={`${rowId}`} />
-              <td class="col-md-4"><a onClick={[setSelected, rowId]} textContent={row.label} /></td>
-              <td class="col-md-1"><a onClick={[remove, rowId]}>X</a></td>
+          <For each={data()}>{(todo) => {
+            const [getSelected, setSelected] = createValue(false);
+            
+            const item = Object.freeze({
+              get isSelected() {
+                return getSelected()
+              },
+            
+              set isSelected(value: boolean) {
+                setSelected(value);
+              }
+            });
+
+            return <tr style={{ color: getSelected() ? "red": "inherit"}}>
+              <td class="col-md-1" textContent={`${todo.id}`} />
+              <td class="col-md-4"><a onClick={[select, item]} textContent={todo.label} /></td>
+              <td class="col-md-1"><a onClick={[remove, todo.id]}>X</a></td>
               <td class="col-md-6"/>
             </tr>
           }}</For>
