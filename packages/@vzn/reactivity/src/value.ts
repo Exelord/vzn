@@ -3,6 +3,24 @@ import { getOwner, runWithOwner } from "./owner";
 
 type Computation = () => void;
 
+function runComputations(computations: Set<Computation>) {
+  const currentComputation = getOwner().computation;
+  
+  // We take a snapshot to prevent infinite iteration in case of using getter() in called computations
+  const tmpComputations = new Set<Computation>([...computations]);
+
+  runWithOwner({ disposer: undefined, computation: undefined }, () => {
+    for (const computation of tmpComputations) {
+      // ? This condition will prevent circular dependencies
+      // ! Updating value will never cause recalculation of current computation
+      if (currentComputation === computation) return;
+      computation();
+    };
+  });
+  
+  tmpComputations.clear();
+}
+
 /**
  * Values are the foundation of reactive system.
  * By using them, you are creating implicit dependencies for computations.
@@ -60,23 +78,8 @@ export function createValue<T>(
     
     // The new value is set ASAP in order to be usable in further called computations
     currentValue = newValue;
-    
-    const currentComputation = getOwner().computation;
-    
-    // We take a snapshot to prevent infinite iteration in case of using getter() in called computations
-    currentComputations = new Set<Computation>([...computations]);
 
-    runWithOwner({ disposer: undefined, computation: undefined }, () => {
-      for (const computation of currentComputations) {
-        // ? This condition will prevent circular dependencies
-        // ! Updating value will never cause recalculation of current computation
-        if (currentComputation == computation) return;
-        computation();
-      };
-    });
-
-    // Garbage collection
-    currentComputations.clear();
+    runComputations(computations);
   }
 
   return [getter, setter];
