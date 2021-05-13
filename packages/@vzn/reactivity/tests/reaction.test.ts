@@ -95,7 +95,7 @@ describe('createReaction', () => {
 
   it('works with nested reactions', () => {
     const spy = jest.fn();
-    const [getSignal, setSignal] = createValue();
+    const [getSignal, setSignal] = createValue(false);
     
     createReaction(() => {
       if (!getSignal()) return;
