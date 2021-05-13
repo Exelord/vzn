@@ -1,5 +1,4 @@
 export type Config = {
-  batch<T>(fn: () => T): T;
   untrack<T>(fn: () => T): T;
   cleanup(fn: () => void): void;
   createRoot<T>(fn: (dispose: () => void) => T): T;
@@ -32,10 +31,6 @@ export function isConfigured() {
 
 export function configure(config: Config) {
   configuration = config;
-}
-
-export function batch<T>(fn: () => T): T {
-  return configuration.batch(fn);
 }
 
 export function untrack<T>(fn: () => T): T {
