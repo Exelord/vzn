@@ -4,7 +4,6 @@ import { configure, render } from '@vzn/dom';
 
 import {
   root,
-  batch,
   untrack,
   getOwner,
   onCleanup,
@@ -22,7 +21,6 @@ export function createEffect<T>(fn: (v?: T) => T, value?: T): void {
 }
 
 configure({
-  batch,
   untrack,
   cleanup: onCleanup,
   createRoot: root,

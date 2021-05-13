@@ -1,4 +1,4 @@
-import { createValue, batch } from "@vzn/reactivity";
+import { createValue } from "@vzn/reactivity";
 import { buildData, Todo } from "./data";
 import { For } from '@vzn/dom';
 
@@ -42,12 +42,10 @@ const IndexRoute = () => {
   function add() { setData(data().concat(buildData(1000))); }
 
   function update() {
-    batch(() => {
-      const d = data();
-      for (let i = 0; i < d.length; i += 10) {
-        d[i].label += ' !!!';
-      }
-    });
+    const d = data();
+    for (let i = 0; i < d.length; i += 10) {
+      d[i].label += ' !!!';
+    }
   }
 
   function swapRows() {
