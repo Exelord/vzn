@@ -31,7 +31,9 @@ describe('onCleanup', () => {
       });
       dispose();
     })
-    
+
+    jest.runAllTimers();
+
     expect(spy.mock.calls.length).toBe(2);
   });
   
