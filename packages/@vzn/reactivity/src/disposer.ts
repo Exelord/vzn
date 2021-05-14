@@ -1,11 +1,23 @@
-import { getOwner } from "./owner";
+import { getOwner, runWithOwner } from "./owner";
+import { createQueue } from "./queue";
 
 export function onCleanup(fn: () => void): void {
+  function cleanup() {
+    const disposer = createQueue();
+
+    try {
+      runWithOwner({ disposer }, fn)
+    } finally {
+      disposer.flush();
+    }
+  }
+
   const { disposer } = getOwner();
   
   if (!disposer) {
-    throw new Error('Reactivity: Scheduling onCleanup without root or parent will never run it!')
+    console.warn('Reactivity: Using onCleanup without root or disposer will never run it!')
+    return;
   }
   
-  disposer.schedule(fn);
+  disposer.schedule(cleanup);
 }

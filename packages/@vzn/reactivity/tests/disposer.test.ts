@@ -1,6 +1,7 @@
 import { onCleanup } from '../src/disposer';
 import { runWithOwner } from '../src/owner';
 import { createQueue } from '../src/queue';
+import { root } from '../src/root';
 
 jest.useFakeTimers('modern');
 
@@ -23,25 +24,26 @@ describe('onCleanup', () => {
   it('supports nested cleanups', () => {
     const spy = jest.fn();
 
-    onCleanup(() => {
-      onCleanup(spy);
-      spy()
-    });
-    
-    jest.runAllTimers();
+    root((dispose) => {
+      onCleanup(() => {
+        onCleanup(spy);
+        spy()
+      });
+      dispose();
+    })
     
     expect(spy.mock.calls.length).toBe(2);
   });
   
-  it('runs onCleanup if there is no computation', () => {
+  it('does not run onCleanup if there is no computation', () => {
     const cleanupMock = jest.fn();
     
-    onCleanup(cleanupMock);
+    root(() => onCleanup(cleanupMock));
     
     expect(cleanupMock.mock.calls.length).toBe(0);
     
     jest.runAllTimers();
 
-    expect(cleanupMock.mock.calls.length).toBe(1);
+    expect(cleanupMock.mock.calls.length).toBe(0);
   });
 });
