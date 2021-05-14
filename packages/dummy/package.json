@@ -1,6 +1,6 @@
 {
   "name": "dummy",
-  "version": "0.20.2",
+  "version": "0.21.0",
   "author": "Maciej Kwaśniak",
   "license": "MIT",
   "private": true,
@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "@vzn/dom": "^0.20.0",
-    "@vzn/reactivity": "^0.22.2"
+    "@vzn/reactivity": "^0.23.0"
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",
