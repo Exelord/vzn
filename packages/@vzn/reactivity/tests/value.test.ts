@@ -2,7 +2,7 @@ import { root } from "../src/root";
 import { createValue } from "../src/value";
 import { createReaction } from "../src/reaction";
 import { runWithOwner } from "../src/owner";
-import { createQueue } from "../src/queue";
+import { createQueue, flushQueue } from "../src/queue";
 
 jest.useFakeTimers('modern');
 
@@ -90,7 +90,7 @@ describe('createValue', () => {
     expect(spy.mock.calls.length).toBe(1);
     expect(getSignal()).toBe(true);
 
-    disposer.flush();
+    flushQueue(disposer);
 
     setSignal(false);
     

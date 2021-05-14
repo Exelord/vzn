@@ -1,7 +1,7 @@
 import { untrack } from '../src/untrack';
 import { onCleanup } from '../src/disposer';
 import { getOwner, runWithOwner } from '../src/owner';
-import { createQueue } from '../src/queue';
+import { createQueue, flushQueue } from '../src/queue';
 
 jest.useFakeTimers('modern');
 
@@ -38,7 +38,7 @@ describe('untrack', () => {
     
     expect(cleanupMock.mock.calls.length).toBe(0);
 
-    disposer.flush();
+    flushQueue(disposer);
     
     expect(cleanupMock.mock.calls.length).toBe(1);
   });

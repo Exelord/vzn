@@ -1,6 +1,6 @@
 import { onCleanup } from '../src/disposer';
 import { runWithOwner } from '../src/owner';
-import { createQueue } from '../src/queue';
+import { createQueue, flushQueue } from '../src/queue';
 import { root } from '../src/root';
 
 jest.useFakeTimers('modern');
@@ -16,7 +16,7 @@ describe('onCleanup', () => {
     
     expect(cleanupMock.mock.calls.length).toBe(0);
     
-    disposer.flush();
+    flushQueue(disposer);
     
     expect(cleanupMock.mock.calls.length).toBe(1);
   });

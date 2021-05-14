@@ -3,7 +3,7 @@ import { createReaction } from '../src/reaction';
 import { createValue } from '../src/value';
 import { onCleanup } from '../src/disposer';
 import { runWithOwner } from '../src/owner';
-import { createQueue } from '../src/queue';
+import { createQueue, flushQueue } from '../src/queue';
 
 jest.useFakeTimers('modern');
 
@@ -93,7 +93,7 @@ describe('createMemo', () => {
   
       expect(spy.mock.calls.length).toBe(2);
       
-      disposer.flush();
+      flushQueue(disposer);
       
       setSignal(4);
 
@@ -123,7 +123,7 @@ describe('createMemo', () => {
 
       expect(spy.mock.calls.length).toBe(0);
       
-      disposer.flush();
+      flushQueue(disposer);
       
       expect(spy.mock.calls.length).toBe(1);
       

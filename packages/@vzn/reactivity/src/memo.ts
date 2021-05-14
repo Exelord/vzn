@@ -1,7 +1,7 @@
 import { onCleanup } from "./disposer";
 import { runWithOwner } from "./owner";
 import { createValue } from "./value";
-import { createQueue } from "./queue";
+import { createQueue, flushQueue } from "./queue";
 
 export function createMemo<T>(fn: () => T): () => T {
   let memoValue: T;
@@ -11,6 +11,8 @@ export function createMemo<T>(fn: () => T): () => T {
   const disposer = createQueue();
   
   function computation() {
+    if (isDirty) return;
+
     isDirty = true;
     notifyChange(true);
   };
@@ -20,13 +22,13 @@ export function createMemo<T>(fn: () => T): () => T {
   }
 
   onCleanup(() => {
-    disposer.flush();
+    flushQueue(disposer);
     isDirty = true;
   });
 
   function getter() {
     if (isDirty) {
-      disposer.flush();
+      flushQueue(disposer);
       runWithOwner({ computation, disposer }, recomputeMemo);
       isDirty = false;
     }

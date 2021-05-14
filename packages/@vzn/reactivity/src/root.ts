@@ -1,5 +1,5 @@
 import { runWithOwner } from "./owner";
-import { createQueue } from "./queue";
+import { createQueue, flushQueue } from "./queue";
 
 /**
  * Computations created by root live until dispose is called
@@ -11,5 +11,5 @@ import { createQueue } from "./queue";
  */
 export function root<T>(fn: (disposer: () => void) => T): T {
   const disposer = createQueue();
-  return runWithOwner({ disposer, computation: undefined }, () => fn(disposer.flush));
+  return runWithOwner({ disposer, computation: undefined }, () => fn(() => flushQueue(disposer)));
 }

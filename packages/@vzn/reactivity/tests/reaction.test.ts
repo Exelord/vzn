@@ -1,7 +1,7 @@
 import { onCleanup } from '../src/disposer';
 import { createReaction } from '../src/reaction';
 import { runWithOwner } from '../src/owner';
-import { createQueue } from '../src/queue';
+import { createQueue, flushQueue } from '../src/queue';
 import { createValue } from '../src/value';
 
 jest.useFakeTimers('modern');
@@ -36,7 +36,7 @@ describe('createReaction', () => {
     expect(reactionSpy.mock.calls.length).toBe(3);
     expect(cleanupSpy.mock.calls.length).toBe(2);
     
-    disposer.flush();
+    flushQueue(disposer);
     
     expect(reactionSpy.mock.calls.length).toBe(3);
     expect(cleanupSpy.mock.calls.length).toBe(3);
