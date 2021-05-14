@@ -76,7 +76,7 @@ export function createValue<T>(
 
     // We take a snapshot to prevent infinite iteration in case of using getter() in called computations
     currentComputations = new Set<Computation>([...computations]);
-    runComputations(computations);
+    runComputations(currentComputations);
     currentComputations.clear();
   }
 

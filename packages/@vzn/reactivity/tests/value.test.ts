@@ -1,3 +1,4 @@
+import { root } from "../src/root";
 import { createValue } from "../src/value";
 import { createReaction } from "../src/reaction";
 import { runWithOwner } from "../src/owner";
@@ -132,4 +133,32 @@ describe('createValue', () => {
 
     expect(spy.mock.calls.length).toBe(2);
   });
+
+  it('works with cross-updates', () => {
+    const spy = jest.fn();
+    const [getData, setData] = createValue(2);
+    const [getData2, setData2] = createValue(2);
+    
+    root(() => {
+      createReaction(() => {
+        getData2();
+        spy();
+      });
+
+      createReaction(() => {
+        setData2(getData() + 1);
+      });
+  
+      expect(spy.mock.calls.length).toBe(1);
+
+      jest.runAllTimers();
+
+      expect(spy.mock.calls.length).toBe(2);
+      
+      setData(5);
+      jest.runAllTimers();
+  
+      expect(spy.mock.calls.length).toBe(3);
+    })
+  })
 });

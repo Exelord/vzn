@@ -1,7 +1,11 @@
 import { getOwner } from "./owner";
-import { schedule } from "./scheduler";
 
 export function onCleanup(fn: () => void): void {
   const { disposer } = getOwner();
-  disposer ? disposer.schedule(fn) : schedule(fn);
+  
+  if (!disposer) {
+    throw new Error('Reactivity: Scheduling onCleanup without root or parent will never run it!')
+  }
+  
+  disposer.schedule(fn);
 }
