@@ -1,6 +1,6 @@
 import App from './app';
 
-import { configure, render } from '@vzn/dom';
+import { configure, render } from '@vzn/rendering';
 
 import {
   root,

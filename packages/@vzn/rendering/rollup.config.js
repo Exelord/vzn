@@ -32,7 +32,7 @@ export default [
             "babel-plugin-transform-rename-import",
             {
               original: "rxcore",
-              replacement: "../../../packages/@vzn/dom/src/core"
+              replacement: "../../../packages/@vzn/rendering/src/core"
             }
           ]
         ]

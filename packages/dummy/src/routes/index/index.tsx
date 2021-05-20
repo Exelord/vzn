@@ -1,6 +1,6 @@
 import { createValue } from "@vzn/reactivity";
 import { buildData, Todo } from "./data";
-import { For } from '@vzn/dom';
+import { For } from '@vzn/rendering';
 
 const Button = ({ id, text, fn }: { id: string, text: string, fn: () => void}) =>
   <div class="col-sm-6 smallpad">

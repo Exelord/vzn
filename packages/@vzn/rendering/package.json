@@ -1,6 +1,6 @@
 {
   "private": false,
-  "name": "@vzn/dom",
+  "name": "@vzn/rendering",
   "version": "0.20.0",
   "author": "Maciej Kwaśniak <kmaciek17@gmail.com>",
   "license": "MIT",

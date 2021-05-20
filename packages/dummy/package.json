@@ -17,7 +17,7 @@
     "Node 10"
   ],
   "dependencies": {
-    "@vzn/dom": "^0.20.0",
+    "@vzn/rendering": "^0.20.0",
     "@vzn/reactivity": "^0.23.0"
   },
   "devDependencies": {

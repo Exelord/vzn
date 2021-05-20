@@ -10,7 +10,7 @@
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "jsx": "preserve",
-    "jsxImportSource": "@vzn/dom",
+    "jsxImportSource": "@vzn/rendering",
     "noEmit": true,
     "strict": true,
     "allowJs": true,

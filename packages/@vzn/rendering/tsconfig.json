@@ -3,7 +3,7 @@
     "outDir": "./dist",
     "declaration": true,
     "emitDeclarationOnly": true,
-    "jsxImportSource": "@vzn/dom"
+    "jsxImportSource": "@vzn/rendering"
   },
 
   "include": ["./src"]
