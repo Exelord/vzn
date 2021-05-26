@@ -18,13 +18,13 @@
   ],
   "dependencies": {
     "@vzn/rendering": "^0.20.0",
-    "@vzn/reactivity": "^0.23.0"
+    "@vzn/reactivity": "^0.26.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.8",
+    "@babel/core": "^7.14.3",
     "@babel/preset-typescript": "^7.13.0",
     "babel-preset-vzn": "^0.11.1",
-    "typescript": "^4.2.2",
-    "vite": "^2.0.5"
+    "typescript": "^4.3.2",
+    "vite": "^2.3.4"
   }
 }

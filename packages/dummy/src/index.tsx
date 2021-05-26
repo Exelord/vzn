@@ -3,21 +3,21 @@ import App from './app';
 import { configure, render } from '@vzn/rendering';
 
 import {
-  root,
   untrack,
   onCleanup,
+  createRoot,
   createMemo,
   createValue,
-  createReaction
+  createReaction,
 } from "@vzn/reactivity";
 
 configure({
   untrack,
   onCleanup,
-  createRoot: root,
+  createRoot,
   createMemo,
   createValue,
-  createReaction
-})
+  createReaction,
+});
 
 render(App, document.querySelector('#app')!);
