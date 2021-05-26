@@ -10,11 +10,8 @@
     "serve": "vite preview"
   },
   "browserslist": [
-    "Chrome 74",
-    "Firefox 63",
-    "Safari 11",
-    "Edge 17",
-    "Node 10"
+    "defaults",
+    "not IE 11"
   ],
   "dependencies": {
     "@vzn/rendering": "^0.20.0",
