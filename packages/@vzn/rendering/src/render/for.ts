@@ -1,23 +1,27 @@
 import { JSX } from "../jsx";
 import { createValue, createMemo, onCleanup, createRoot, untrack } from "../reactivity";
 
+type Accessor<T> = () => T;
+
 const FALLBACK = Symbol("fallback");
+
+function dispose(d: (() => void)[]) {
+  for (let i = 0; i < d.length; i++) d[i]();
+}
 
 // Modified version of mapSample from S-array[https://github.com/adamhaile/S-array] by Adam Haile
 export function mapArray<T, U>(
-  list: () => readonly T[],
-  mapFn: (v: T, i: () => number) => U,
-  options: { fallback?: () => any } = {}
+  list: Accessor<readonly T[]>,
+  mapFn: (v: T, i: Accessor<number>) => U,
+  options: { fallback?: Accessor<any> } = {}
 ): () => U[] {
   let items: (T | typeof FALLBACK)[] = [],
     mapped: U[] = [],
     disposers: (() => void)[] = [],
     len = 0,
-    indexes: ((v: number) => number)[] | null = mapFn.length > 1 ? [] : null;
+    indexes: ((v: number) => void)[] | null = mapFn.length > 1 ? [] : null;
 
-  onCleanup(() => {
-    for (let i = 0, length = disposers.length; i < length; i++) disposers[i]();
-  });
+  onCleanup(() => dispose(disposers));
   return () => {
     let newItems = list() || [],
       i: number,
@@ -28,7 +32,7 @@ export function mapArray<T, U>(
         newIndicesNext: number[],
         temp: U[],
         tempdisposers: (() => void)[],
-        tempIndexes: ((v: number) => number)[],
+        tempIndexes: ((v: number) => void)[],
         start: number,
         end: number,
         newEnd: number,
@@ -37,7 +41,7 @@ export function mapArray<T, U>(
       // fast path for empty arrays
       if (newLen === 0) {
         if (len !== 0) {
-          for (i = 0; i < len; i++) disposers[i]();
+          dispose(disposers);
           disposers = [];
           items = [];
           mapped = [];
@@ -46,7 +50,7 @@ export function mapArray<T, U>(
         }
         if (options.fallback) {
           items = [FALLBACK];
-          mapped[0] = createRoot(disposer => {
+          mapped[0] = createRoot((disposer) => {
             disposers[0] = disposer;
             return options.fallback!();
           });
@@ -55,6 +59,7 @@ export function mapArray<T, U>(
       }
       // fast path for new create
       else if (len === 0) {
+        mapped = new Array(newLen);
         for (j = 0; j < newLen; j++) {
           items[j] = newItems[j];
           mapped[j] = createRoot(mapper);
@@ -116,7 +121,7 @@ export function mapArray<T, U>(
           } else mapped[j] = createRoot(mapper);
         }
         // 3) in case the new set is shorter than the old, set the length of the mapped array
-        len = mapped.length = newLen;
+        mapped = mapped.slice(0, (len = newLen));
         // 4) save a copy of the mapped items for the next update
         items = newItems.slice(0);
       }
@@ -125,11 +130,8 @@ export function mapArray<T, U>(
     function mapper(disposer: () => void) {
       disposers[j] = disposer;
       if (indexes) {
-        const [s, setS] = createValue(j, false);
-        indexes[j] = (n: number) => {
-          setS(n);
-          return n;
-        }
+        const [s, set] = createValue(j);
+        indexes[j] = set;
         return mapFn(newItems[j], s);
       }
       return (mapFn as any)(newItems[j]);
