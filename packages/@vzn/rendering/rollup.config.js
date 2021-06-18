@@ -8,17 +8,19 @@ export default [
     output: [
       {
         file: "dist/index.cjs",
-        format: "cjs"
+        format: "cjs",
       },
       {
         file: "dist/index.js",
-        format: "es"
-      }
+        format: "es",
+      },
     ],
-    
+
+    external: ["@vzn/reactivity"],
+
     plugins: [
       nodeResolve({
-        extensions: [".js", ".ts"]
+        extensions: [".js", ".ts"],
       }),
 
       babel({
@@ -32,15 +34,15 @@ export default [
             "babel-plugin-transform-rename-import",
             {
               original: "rxcore",
-              replacement: "../../../packages/@vzn/rendering/src/core"
-            }
-          ]
-        ]
+              replacement: "../../../packages/@vzn/rendering/src/core",
+            },
+          ],
+        ],
       }),
 
       cleanup({
-        extensions: [".js", ".ts"]
-      })
-    ]
-  }
+        extensions: [".js", ".ts"],
+      }),
+    ],
+  },
 ];
