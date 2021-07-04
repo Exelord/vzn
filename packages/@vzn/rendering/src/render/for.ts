@@ -1,5 +1,11 @@
 import { JSX } from "../jsx";
-import { createValue, createMemo, onCleanup, createRoot, untrack } from "../reactivity";
+import {
+  createValue,
+  createMemo,
+  onCleanup,
+  root,
+  freeze,
+} from "../reactivity";
 
 type Accessor<T> = () => T;
 
@@ -26,7 +32,7 @@ export function mapArray<T, U>(
     let newItems = list() || [],
       i: number,
       j: number;
-    return untrack(() => {
+    return freeze(() => {
       let newLen = newItems.length,
         newIndices: Map<T | typeof FALLBACK, number>,
         newIndicesNext: number[],
@@ -50,7 +56,7 @@ export function mapArray<T, U>(
         }
         if (options.fallback) {
           items = [FALLBACK];
-          mapped[0] = createRoot((disposer) => {
+          mapped[0] = root((disposer) => {
             disposers[0] = disposer;
             return options.fallback!();
           });
@@ -62,7 +68,7 @@ export function mapArray<T, U>(
         mapped = new Array(newLen);
         for (j = 0; j < newLen; j++) {
           items[j] = newItems[j];
-          mapped[j] = createRoot(mapper);
+          mapped[j] = root(mapper);
         }
         len = newLen;
       } else {
@@ -118,7 +124,7 @@ export function mapArray<T, U>(
               indexes[j] = tempIndexes![j];
               indexes[j](j);
             }
-          } else mapped[j] = createRoot(mapper);
+          } else mapped[j] = root(mapper);
         }
         // 3) in case the new set is shorter than the old, set the length of the mapped array
         mapped = mapped.slice(0, (len = newLen));

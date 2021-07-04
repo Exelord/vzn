@@ -1,8 +1,8 @@
 export {
-  untrack,
+  root,
+  react,
+  freeze,
   onCleanup,
-  createRoot,
-  createValue,
   createMemo,
-  createReaction,
+  createValue,
 } from "@vzn/reactivity";
