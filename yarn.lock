@@ -2474,6 +2474,14 @@
   resolved "https://registry.yarnpkg.com/@vzn/reactivity/-/reactivity-0.28.0.tgz#d78a4cb19999474983ce099d18b5813c451eec45"
   integrity sha512-ku7tZRO7rDbcThF6sYBHLMWr6RGohbaSHYpxSeB7JjqlXA/FtvhgIyxelJFP2stcy043nisHx74L+xV58ZQ29g==
 
+"@vzn/rendering@^0.20.0":
+  version "0.20.0"
+  resolved "https://registry.yarnpkg.com/@vzn/rendering/-/rendering-0.20.0.tgz#75c1f76f93c4a02a5d8968b2a6fd9a4f98c14e91"
+  integrity sha512-Ihn5Is4YG2yvr6CNhzUt7V1tSZJU9H6LC7VP0eHQAczVFjkXodUwNlLd1ub2IFayi4wmuCRseW0o5Hjq9gAt9Q==
+  dependencies:
+    "@vzn/reactivity" "^0.28.0"
+    dom-expressions "^0.28.6"
+
 "@webassemblyjs/ast@1.11.0":
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.11.0.tgz#a5aa679efdc9e51707a4207139da57920555961f"
