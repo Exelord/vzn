@@ -7,13 +7,16 @@ const Button = ({ id, text, fn }: { id: string, text: string, fn: () => void}) =
     <button id={id} class="btn btn-primary btn-block" type="button" onClick={fn}>{text}</button>
   </div>
 
-const IndexRoute = () => {
+export default function IndexRoute() {
   let selectedItem: any;
   const [data, setData] = createValue<Todo[]>([], false);
 
   function remove(id: number) {
     const d = data();
-    d.splice(d.findIndex(d => d.id === id), 1);
+    d.splice(
+      d.findIndex((d) => d.id === id),
+      1
+    );
     setData(d);
   }
 
@@ -27,12 +30,14 @@ const IndexRoute = () => {
     unselect();
   }
 
-  function add() { setData(data().concat(buildData(1000))); }
+  function add() {
+    setData(data().concat(buildData(1000)));
+  }
 
   function update() {
     const d = data();
     for (let i = 0; i < d.length; i += 10) {
-      d[i].label += ' !!!';
+      d[i].setLabel((d[i].getLabel() + " !!!"));
     }
   }
 
@@ -49,21 +54,23 @@ const IndexRoute = () => {
     unselect();
   }
 
-  function select(item: any) {
+  function select(selectItem: any) {
     unselect();
-    item.isSelected = true;
-    selectedItem = item;
+    selectItem(true);
+    selectedItem = selectItem;
   }
 
   function unselect() {
-    if (selectedItem) selectedItem.isSelected = false;
+    if (selectedItem) selectedItem(false);
   }
 
   return (
     <div class="container">
       <div class="jumbotron">
         <div class="row">
-          <div class="col-md-6"><h1>VZN</h1></div>
+          <div class="col-md-6">
+            <h1>VZN</h1>
+          </div>
           <div class="col-md-6">
             <div class="row">
               <Button id="run" text="Create 1,000 rows" fn={run} />
@@ -79,31 +86,30 @@ const IndexRoute = () => {
 
       <table class="table table-hover table-striped test-data">
         <tbody>
-          <For each={data()}>{(todo) => {
-            const [getSelected, setSelected] = createValue(false);
-            
-            const item = Object.freeze({
-              get isSelected() {
-                return getSelected()
-              },
-            
-              set isSelected(value: boolean) {
-                setSelected(value);
-              }
-            });
+          <For each={data()}>
+            {(todo) => {
+              const [getSelected, setSelected] = createValue(false);
 
-            return <tr style={{ color: getSelected() ? "red": "inherit"}}>
-              <td class="col-md-1" textContent={`${todo.id}`} />
-              <td class="col-md-4"><a onClick={[select, item]} textContent={todo.label} /></td>
-              <td class="col-md-1"><a onClick={[remove, todo.id]}>X</a></td>
-              <td class="col-md-6"/>
-            </tr>
-          }}</For>
+              return (
+                <tr class={getSelected() ? "danger" : ""}>
+                  <td class="col-md-1" textContent={`${todo.id}`} />
+                  <td class="col-md-4">
+                    <a
+                      onClick={[select, setSelected]}
+                      textContent={todo.getLabel()}
+                    />
+                  </td>
+                  <td class="col-md-1">
+                    <a onClick={[remove, todo.id]}>X</a>
+                  </td>
+                  <td class="col-md-6" />
+                </tr>
+              );
+            }}
+          </For>
         </tbody>
       </table>
       <span class="preloadicon glyphicon glyphicon-remove" aria-hidden="true" />
     </div>
   );
-}
-
-export default IndexRoute;
+};

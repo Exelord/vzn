@@ -9,20 +9,21 @@ const nouns = ["table", "chair", "house", "bbq", "desk", "car", "pony", "cookie"
 
 export type Todo = {
   id: number;
-  label: string;
-}
+  getLabel(): string | undefined;
+  setLabel(value?: string): void;
+};
 
 export function buildData(count: number): Todo[] {
-  const data = [];
-
+  const data = new Array(count);
+  
   for (let i = 0; i < count; i++) {
     const [getLabel, setLabel] = createValue(adjectives[_random(adjectives.length)] + " " + colours[_random(colours.length)] + " " + nouns[_random(nouns.length)]);
-    
-    data.push(Object.freeze({
+
+    data[i] = {
       id: ID++,
-      get label() { return getLabel() },
-      set label(value) { setLabel(value) }
-    }));
+      getLabel,
+      setLabel,
+    };
   }
 
   return data;
