@@ -5,7 +5,7 @@ import {
   onCleanup,
   root,
   freeze,
-} from "../reactivity";
+} from "@vzn/reactivity";
 
 type Accessor<T> = () => T;
 

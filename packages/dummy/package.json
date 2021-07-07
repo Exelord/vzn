@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "@vzn/rendering": "^0.20.0",
-    "@vzn/reactivity": "^0.26.1"
+    "@vzn/reactivity": "^0.28.0"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",

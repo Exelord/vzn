@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "dom-expressions": "^0.28.6",
-    "@vzn/reactivity": "^0.27.0"
+    "@vzn/reactivity": "^0.28.0"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",

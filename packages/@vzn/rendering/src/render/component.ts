@@ -1,4 +1,4 @@
-import { freeze } from "../reactivity";
+import { freeze } from "@vzn/reactivity";
 import { JSX } from "../jsx";
 
 export function createComponent<T>(
