@@ -21,7 +21,7 @@
     "build:types": "tsc"
   },
   "dependencies": {
-    "@vzn/reactivity": "^0.28.0",
+    "@vzn/reactivity": "^0.29.0",
     "dom-expressions": "^0.28.6"
   },
   "devDependencies": {

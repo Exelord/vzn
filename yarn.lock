@@ -2469,18 +2469,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@vzn/reactivity@^0.28.0":
-  version "0.28.0"
-  resolved "https://registry.yarnpkg.com/@vzn/reactivity/-/reactivity-0.28.0.tgz#d78a4cb19999474983ce099d18b5813c451eec45"
-  integrity sha512-ku7tZRO7rDbcThF6sYBHLMWr6RGohbaSHYpxSeB7JjqlXA/FtvhgIyxelJFP2stcy043nisHx74L+xV58ZQ29g==
-
-"@vzn/rendering@^0.20.0":
-  version "0.20.0"
-  resolved "https://registry.yarnpkg.com/@vzn/rendering/-/rendering-0.20.0.tgz#75c1f76f93c4a02a5d8968b2a6fd9a4f98c14e91"
-  integrity sha512-Ihn5Is4YG2yvr6CNhzUt7V1tSZJU9H6LC7VP0eHQAczVFjkXodUwNlLd1ub2IFayi4wmuCRseW0o5Hjq9gAt9Q==
-  dependencies:
-    "@vzn/reactivity" "^0.28.0"
-    dom-expressions "^0.28.6"
+"@vzn/reactivity@^0.29.0":
+  version "0.29.0"
+  resolved "https://registry.yarnpkg.com/@vzn/reactivity/-/reactivity-0.29.0.tgz#a439a879ff46ebb7ec475cfe200847714939938f"
+  integrity sha512-TuooZt1Vhk+deLHvtsDqxn+HU0KlB8xVtOZ9tOP3UqtyvCOSoV04TU/TZGtxxbDe9pY36NP3NIebjs2qfieE/A==
 
 "@webassemblyjs/ast@1.11.0":
   version "1.11.0"
