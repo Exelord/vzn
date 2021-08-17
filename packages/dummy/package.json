@@ -14,14 +14,14 @@
     "not IE 11"
   ],
   "dependencies": {
-    "@vzn/reactivity": "^0.29.0",
+    "@vzn/reactivity": "^0.30.0",
     "@vzn/rendering": "^0.22.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.3",
-    "@babel/preset-typescript": "^7.13.0",
+    "@babel/core": "^7.15.0",
+    "@babel/preset-typescript": "^7.15.0",
     "babel-preset-vzn": "^0.12.0",
-    "typescript": "^4.3.2",
-    "vite": "^2.3.4"
+    "typescript": "^4.3.5",
+    "vite": "^2.5.0"
   }
 }
