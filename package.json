@@ -12,18 +12,7 @@
     "packages/vzn",
     "packages/dummy"
   ],
-  "browserslist": [
-    "last 2 Chrome major versions",
-    "last 2 Firefox major versions",
-    "last 2 Safari major versions",
-    "last 2 Opera major versions",
-    "last 2 Edge major versions",
-    "last 2 ios_saf major versions",
-    "last 2 and_chr major versions",
-    "last 2 and_ff major versions",
-    "last 2 samsung major versions"
-  ],
   "devDependencies": {
-    "lerna": "^3.22.1"
+    "lerna": "^4.0.0"
   }
 }
