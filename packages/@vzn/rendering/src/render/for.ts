@@ -1,4 +1,4 @@
-import { JSX } from "../jsx";
+import { VZN } from "../vzn";
 import {
   createValue,
   createMemo,
@@ -145,11 +145,17 @@ export function mapArray<T, U>(
   };
 }
 
-export function For<T, U extends JSX.Element>(props: {
+export function For<T, U extends VZN.Element>(props: {
   each: T[];
-  fallback?: JSX.Element;
+  fallback?: VZN.Element;
   children: (item: T, index: () => number) => U;
 }) {
   const fallback = "fallback" in props && { fallback: () => props.fallback };
-  return createMemo(mapArray<T, U>(() => props.each, props.children, fallback ? fallback : undefined));
+  return createMemo(
+    mapArray<T, U>(
+      () => props.each,
+      props.children,
+      fallback ? fallback : undefined
+    )
+  );
 }
