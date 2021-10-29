@@ -12,6 +12,9 @@
     "packages/vzn",
     "packages/dummy"
   ],
+  "scripts": {
+    "publish": "lerna publish"
+  },
   "devDependencies": {
     "lerna": "^4.0.0"
   }
