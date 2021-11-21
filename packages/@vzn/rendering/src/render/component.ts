@@ -1,9 +1,9 @@
 import { freeze } from "@vzn/reactivity";
-import { VZN } from "../vzn";
+import { JSX } from "../jsx";
 
 export function createComponent<T>(
-  Comp: (props: T) => VZN.Element,
+  Comp: (props: T) => JSX.Element,
   props: T
-): VZN.Element {
+): JSX.Element {
   return freeze(() => Comp(props as T));
 }

@@ -10,7 +10,8 @@
   "types": "dist/types/index.d.ts",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "jsx-runtime.d.ts"
   ],
   "scripts": {
     "prepublishOnly": "npm run build",
