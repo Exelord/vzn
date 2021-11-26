@@ -2,6 +2,7 @@
   "packages": [
     "packages/@vzn/*",
     "packages/babel-preset-vzn",
+    "packages/vite-plugin-vzn",
     "packages/vzn",
     "packages/dummy"
   ],
