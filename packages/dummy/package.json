@@ -15,7 +15,8 @@
   ],
   "dependencies": {
     "@vzn/reactivity": "^0.31.0",
-    "@vzn/rendering": "^0.26.2"
+    "@vzn/rendering": "^0.26.2",
+    "vite-tsconfig-paths": "^3.3.17"
   },
   "devDependencies": {
     "typescript": "^4.5.2",

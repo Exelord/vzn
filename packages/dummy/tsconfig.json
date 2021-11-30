@@ -19,7 +19,11 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "importsNotUsedAsValues": "error",
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "dummy/*": ["src/*"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules", "build"]

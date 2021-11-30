@@ -1,10 +1,8 @@
-import IndexRoute from '../routes/index/index';
-import "../styles/app.css";
+import IndexRoute from "dummy/routes/index/index";
+import "dummy/styles/app.css";
 
 const App = () => {
-  return (
-    <IndexRoute />
-  )
-}
+  return <IndexRoute />;
+};
 
 export default App;
