@@ -11,5 +11,5 @@
     "isolatedModules": true,
   },
 
-  "include": ["./src"]
+  "include": ["./src"],
 }
