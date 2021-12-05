@@ -27,7 +27,9 @@ module.exports = function Plugin() {
       if (!userConfig.resolve) userConfig.resolve = {};
       userConfig.resolve.alias = [
         ...legacyAlias,
-        ...normalizeAliases(userConfig.resolve?.alias || []),
+        ...normalizeAliases(
+          (userConfig.resolve && userConfig.resolve.alias) || []
+        ),
       ];
 
       const nestedDeps = [];
