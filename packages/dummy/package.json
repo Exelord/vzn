@@ -14,7 +14,7 @@
     "not IE 11"
   ],
   "dependencies": {
-    "@vzn/reactivity": "^0.32.0",
+    "@vzn/reactivity": "^0.32.1",
     "@vzn/rendering": "^0.26.3",
     "vite-tsconfig-paths": "^3.3.17"
   },
