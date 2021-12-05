@@ -20,10 +20,13 @@
     "build:types": "tsc --emitDeclarationOnly --declaration --outDir ./dist/types"
   },
   "dependencies": {
-    "@vzn/reactivity": "^0.31.0",
     "dom-expressions": "^0.30.9"
   },
+  "peerDependencies": {
+    "@vzn/reactivity": "^0.32.1"
+  },
   "devDependencies": {
+    "@vzn/reactivity": "^0.32.1",
     "npm-run-all": "^4.1.5",
     "typescript": "^4.5.2",
     "vite": "^2.6.14"
