@@ -1,6 +1,6 @@
 {
   "name": "dummy",
-  "version": "0.27.2",
+  "version": "0.27.3",
   "author": "Maciej Kwaśniak",
   "license": "MIT",
   "private": true,
@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "@vzn/reactivity": "^0.32.1",
-    "@vzn/rendering": "^0.26.3",
+    "@vzn/rendering": "^0.27.0",
     "vite-tsconfig-paths": "^3.3.17"
   },
   "devDependencies": {
