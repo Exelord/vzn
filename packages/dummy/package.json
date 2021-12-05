@@ -1,6 +1,6 @@
 {
   "name": "dummy",
-  "version": "0.27.1",
+  "version": "0.27.2",
   "author": "Maciej Kwaśniak",
   "license": "MIT",
   "private": true,
@@ -21,6 +21,6 @@
   "devDependencies": {
     "typescript": "^4.5.2",
     "vite": "^2.6.14",
-    "vite-plugin-vzn": "^0.2.0"
+    "vite-plugin-vzn": "^0.2.1"
   }
 }
