@@ -13,8 +13,8 @@
     "test": "node test.js"
   },
   "dependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.16.0",
-    "@babel/plugin-proposal-decorators": "^7.16.4",
-    "babel-plugin-jsx-dom-expressions": "^0.30.9"
+    "@babel/plugin-proposal-class-properties": "^7.16.5",
+    "@babel/plugin-proposal-decorators": "^7.16.5",
+    "babel-plugin-jsx-dom-expressions": "^0.31.1"
   }
 }

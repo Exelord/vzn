@@ -37,7 +37,7 @@ export default function IndexRoute() {
   function update() {
     const d = data();
     for (let i = 0; i < d.length; i += 10) {
-      d[i].setLabel((d[i].getLabel() + " !!!"));
+      d[i].setLabel(d[i].getLabel() + " !!!");
     }
   }
 
@@ -89,10 +89,10 @@ export default function IndexRoute() {
           <For each={data()}>
             {(todo) => {
               const [getSelected, setSelected] = createValue(false);
-
+              const { id } = todo;
               return (
                 <tr class={getSelected() ? "danger" : ""}>
-                  <td class="col-md-1" textContent={`${todo.id}`} />
+                  <td class="col-md-1" textContent={id} />
                   <td class="col-md-4">
                     <a
                       onClick={[select, setSelected]}
@@ -100,7 +100,7 @@ export default function IndexRoute() {
                     />
                   </td>
                   <td class="col-md-1">
-                    <a onClick={[remove, todo.id]}>X</a>
+                    <a onClick={[remove, id]}>X</a>
                   </td>
                   <td class="col-md-6" />
                 </tr>
