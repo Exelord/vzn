@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-vzn",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Vite plugin to support VZN",
   "author": "Maciej Kwaśniak <kmaciek17@gmail.com>",
   "license": "MIT",
@@ -15,6 +15,6 @@
   "dependencies": {
     "@babel/core": "^7.16.5",
     "@babel/preset-typescript": "^7.16.5",
-    "babel-preset-vzn": "^0.14.0"
+    "babel-preset-vzn": "^0.14.1"
   }
 }
