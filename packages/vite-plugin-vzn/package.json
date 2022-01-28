@@ -13,7 +13,7 @@
     "test": "node test.js"
   },
   "dependencies": {
-    "@babel/core": "^7.16.7",
+    "@babel/core": "^7.16.12",
     "@babel/preset-typescript": "^7.16.7",
     "babel-preset-vzn": "^0.14.2"
   }
