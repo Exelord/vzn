@@ -14,9 +14,12 @@
     "packages/dummy"
   ],
   "scripts": {
-    "publish": "lerna publish"
+    "publish": "lerna publish",
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel --no-cache"
   },
   "devDependencies": {
-    "lerna": "^4.0.0"
+    "lerna": "^4.0.0",
+    "turbo": "^1.2.5"
   }
 }
