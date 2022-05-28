@@ -14,13 +14,13 @@
     "not IE 11"
   ],
   "dependencies": {
-    "@vzn/reactivity": "^0.35.0",
+    "@vzn/reactivity": "^0.36.0",
     "@vzn/rendering": "^0.29.1"
   },
   "devDependencies": {
-    "typescript": "^4.6.2",
-    "vite": "^2.8.6",
+    "typescript": "^4.7.2",
+    "vite": "^2.9.9",
     "vite-plugin-vzn": "^0.2.4",
-    "vite-tsconfig-paths": "^3.4.1"
+    "vite-tsconfig-paths": "^3.5.0"
   }
 }
